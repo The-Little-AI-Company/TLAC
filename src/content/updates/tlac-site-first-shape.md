@@ -1,5 +1,6 @@
 ---
 title: TLAC site takes its first shape
+status: published
 date: 2026-06-22
 summary: The Little AI Company now has a structured project index, reusable project pages, an about page, and an issue-driven roadmap for the next build slices.
 links:

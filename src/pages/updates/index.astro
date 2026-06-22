@@ -2,7 +2,9 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const updates = await getCollection("updates");
+const updates = (await getCollection("updates")).filter(
+  (update) => update.data.status === "published",
+);
 const sortedUpdates = [...updates].sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );

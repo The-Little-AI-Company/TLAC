@@ -3,6 +3,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const projectStatus = z.enum(["planned", "in-progress", "live", "paused"]);
+const updateStatus = z.enum(["draft", "published"]);
 const projectPalette = z.enum(["blue", "amber", "green", "red"]);
 const linkHref = z.string().min(1).refine(
   (href) => {
@@ -33,7 +34,7 @@ const projects = defineCollection({
       .array(
         z.object({
           label: z.string().min(1),
-          href: z.url(),
+          href: linkHref,
         }),
       )
       .default([]),
@@ -52,6 +53,7 @@ const updates = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/updates" }),
   schema: z.object({
     title: z.string().min(1),
+    status: updateStatus,
     date: z.coerce.date(),
     summary: z.string().min(1),
     links: z
