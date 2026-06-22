@@ -11,6 +11,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - Brand assets: `documents/brand-assets.md`
 - Content validation: `documents/content-validation.md`
 - Proof pattern: `documents/proof-case-study.md`
+- Analytics and privacy: `documents/analytics-privacy.md`
 - Deploy readiness: `documents/deploy-readiness.md`
 - Performance budget: `documents/performance-budget.md`
 - Update authoring: `documents/update-authoring.md`
@@ -36,6 +37,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - `/project-badge/` renders reusable child-project badge assets and embed guidance.
 - `/proof/` renders structured proof notes and case-study detail pages.
 - `/roadmap/` renders a public project status and trajectory view.
+- `/privacy/` documents launch measurement and the default no-analytics posture.
 - `/about/` defines the studio lane and keeps the TLAC site focused on useful AI work.
 - `/updates/` renders the first structured update entry as a compact trajectory log.
 - `/uses/` renders a restrained TLAC working-kit page without changing primary navigation.
@@ -48,6 +50,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - Project/update content has a source validation smoke for slugs, statuses, dates, links, and project image references.
 - Update authoring has a lightweight Markdown workflow, template, and smoke gate.
 - Proof notes have a structured content collection, template, and smoke gate.
+- Launch measurement is documented and configurable, with analytics disabled in the default build.
 - Cloudflare Pages readiness is documented and locally gated, with publishing blocked until Jeff approves it.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
@@ -66,9 +69,10 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the proof/case-study pattern, the next
-implementation issue is:
+Work the GitHub backlog one issue at a time. After the analytics/privacy-light
+measurement slice, review the open GitHub issues before starting the next implementation
+issue:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/25
+- https://github.com/The-Little-AI-Company/TLAC/issues
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.

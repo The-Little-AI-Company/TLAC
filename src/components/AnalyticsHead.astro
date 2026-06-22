@@ -1,0 +1,18 @@
+---
+import { analyticsConfig } from "../site/analytics";
+
+const cloudflareBeacon = JSON.stringify({
+  token: analyticsConfig.cloudflareToken,
+});
+---
+
+{
+  analyticsConfig.provider === "cloudflare" && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={cloudflareBeacon}
+    />
+  )
+}
