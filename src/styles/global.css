@@ -31,10 +31,20 @@ body {
 
 a {
   color: inherit;
+  overflow-wrap: anywhere;
+}
+
+button {
+  font: inherit;
+  overflow-wrap: anywhere;
 }
 
 .page {
   min-height: 100vh;
+}
+
+main:focus {
+  outline: none;
 }
 
 .site-header,

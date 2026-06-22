@@ -7,8 +7,9 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "astro check && astro build && npm run smoke:routes",
+    "build": "astro check && astro build && npm run smoke:routes && npm run smoke:accessibility",
     "smoke:routes": "node scripts/smoke-routes.mjs",
+    "smoke:accessibility": "node scripts/smoke-accessibility.mjs",
     "preview": "astro preview"
   },
   "devDependencies": {

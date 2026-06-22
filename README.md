@@ -32,6 +32,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - `/404.html` renders a branded recovery page, and `npm run build` includes core route smoke checks.
 - The primary logo system uses exact folded-spark SVG marks for header, favicon, and lockups.
 - Homepage now follows the Product Proofroom direction with a compact proof board.
+- `npm run build` includes accessibility smoke for headings, skip links, alt text, link names, focus hooks, contrast, and wrapping.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
 - Active development branch is `dev`.
@@ -49,9 +50,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the homepage proofroom pass, the next
+Work the GitHub backlog one issue at a time. After the accessibility/focus pass, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/14
+- https://github.com/The-Little-AI-Company/TLAC/issues/15
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.
