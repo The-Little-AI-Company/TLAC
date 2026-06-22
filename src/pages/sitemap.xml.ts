@@ -12,6 +12,7 @@ const staticRoutes = [
   "/updates/",
   "/roadmap/",
   "/uses/",
+  "/privacy/",
   "/llms.txt",
 ];
 

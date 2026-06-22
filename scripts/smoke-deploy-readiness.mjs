@@ -23,6 +23,7 @@ const requiredDistFiles = [
   path.join("updates", "index.html"),
   path.join("roadmap", "index.html"),
   path.join("uses", "index.html"),
+  path.join("privacy", "index.html"),
   path.join("brand", "tlac-project-badge.svg"),
   path.join("brand", "tlac-project-badge-compact.svg"),
 ];

@@ -70,6 +70,11 @@ const routeChecks = [
     includes: ["The TLAC working kit", "Project memory", "Verification"],
   },
   {
+    label: "privacy",
+    file: "privacy/index.html",
+    includes: ["Measured lightly, explained plainly.", "No ads", "No retargeting"],
+  },
+  {
     label: "404",
     file: "404.html",
     includes: ["Page not found.", 'href="/projects/"', 'href="/updates/"', 'href="/about/"'],

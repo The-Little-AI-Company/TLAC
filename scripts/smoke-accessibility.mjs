@@ -18,6 +18,7 @@ const pageChecks = [
   { label: "proof index", file: path.join("proof", "index.html") },
   { label: "proof detail", file: path.join("proof", "vivary-project-memory", "index.html") },
   { label: "uses", file: path.join("uses", "index.html") },
+  { label: "privacy", file: path.join("privacy", "index.html") },
   { label: "404", file: "404.html" },
 ];
 

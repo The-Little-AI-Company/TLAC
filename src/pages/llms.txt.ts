@@ -25,6 +25,7 @@ export async function GET() {
     `- Updates: ${canonicalUrl("/updates/")}`,
     `- Roadmap: ${canonicalUrl("/roadmap/")}`,
     `- Uses: ${canonicalUrl("/uses/")}`,
+    `- Privacy: ${canonicalUrl("/privacy/")}`,
     `- About: ${canonicalUrl("/about/")}`,
     "",
     "## Projects",

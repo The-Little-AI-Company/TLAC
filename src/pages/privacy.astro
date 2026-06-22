@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Privacy | The Little AI Company"
+  description="The Little AI Company privacy posture for launch measurement and visitor trust."
+  canonicalPath="/privacy/"
+>
+  <section class="page-section privacy-page" aria-labelledby="privacy-title">
+    <div class="page-heading">
+      <p class="eyebrow">Privacy</p>
+      <h1 id="privacy-title">Measured lightly, explained plainly.</h1>
+      <p class="lede">
+        TLAC can learn from launch traffic without turning the site into a
+        tracking surface. The default build keeps analytics off.
+      </p>
+    </div>
+
+    <div class="privacy-grid">
+      <section class="privacy-panel" aria-labelledby="privacy-default-title">
+        <h2 id="privacy-default-title">Default measurement setting</h2>
+        <p>
+          The default website build ships with no analytics beacon, tracking
+          script, provider token, cookie write, or localStorage tracking write.
+        </p>
+      </section>
+
+      <section class="privacy-panel" aria-labelledby="privacy-no-title">
+        <h2 id="privacy-no-title">What TLAC does not do</h2>
+        <ul>
+          <li>No ads.</li>
+          <li>No retargeting.</li>
+          <li>No private personal context.</li>
+          <li>No account, contact, or form data collection.</li>
+        </ul>
+      </section>
+
+      <section class="privacy-panel" aria-labelledby="privacy-optional-title">
+        <h2 id="privacy-optional-title">Optional launch analytics</h2>
+        <p>
+          If Jeff approves analytics for launch, the site can enable a small
+          Cloudflare Web Analytics beacon at build time. That setting is
+          configurable and is not active in the default build.
+        </p>
+      </section>
+
+      <section class="privacy-panel" aria-labelledby="privacy-questions-title">
+        <h2 id="privacy-questions-title">What measurement is for</h2>
+        <p>
+          Measurement should answer simple product questions: which public pages
+          are useful, which projects need clearer proof, and which routes deserve
+          better explanation.
+        </p>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
