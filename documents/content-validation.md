@@ -23,10 +23,12 @@ Update entries must keep:
 - Kebab-case, unique slugs.
 - Approved statuses: `draft`, `published`.
 - Valid `YYYY-MM-DD` dates.
-- Required title and summary copy.
+- Required title and summary copy; summaries stay between 30 and 220 characters.
 - Valid link labels and URL/root-relative hrefs.
+- Published updates must not use future dates.
 
 ## Gate
 
-`npm run build` runs `npm run smoke:content` after `astro check` and before
-`astro build`, so content problems fail before the static artifact is produced.
+`npm run build` runs `npm run smoke:content` and
+`npm run smoke:update-workflow` after `astro check` and before `astro build`, so
+content problems fail before the static artifact is produced.
