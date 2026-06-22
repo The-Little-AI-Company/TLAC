@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" role="img" aria-labelledby="title desc">
+  <title id="title">The Little AI Company horizontal lockup</title>
+  <desc id="desc">Horizontal logo lockup with the four-dot token mark and lowercase wordmark.</desc>
+  <g transform="translate(34 38)">
+    <circle cx="22" cy="22" r="10" fill="#2563EB" />
+    <circle cx="48" cy="22" r="10" fill="#E0A22E" />
+    <circle cx="22" cy="48" r="10" fill="#2EAD62" />
+    <circle cx="48" cy="48" r="10" fill="#C8312B" />
+  </g>
+  <text x="128" y="88"
+        font-family="Bricolage Grotesque, Space Grotesk, Hanken Grotesk, General Sans, Inter, Arial, sans-serif"
+        font-size="48"
+        font-weight="800"
+        letter-spacing="0"
+        fill="#1A1A1A">the little ai company</text>
+</svg>

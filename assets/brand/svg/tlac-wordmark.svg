@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" role="img" aria-labelledby="title desc">
+  <title id="title">the little ai company wordmark</title>
+  <desc id="desc">Lowercase wordmark for The Little AI Company with the four-dot mark.</desc>
+  <rect width="920" height="220" fill="#F6EFE1" />
+  <g transform="translate(68 62)">
+    <circle cx="26" cy="26" r="11" fill="#2563EB" />
+    <circle cx="54" cy="26" r="11" fill="#E0A22E" />
+    <circle cx="26" cy="54" r="11" fill="#2EAD62" />
+    <circle cx="54" cy="54" r="11" fill="#C8312B" />
+  </g>
+  <text x="170" y="126"
+        font-family="Bricolage Grotesque, Space Grotesk, Hanken Grotesk, General Sans, Inter, Arial, sans-serif"
+        font-size="62"
+        font-weight="800"
+        letter-spacing="0"
+        fill="#1A1A1A">the little ai company</text>
+  <text x="174" y="166"
+        font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+        font-size="18"
+        font-weight="500"
+        letter-spacing="2"
+        fill="#1A1A1A">LITTLEAICOMPANY.COM</text>
+</svg>
