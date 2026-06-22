@@ -2,9 +2,8 @@
 
 The public website workspace for **The Little AI Company**.
 
-The Little AI Company is a one-person AI studio and selective label by Jeff Kazzee. It exists
-to showcase useful AI tools, apps, and AI-literacy projects without becoming Jeff's full
-personal portfolio.
+The Little AI Company is a one-person AI studio by Jeff Kazzee. It exists to showcase
+useful AI tools, small apps, and AI-literacy projects with a clear public home.
 
 ## Start here
 
@@ -22,6 +21,8 @@ personal portfolio.
 - Starter docs and brand assets are in place.
 - Astro static site scaffolding is in place with npm scripts for local development,
   checks, and builds.
+- Project content is modeled through Astro content collections and seeded with the
+  approved candidate projects from the PRD.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
 - Active development branch is `dev`.
@@ -39,9 +40,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the static-site foundation, the next
+Work the GitHub backlog one issue at a time. After the project content collection, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/3
+- https://github.com/The-Little-AI-Company/TLAC/issues/5
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.
