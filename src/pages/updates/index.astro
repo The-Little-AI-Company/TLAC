@@ -1,0 +1,54 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const updates = await getCollection("updates");
+const sortedUpdates = [...updates].sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<BaseLayout
+  title="Updates | The Little AI Company"
+  description="Small, in-lane updates from The Little AI Company as projects and learning surfaces take shape."
+>
+  <section class="page-section updates-page" aria-labelledby="updates-title">
+    <div class="page-heading">
+      <p class="eyebrow">Updates</p>
+      <h1 id="updates-title">A short log of useful-AI progress.</h1>
+      <p class="lede">
+        Small notes about what is shipping, what is getting clearer, and how the
+        project set is becoming more useful over time.
+      </p>
+    </div>
+
+    <div class="updates-list">
+      {
+        sortedUpdates.map((update) => (
+          <article id={`update-${update.id}`} class="update-entry">
+            <time datetime={update.data.date.toISOString()}>
+              {dateFormatter.format(update.data.date)}
+            </time>
+            <div>
+              <h2>{update.data.title}</h2>
+              <p>{update.data.summary}</p>
+              {update.data.links.length > 0 && (
+                <div class="update-links">
+                  {update.data.links.map((link) => (
+                    <a href={link.href}>{link.label}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

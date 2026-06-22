@@ -5,7 +5,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { statusLabels } from "../site/projects";
 
 const projects = await getCollection("projects");
+const updates = await getCollection("updates");
 const featuredEntry = projects.find((project) => project.data.featured) ?? projects[0];
+const latestUpdate = [...updates].sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+)[0];
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 if (!featuredEntry) {
   throw new Error("Expected at least one project entry.");
@@ -91,4 +101,24 @@ const featuredProject = featuredEntry.data;
       </div>
     </article>
   </section>
+
+  {
+    latestUpdate && (
+      <section class="updates-strip" aria-labelledby="latest-update-title">
+        <div class="section-heading">
+          <p class="eyebrow">Latest update</p>
+          <h2 id="latest-update-title">Small notes as the work gets sharper.</h2>
+        </div>
+
+        <article class="latest-update">
+          <time datetime={latestUpdate.data.date.toISOString()}>
+            {dateFormatter.format(latestUpdate.data.date)}
+          </time>
+          <h3>{latestUpdate.data.title}</h3>
+          <p>{latestUpdate.data.summary}</p>
+          <a href="/updates/">Read updates</a>
+        </article>
+      </section>
+    )
+  }
 </BaseLayout>
