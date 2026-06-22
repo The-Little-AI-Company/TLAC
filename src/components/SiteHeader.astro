@@ -1,0 +1,18 @@
+---
+import logoConcept from "../../assets/brand/generated/2026-06-21/logo-concepts/tlac-logo-concept-05-folded-spark.png";
+import { primaryNavigation } from "../site/navigation";
+---
+
+<header class="site-header" aria-label="Site header">
+  <a class="brand" href="/" aria-label="The Little AI Company home">
+    <img src={logoConcept.src} width="88" height="88" alt="" loading="eager" />
+    <span>The Little AI Company</span>
+  </a>
+  <nav class="nav" aria-label="Primary navigation">
+    {
+      primaryNavigation.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))
+    }
+  </nav>
+</header>
