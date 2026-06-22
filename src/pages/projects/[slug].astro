@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { canonicalUrl } from "../../site/metadata";
 import { statusLabels } from "../../site/projects";
 
 export async function getStaticPaths() {
@@ -25,11 +26,34 @@ const imageSrc = imageModules[`../../../${projectData.image.src}`] as string | u
 if (!imageSrc) {
   throw new Error(`Missing project image asset: ${projectData.image.src}`);
 }
+
+const projectPath = `/projects/${project.id}/`;
+const projectType =
+  /tool|app|workspace|studio/i.test(projectData.category) ? "SoftwareApplication" : "CreativeWork";
+const projectJsonLd = {
+  "@type": projectType,
+  "@id": `${canonicalUrl(projectPath)}#project`,
+  name: projectData.title,
+  url: canonicalUrl(projectPath),
+  description: projectData.purpose,
+  creator: { "@id": canonicalUrl("/#organization") },
+  publisher: { "@id": canonicalUrl("/#organization") },
+  dateCreated: String(projectData.year),
+  image: canonicalUrl(imageSrc),
+  ...(projectType === "SoftwareApplication"
+    ? {
+        applicationCategory: projectData.category,
+        operatingSystem: "Web",
+      }
+    : {}),
+};
 ---
 
 <BaseLayout
   title={`${projectData.title} | The Little AI Company`}
   description={projectData.purpose}
+  canonicalPath={projectPath}
+  jsonLd={projectJsonLd}
 >
   <article class="page-section project-detail" aria-labelledby="project-title">
     <a class="text-link" href="/projects/">Back to projects</a>
