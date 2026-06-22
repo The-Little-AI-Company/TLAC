@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+.venv/
 
 # Build output
 dist/
@@ -17,9 +18,16 @@ dist/
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+*.pyc
+.idea/
+.vscode/
 
 # Local agent/private memory
-memory/
+memory/*
+!memory/.gitkeep
 USER.md
 MEMORY.md
+.strato/private/
+.vivary/data/
 .cocoindex_code/

@@ -10,22 +10,27 @@ personal portfolio.
 
 - Product direction: `documents/website-prd.md`
 - Brand assets: `documents/brand-assets.md`
+- Roadmap and backlog: `documents/roadmap.md`
 - Setup checklist: `documents/setup-checklist.md`
 - Generated images: `assets/brand/generated/2026-06-21/`
+- Site mockup concepts: `assets/brand/generated/2026-06-22/site-mockups/`
 - Exact SVG marks: `assets/brand/svg/`
+- Vivary project brain: `STATE.md` and `modules/index.md`
 
 ## Current state
 
 - Starter docs and brand assets are in place.
+- Vivary `0.2.3` coding scaffold is installed for project memory and verification.
+- GitHub roadmap milestones and issues are published.
 - No site app exists yet.
 - Active development branch is `dev`.
+- Finished-product branch is `prod`.
 - Remote target: `The-Little-AI-Company/TLAC`.
 
 ## Next implementation slice
 
-Scaffold the Astro static site, then build the first vertical slice:
+Work the GitHub backlog one issue at a time. The first implementation issue is:
 
-1. Homepage with the TLAC definition and website hero asset.
-2. Project content model stub.
-3. One project card using placeholder structured data.
-4. Build/type/content verification gate.
+- https://github.com/The-Little-AI-Company/TLAC/issues/2
+
+Every issue follows the same loop: plan, code, test, review, fix, merge.
