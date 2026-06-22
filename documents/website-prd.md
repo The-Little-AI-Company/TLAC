@@ -14,9 +14,9 @@ able to resolve one clear entity:
 **The Little AI Company is a one-person AI studio by Jeff Kazzee that makes useful AI tools,
 apps, and learning surfaces.**
 
-The site must not become a catch-all portfolio, a resume site, or a generic AI education blog.
-Those jobs belong elsewhere. TLAC needs to make the label feel real, selective, warm, and
-memorable, while giving each in-lane project a credible place to point back to.
+TLAC needs focused public language: real, selective, warm, and memorable. It should make the
+studio's useful-AI lane obvious while giving each in-lane project a credible place to point
+back to.
 
 ## Solution
 
@@ -55,8 +55,8 @@ text-free; exact logos and wordmarks are SVG.
 
 ## Implementation Decisions
 
-- TLAC is a curated label and one-person AI studio, not Jeff's personal portfolio, not a
-  resume site, and not a generic education hub.
+- TLAC public copy should positively define the studio's useful-AI lane instead of comparing
+  it against Jeff's other web properties.
 - A project belongs on TLAC if it is a useful AI web tool/app or helps people use AI well.
 - Initial project candidates: Obscura, Vivary, DesignDojo, The Token Repository, and Zo 101
   plus Cookbook.
