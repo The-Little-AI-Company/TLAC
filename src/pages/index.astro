@@ -2,13 +2,7 @@
 import logoConcept from "../../assets/brand/generated/2026-06-21/logo-concepts/tlac-logo-concept-05-folded-spark.png";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const statusLabels = {
-  planned: "Planned",
-  "in-progress": "In progress",
-  live: "Live",
-  paused: "Paused",
-};
+import { statusLabels } from "../site/projects";
 
 const projects = await getCollection("projects");
 const featuredEntry = projects.find((project) => project.data.featured) ?? projects[0];
@@ -30,7 +24,7 @@ const featuredProject = featuredEntry.data;
         people who want clearer, calmer ways to work with AI.
       </p>
       <div class="actions" aria-label="Primary actions">
-        <a class="button" href="#projects">See the first projects</a>
+        <a class="button" href="/projects/">See the first projects</a>
         <a class="button secondary" href="#about">Meet the studio</a>
       </div>
     </div>
@@ -93,6 +87,7 @@ const featuredProject = featuredEntry.data;
             <a href={link.href}>{link.label}</a>
           ))
         }
+        <a href="/projects/">View all projects</a>
       </div>
     </article>
   </section>
