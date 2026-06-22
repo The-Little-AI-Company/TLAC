@@ -10,6 +10,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - Product direction: `documents/website-prd.md`
 - Brand assets: `documents/brand-assets.md`
 - Content validation: `documents/content-validation.md`
+- Deploy readiness: `documents/deploy-readiness.md`
 - Performance budget: `documents/performance-budget.md`
 - Roadmap and backlog: `documents/roadmap.md`
 - Setup checklist: `documents/setup-checklist.md`
@@ -37,6 +38,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - `npm run build` includes accessibility smoke for headings, skip links, alt text, link names, focus hooks, contrast, and wrapping.
 - Project detail images use optimized responsive WebP output, and `npm run build` enforces the image performance budget.
 - Project/update content has a source validation smoke for slugs, statuses, dates, links, and project image references.
+- Cloudflare Pages readiness is documented and locally gated, with publishing blocked until Jeff approves it.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
 - Active development branch is `dev`.
@@ -54,9 +56,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the content validation pass, the next
+Work the GitHub backlog one issue at a time. After the Cloudflare deploy-readiness pass, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/17
+- https://github.com/The-Little-AI-Company/TLAC/issues/18
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.

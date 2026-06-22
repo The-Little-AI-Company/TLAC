@@ -7,11 +7,12 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "astro check && npm run smoke:content && astro build && npm run smoke:routes && npm run smoke:accessibility && npm run smoke:performance",
+    "build": "astro check && npm run smoke:content && astro build && npm run smoke:routes && npm run smoke:accessibility && npm run smoke:performance && npm run smoke:deploy-readiness",
     "smoke:content": "node scripts/smoke-content.mjs",
     "smoke:routes": "node scripts/smoke-routes.mjs",
     "smoke:accessibility": "node scripts/smoke-accessibility.mjs",
     "smoke:performance": "node scripts/smoke-performance.mjs",
+    "smoke:deploy-readiness": "node scripts/smoke-deploy-readiness.mjs",
     "preview": "astro preview"
   },
   "devDependencies": {
