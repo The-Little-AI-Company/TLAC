@@ -8,7 +8,7 @@ const routeChecks = [
   {
     label: "home",
     file: "index.html",
-    includes: ["Useful things, made by hand and machine.", 'href="/projects/"', 'href="/updates/"'],
+    includes: ["The Little AI Company", "Proof board", 'href="/projects/"', 'href="/updates/"'],
   },
   {
     label: "projects index",
