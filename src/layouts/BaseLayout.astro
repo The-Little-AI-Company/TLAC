@@ -2,16 +2,34 @@
 import "../styles/global.css";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import {
+  canonicalUrl,
+  organizationJsonLd,
+  personJsonLd,
+  siteDescription,
+} from "../site/metadata";
+
+type JsonLdNode = Record<string, unknown>;
 
 type Props = {
   title?: string;
   description?: string;
+  canonicalPath?: string;
+  jsonLd?: JsonLdNode | JsonLdNode[];
 };
 
 const {
   title = "The Little AI Company",
-  description = "The Little AI Company is a one-person AI studio by Jeff Kazzee that makes useful AI tools, small apps, and learning surfaces.",
+  description = siteDescription,
+  canonicalPath = Astro.url.pathname,
+  jsonLd = [],
 } = Astro.props;
+const pageUrl = canonicalUrl(canonicalPath);
+const pageJsonLd = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [organizationJsonLd(), personJsonLd(), ...pageJsonLd],
+};
 ---
 
 <!doctype html>
@@ -20,6 +38,8 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <title>{title}</title>
   </head>
   <body>
