@@ -31,6 +31,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - `/projects/[slug]/` renders reusable project detail pages from structured content.
 - `/about/` defines the studio lane and points broader personal work to Jeff's site.
 - `/updates/` renders the first structured update entry as a compact trajectory log.
+- `/uses/` renders a restrained TLAC working-kit page without changing primary navigation.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, canonical links, and JSON-LD entity data are in place.
 - `/404.html` renders a branded recovery page, and `npm run build` includes core route smoke checks.
 - The primary logo system uses exact folded-spark SVG marks for header, favicon, and lockups.
@@ -56,9 +57,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the Cloudflare deploy-readiness pass, the next
+Work the GitHub backlog one issue at a time. After the optional uses page, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/18
+- https://github.com/The-Little-AI-Company/TLAC/issues/19
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.

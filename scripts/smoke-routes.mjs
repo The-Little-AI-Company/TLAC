@@ -31,6 +31,11 @@ const routeChecks = [
     includes: ["A short log of useful-AI progress.", "TLAC site takes its first shape"],
   },
   {
+    label: "uses",
+    file: "uses/index.html",
+    includes: ["The TLAC working kit", "Project memory", "Verification"],
+  },
+  {
     label: "404",
     file: "404.html",
     includes: ["Page not found.", 'href="/projects/"', 'href="/updates/"', 'href="/about/"'],
