@@ -40,6 +40,7 @@ a {
 .site-header,
 .hero,
 .proof-strip,
+.updates-strip,
 .page-section,
 .site-footer {
   width: min(1120px, calc(100% - 32px));
@@ -511,6 +512,92 @@ h1 {
   margin-top: 44px;
 }
 
+.updates-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(320px, 1fr);
+  gap: 32px;
+  align-items: start;
+  padding: 0 0 72px;
+}
+
+.latest-update,
+.updates-list {
+  border-top: 1px solid var(--line);
+}
+
+.latest-update {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.latest-update time,
+.update-entry time {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.latest-update h3 {
+  margin: 0;
+  font-size: 1.65rem;
+  letter-spacing: 0;
+}
+
+.latest-update p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.latest-update a,
+.update-links a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.latest-update a:focus-visible,
+.update-links a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.updates-page {
+  display: grid;
+  gap: 44px;
+}
+
+.updates-list {
+  display: grid;
+}
+
+.update-entry {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.22fr) minmax(0, 1fr);
+  gap: 28px;
+  border-bottom: 1px solid var(--line);
+  padding: 24px 0;
+}
+
+.update-entry h2 {
+  margin: 0 0 10px;
+  font-size: 1.55rem;
+  letter-spacing: 0;
+}
+
+.update-entry p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.update-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
 .about-page {
   display: grid;
   gap: 52px;
@@ -628,12 +715,14 @@ h1 {
 
   .hero,
   .proof-strip,
+  .updates-strip,
   .index-toolbar,
   .project-grid,
   .project-detail-hero,
   .detail-grid,
   .about-hero,
-  .about-grid {
+  .about-grid,
+  .update-entry {
     grid-template-columns: 1fr;
   }
 

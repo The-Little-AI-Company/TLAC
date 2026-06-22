@@ -4,6 +4,21 @@ import { z } from "astro/zod";
 
 const projectStatus = z.enum(["planned", "in-progress", "live", "paused"]);
 const projectPalette = z.enum(["blue", "amber", "green", "red"]);
+const linkHref = z.string().min(1).refine(
+  (href) => {
+    if (href.startsWith("/") && !href.startsWith("//")) {
+      return true;
+    }
+
+    try {
+      new URL(href);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  { message: "Link href must be an absolute URL or root-relative path." },
+);
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
@@ -33,4 +48,21 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+const updates = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/updates" }),
+  schema: z.object({
+    title: z.string().min(1),
+    date: z.coerce.date(),
+    summary: z.string().min(1),
+    links: z
+      .array(
+        z.object({
+          label: z.string().min(1),
+          href: linkHref,
+        }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = { projects, updates };
