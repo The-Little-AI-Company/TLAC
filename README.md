@@ -23,6 +23,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
   checks, and builds.
 - Project content is modeled through Astro content collections and seeded with the
   approved candidate projects from the PRD.
+- Shared layout, header, navigation data, skip link, and footer shell are in place.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
 - Active development branch is `dev`.
@@ -40,9 +41,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the project content collection, the next
+Work the GitHub backlog one issue at a time. After the base layout shell, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/5
+- https://github.com/The-Little-AI-Company/TLAC/issues/6
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.
