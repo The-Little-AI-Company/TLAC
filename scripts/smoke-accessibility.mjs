@@ -11,6 +11,7 @@ const pageChecks = [
   { label: "project detail", file: path.join("projects", "obscura", "index.html") },
   { label: "about", file: path.join("about", "index.html") },
   { label: "updates", file: path.join("updates", "index.html") },
+  { label: "uses", file: path.join("uses", "index.html") },
   { label: "404", file: "404.html" },
 ];
 
