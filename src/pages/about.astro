@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About | The Little AI Company"
+  description="The Little AI Company is Jeff Kazzee's one-person AI studio for useful AI tools, small apps, and learning surfaces."
+>
+  <section class="page-section about-page" aria-labelledby="about-title">
+    <header class="about-hero">
+      <div>
+        <p class="eyebrow">About The Little AI Company</p>
+        <h1 id="about-title">A small studio for useful AI work.</h1>
+        <p class="lede">
+          The Little AI Company is Jeff Kazzee's one-person AI studio. It builds
+          practical tools, small apps, and learning surfaces that make AI easier
+          to use well.
+        </p>
+      </div>
+      <div class="about-facts" aria-label="Studio facts">
+        <div>
+          <strong>Studio</strong>
+          <span>One person, focused lane</span>
+        </div>
+        <div>
+          <strong>Work</strong>
+          <span>Tools, apps, and learning surfaces</span>
+        </div>
+        <div>
+          <strong>Tone</strong>
+          <span>Plain-spoken, warm, practical</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="about-grid">
+      <section class="about-section" aria-labelledby="belongs-title">
+        <h2 id="belongs-title">What Belongs Here</h2>
+        <ul>
+          <li>AI tools and apps with a clear use case.</li>
+          <li>Learning surfaces that help people use AI with more confidence.</li>
+          <li>Project updates that show the studio getting sharper over time.</li>
+        </ul>
+      </section>
+
+      <section class="about-section" aria-labelledby="elsewhere-title">
+        <h2 id="elsewhere-title">Where The Broader Work Lives</h2>
+        <p>
+          Jeff's wider writing, experiments, field notes, and other work live at
+          his personal site.
+        </p>
+        <a class="text-link compact-link" href="https://jeffkazzee.dev">Visit jeffkazzee.dev</a>
+      </section>
+
+      <section class="about-section" aria-labelledby="selection-title">
+        <h2 id="selection-title">How Projects Get Chosen</h2>
+        <p>
+          A project fits TLAC when it makes AI more useful, more inspectable, or
+          easier to practice. The site stays small on purpose so each project has
+          room to be understood.
+        </p>
+      </section>
+
+      <section class="about-section about-callout" aria-labelledby="next-title">
+        <h2 id="next-title">Start With The Work</h2>
+        <p>
+          The clearest picture of the company is the project set: what exists,
+          what is in progress, and what each project is helping sharpen.
+        </p>
+        <a class="button" href="/projects/">See projects</a>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
