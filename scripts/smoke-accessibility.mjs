@@ -8,6 +8,7 @@ const cssPath = path.join(projectRoot, "src", "styles", "global.css");
 const pageChecks = [
   { label: "home", file: "index.html" },
   { label: "projects index", file: path.join("projects", "index.html") },
+  { label: "projects gallery", file: path.join("projects", "gallery", "index.html") },
   { label: "project detail", file: path.join("projects", "obscura", "index.html") },
   { label: "about", file: path.join("about", "index.html") },
   { label: "updates", file: path.join("updates", "index.html") },

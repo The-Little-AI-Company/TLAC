@@ -18,6 +18,7 @@ export async function GET() {
     "## Routes",
     `- Home: ${canonicalUrl("/")}`,
     `- Projects: ${canonicalUrl("/projects/")}`,
+    `- Project gallery: ${canonicalUrl("/projects/gallery/")}`,
     `- Learn: ${canonicalUrl("/learn/")}`,
     `- Project badge: ${canonicalUrl("/project-badge/")}`,
     `- Updates: ${canonicalUrl("/updates/")}`,

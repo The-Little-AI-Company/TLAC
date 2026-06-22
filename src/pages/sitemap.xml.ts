@@ -4,6 +4,7 @@ import { canonicalUrl } from "../site/metadata";
 const staticRoutes = [
   "/",
   "/projects/",
+  "/projects/gallery/",
   "/learn/",
   "/project-badge/",
   "/about/",

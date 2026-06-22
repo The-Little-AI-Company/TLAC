@@ -16,6 +16,11 @@ const routeChecks = [
     includes: ["Useful AI work, easy to scan.", 'href="/projects/obscura/"'],
   },
   {
+    label: "projects gallery",
+    file: "projects/gallery/index.html",
+    includes: ["Compare TLAC projects.", "Project comparison", "Obscura", "Vivary"],
+  },
+  {
     label: "project detail",
     file: "projects/obscura/index.html",
     includes: ["Obscura", "Project Links", "SoftwareApplication"],

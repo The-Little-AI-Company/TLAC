@@ -28,6 +28,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
   approved candidate projects from the PRD.
 - Shared layout, header, navigation data, skip link, and footer shell are in place.
 - `/projects/` renders the seeded project set with status grouping and category summaries.
+- `/projects/gallery/` renders an optional comparison and media gallery view.
 - `/projects/[slug]/` renders reusable project detail pages from structured content.
 - `/learn/` renders a focused landing page for AI-curious visitors.
 - `/project-badge/` renders reusable child-project badge assets and embed guidance.
@@ -60,9 +61,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the project badge/embed kit, the next
+Work the GitHub backlog one issue at a time. After the project comparison/gallery view, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/22
+- https://github.com/The-Little-AI-Company/TLAC/issues/23
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.
