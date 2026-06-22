@@ -23,7 +23,7 @@ const routeChecks = [
   {
     label: "about",
     file: "about/index.html",
-    includes: ["A small studio for useful AI work.", "Visit jeffkazzee.dev"],
+    includes: ["A small studio for useful AI work.", "Find learning surfaces"],
   },
   {
     label: "updates",
@@ -34,6 +34,11 @@ const routeChecks = [
     label: "roadmap",
     file: "roadmap/index.html",
     includes: ["TLAC roadmap", "Active", "Research"],
+  },
+  {
+    label: "learn",
+    file: "learn/index.html",
+    includes: ["Start using AI with less noise.", "Zo 101", "DesignDojo"],
   },
   {
     label: "uses",

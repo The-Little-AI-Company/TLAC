@@ -14,8 +14,11 @@ const requiredDistFiles = [
   "llms.txt",
   path.join("projects", "index.html"),
   path.join("projects", "obscura", "index.html"),
+  path.join("learn", "index.html"),
   path.join("about", "index.html"),
   path.join("updates", "index.html"),
+  path.join("roadmap", "index.html"),
+  path.join("uses", "index.html"),
 ];
 const forbiddenDistPatterns = [
   /localhost/i,

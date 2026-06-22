@@ -749,6 +749,110 @@ h1 {
   justify-self: start;
 }
 
+.learn-page {
+  display: grid;
+  gap: 52px;
+}
+
+.learn-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.44fr);
+  gap: 44px;
+  align-items: start;
+}
+
+.learn-audience {
+  display: grid;
+  border-block: 1px solid var(--line);
+}
+
+.learn-audience div {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.learn-audience div:last-child {
+  border-bottom: 0;
+}
+
+.learn-audience span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.learn-path {
+  display: grid;
+  gap: 24px;
+}
+
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.learning-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 22px;
+}
+
+.learning-card h3 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: 0;
+}
+
+.learning-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.learning-card .project-meta {
+  margin-top: 4px;
+}
+
+.learn-principles {
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+
+.learn-principles h2 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+.learn-principles ul {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learn-principles li {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.learn-principles span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .uses-page {
   display: grid;
   gap: 44px;
@@ -996,6 +1100,9 @@ h1 {
   .detail-grid,
   .about-hero,
   .about-grid,
+  .learn-hero,
+  .learning-grid,
+  .learn-principles,
   .uses-grid,
   .roadmap-grid,
   .roadmap-timeline,

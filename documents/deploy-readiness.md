@@ -39,8 +39,11 @@ surfaces:
 - `/`
 - `/projects/`
 - at least one project detail page
+- `/learn/`
 - `/about/`
 - `/updates/`
+- `/roadmap/`
+- `/uses/`
 - `/404.html`
 - `/robots.txt`
 - `/sitemap.xml`
