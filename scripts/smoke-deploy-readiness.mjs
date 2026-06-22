@@ -15,10 +15,13 @@ const requiredDistFiles = [
   path.join("projects", "index.html"),
   path.join("projects", "obscura", "index.html"),
   path.join("learn", "index.html"),
+  path.join("project-badge", "index.html"),
   path.join("about", "index.html"),
   path.join("updates", "index.html"),
   path.join("roadmap", "index.html"),
   path.join("uses", "index.html"),
+  path.join("brand", "tlac-project-badge.svg"),
+  path.join("brand", "tlac-project-badge-compact.svg"),
 ];
 const forbiddenDistPatterns = [
   /localhost/i,

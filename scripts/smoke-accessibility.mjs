@@ -13,6 +13,7 @@ const pageChecks = [
   { label: "updates", file: path.join("updates", "index.html") },
   { label: "roadmap", file: path.join("roadmap", "index.html") },
   { label: "learn", file: path.join("learn", "index.html") },
+  { label: "project badge", file: path.join("project-badge", "index.html") },
   { label: "uses", file: path.join("uses", "index.html") },
   { label: "404", file: "404.html" },
 ];

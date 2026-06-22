@@ -15,6 +15,25 @@ Use these anywhere exact logo text or vector rendering matters:
 - `assets/brand/svg/tlac-folded-spark-mark.svg`
 - `assets/brand/svg/tlac-wordmark.svg`
 - `assets/brand/svg/tlac-lockup-horizontal.svg`
+- `/brand/tlac-project-badge.svg` - public attribution badge for child projects.
+- `/brand/tlac-project-badge-compact.svg` - compact public attribution badge.
+
+Badge usage should keep the SVG wrapped in a normal crawler-readable attribution
+link:
+
+```html
+<a rel="author" href="https://littleaicompany.com/" aria-label="A Little AI Company project">
+  <img
+    src="https://littleaicompany.com/brand/tlac-project-badge.svg"
+    width="560"
+    height="120"
+    alt="A Little AI Company project"
+  />
+</a>
+```
+
+Use `/brand/tlac-project-badge-compact.svg` in the same link wrapper when space
+is tight.
 
 ## Generated PNG assets
 
@@ -34,3 +53,5 @@ Use these anywhere exact logo text or vector rendering matters:
 - Keep raster brand images text-free.
 - Use the folded-spark SVG as the primary mark, avatar seed, favicon seed, and lockup mark.
 - Keep generated logo-concept PNGs as concept/reference media, not as exact logo rendering.
+- Treat the project badge as attribution; it does not move repositories or change
+  project ownership.
