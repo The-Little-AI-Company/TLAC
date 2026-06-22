@@ -51,7 +51,7 @@ Do one issue at a time. Do not batch unrelated issues into one branch.
 
 ### M3 Polish, Trust, And Launch Readiness
 
-- [#12 Replace four-dot mark with selected abstract TLAC logo system](https://github.com/The-Little-AI-Company/TLAC/issues/12)
+- [#12 Replace legacy mark with selected abstract TLAC logo system](https://github.com/The-Little-AI-Company/TLAC/issues/12)
 - [#13 Refine homepage from selected mockup direction](https://github.com/The-Little-AI-Company/TLAC/issues/13)
 - [#14 Add accessibility and keyboard/focus pass](https://github.com/The-Little-AI-Company/TLAC/issues/14)
 - [#15 Add image optimization and performance budget](https://github.com/The-Little-AI-Company/TLAC/issues/15)

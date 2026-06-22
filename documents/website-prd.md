@@ -27,8 +27,8 @@ facts through structured data, `llms.txt`, sitemap, and consistent naming.
 
 The first usable site should be small: home, projects index, project detail pages, about,
 updates, and optional uses. It should use the TLAC brand system: warm cream background,
-near-black linework/type, the four-dot mark, and Bit the little robot mascot. Generated art is
-text-free; exact logos and wordmarks are SVG.
+near-black linework/type, the folded-spark mark, and Bit the little robot mascot. Generated
+art is text-free; exact logos and wordmarks are SVG.
 
 ## User Stories
 
@@ -61,14 +61,14 @@ text-free; exact logos and wordmarks are SVG.
 - Initial project candidates: Obscura, Vivary, DesignDojo, The Token Repository, and Zo 101
   plus Cookbook.
 - Site map: home, projects index, project detail pages, about, updates, and optional uses.
-- Home page job: define the label, feature the strongest projects, show the four-dot/Bit
+- Home page job: define the label, feature the strongest projects, show the folded-spark/Bit
   identity, include a latest-updates strip, and link out to Jeff's personal site.
 - Projects are structured content with title, year, status, one-line purpose, category, links,
   screenshot or art, and a short "what leveled up here" line.
 - Each project detail page gives the plain definition, why it exists, current status,
   screenshots/assets, stack notes, live/repo links, and honest caveats.
-- Exact dot mark and wordmark are SVG. Generated images should not contain readable words or
-  fake letterforms.
+- Exact folded-spark mark and wordmark are SVG. Generated images should not contain readable
+  words or fake letterforms.
 - Tech direction: Astro static output, content collections for projects and updates, minimal
   client JavaScript, responsive images, and Cloudflare Pages.
 - SEO/AEO/GEO: sitemap, robots, `llms.txt`, Organization structured data, Person structured
