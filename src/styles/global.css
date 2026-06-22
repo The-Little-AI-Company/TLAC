@@ -853,6 +853,117 @@ h1 {
   line-height: 1.55;
 }
 
+.badge-page {
+  display: grid;
+  gap: 52px;
+}
+
+.badge-page .lede span {
+  font-weight: 800;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.badge-card {
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 22px;
+}
+
+.badge-preview {
+  display: grid;
+  min-height: 148px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--cream);
+  padding: 18px;
+}
+
+.badge-preview.compact {
+  min-height: 148px;
+}
+
+.badge-preview img {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+}
+
+.badge-preview.compact img {
+  width: min(100%, 360px);
+}
+
+.badge-card h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.badge-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.code-block {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf1;
+  padding: 16px;
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.badge-guidance {
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+
+.badge-guidance h2 {
+  margin: 0 0 12px;
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+.badge-guidance p,
+.badge-guidance span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.badge-guidance p {
+  margin: 0;
+}
+
+.badge-guidance ul {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge-guidance li {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
 .uses-page {
   display: grid;
   gap: 44px;
@@ -1103,6 +1214,8 @@ h1 {
   .learn-hero,
   .learning-grid,
   .learn-principles,
+  .badge-grid,
+  .badge-guidance,
   .uses-grid,
   .roadmap-grid,
   .roadmap-timeline,

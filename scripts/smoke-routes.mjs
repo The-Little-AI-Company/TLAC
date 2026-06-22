@@ -41,6 +41,15 @@ const routeChecks = [
     includes: ["Start using AI with less noise.", "Zo 101", "DesignDojo"],
   },
   {
+    label: "project badge",
+    file: "project-badge/index.html",
+    includes: [
+      "Project badge kit.",
+      "A Little AI Company project",
+      "/brand/tlac-project-badge.svg",
+    ],
+  },
+  {
     label: "uses",
     file: "uses/index.html",
     includes: ["The TLAC working kit", "Project memory", "Verification"],

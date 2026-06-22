@@ -40,6 +40,7 @@ surfaces:
 - `/projects/`
 - at least one project detail page
 - `/learn/`
+- `/project-badge/`
 - `/about/`
 - `/updates/`
 - `/roadmap/`
@@ -48,6 +49,8 @@ surfaces:
 - `/robots.txt`
 - `/sitemap.xml`
 - `/llms.txt`
+- `/brand/tlac-project-badge.svg`
+- `/brand/tlac-project-badge-compact.svg`
 
 `npm run smoke:deploy-readiness` verifies the local artifact and checks that private/deploy
 markers are not present in generated public files.
