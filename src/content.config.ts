@@ -2,7 +2,7 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const projectStatus = z.enum(["planned", "in-progress", "live", "paused"]);
+const projectStatus = z.enum(["planned", "in-progress", "live", "paused", "research"]);
 const updateStatus = z.enum(["draft", "published"]);
 const projectPalette = z.enum(["blue", "amber", "green", "red"]);
 const linkHref = z.string().min(1).refine(
