@@ -39,8 +39,6 @@ a {
 
 .site-header,
 .hero,
-.proof-strip,
-.updates-strip,
 .page-section,
 .site-footer {
   width: min(1120px, calc(100% - 32px));
@@ -117,6 +115,84 @@ a {
   padding: 72px 0 48px;
 }
 
+.proofroom-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.55fr);
+  gap: 40px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 48px 0 32px;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.identity-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.identity-lockup img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+}
+
+.identity-lockup .eyebrow {
+  margin: 0;
+}
+
+.proof-console {
+  display: grid;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 20px;
+}
+
+.console-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 800;
+}
+
+.console-heading a {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.console-heading a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.console-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.console-grid div {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.console-grid strong {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.console-grid span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .eyebrow {
   margin: 0 0 16px;
   color: var(--muted);
@@ -166,74 +242,62 @@ h1 {
   color: var(--ink);
 }
 
-.mark-panel {
-  display: grid;
-  gap: 16px;
-  align-content: start;
-  justify-self: end;
-  width: min(100%, 420px);
-}
-
-.mark-card {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-  padding: 18px;
-}
-
-.mark-card img {
-  width: 100%;
-  height: clamp(260px, 28vw, 380px);
-  aspect-ratio: 1 / 1;
-  border-radius: 6px;
-  object-fit: cover;
-  object-position: center;
-}
-
-.facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.fact {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 12px;
-  background: rgba(255, 250, 241, 0.65);
-}
-
-.fact strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.fact span {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.proof-strip {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(320px, 1fr);
-  gap: 32px;
-  align-items: start;
-  padding: 24px 0 72px;
-}
-
-.section-heading h2 {
-  max-width: 620px;
-  margin: 0;
-  font-size: 2.75rem;
-  line-height: 1.05;
-  letter-spacing: 0;
-}
-
 .proof-card {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--paper);
   padding: 24px;
+}
+
+.proof-board {
+  width: min(1120px, calc(100% - 32px));
+  margin-inline: auto;
+  padding: 28px 0 72px;
+}
+
+.proof-board-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.proof-board-heading h2 {
+  margin: 0;
+  font-size: 2.45rem;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.75fr) minmax(260px, 0.75fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.proof-grid .proof-card {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.proof-snapshot ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.proof-snapshot a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.proof-snapshot a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
 }
 
 .featured-project {
@@ -512,14 +576,6 @@ h1 {
   margin-top: 44px;
 }
 
-.updates-strip {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(320px, 1fr);
-  gap: 32px;
-  align-items: start;
-  padding: 0 0 72px;
-}
-
 .latest-update,
 .updates-list {
   border-top: 1px solid var(--line);
@@ -723,8 +779,8 @@ h1 {
   }
 
   .hero,
-  .proof-strip,
-  .updates-strip,
+  .proofroom-hero,
+  .proof-grid,
   .index-toolbar,
   .project-grid,
   .project-detail-hero,
@@ -743,8 +799,22 @@ h1 {
     padding: 36px 0 32px;
   }
 
-  .mark-panel {
+  .proofroom-hero {
+    align-items: start;
+    padding: 28px 0 24px;
+  }
+
+  .proof-console {
     display: none;
+  }
+
+  .proof-board {
+    padding-top: 22px;
+  }
+
+  .proof-board-heading {
+    align-items: start;
+    flex-direction: column;
   }
 
   h1 {
@@ -753,9 +823,5 @@ h1 {
 
   .lede {
     font-size: 1.15rem;
-  }
-
-  .section-heading h2 {
-    font-size: 2rem;
   }
 }
