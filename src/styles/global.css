@@ -1090,6 +1090,135 @@ h1 {
   line-height: 1.5;
 }
 
+.proof-index-page,
+.proof-detail-page {
+  display: grid;
+  gap: 52px;
+}
+
+.proof-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.proof-index-card {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 22px;
+}
+
+.proof-index-card h2 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: 0;
+}
+
+.proof-index-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.proof-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.38fr);
+  gap: 44px;
+  align-items: start;
+}
+
+.proof-facts {
+  display: grid;
+  border-block: 1px solid var(--line);
+}
+
+.proof-facts div {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.proof-facts div:last-child {
+  border-bottom: 0;
+}
+
+.proof-facts a,
+.proof-facts time,
+.proof-facts span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.proof-facts a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.proof-facts a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.proof-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 32px;
+}
+
+.proof-panel {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.proof-panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.proof-panel p,
+.proof-panel li {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.proof-panel p,
+.proof-panel ul {
+  margin: 0;
+}
+
+.proof-panel ul {
+  padding-left: 20px;
+}
+
+.related-proofs ul {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.related-proofs li {
+  display: grid;
+  gap: 6px;
+}
+
+.related-proofs a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.related-proofs span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .uses-page {
   display: grid;
   gap: 44px;
@@ -1343,6 +1472,9 @@ h1 {
   .badge-grid,
   .badge-guidance,
   .gallery-grid,
+  .proof-list,
+  .proof-detail-hero,
+  .proof-detail-grid,
   .uses-grid,
   .roadmap-grid,
   .roadmap-timeline,

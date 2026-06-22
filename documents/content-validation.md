@@ -27,8 +27,17 @@ Update entries must keep:
 - Valid link labels and URL/root-relative hrefs.
 - Published updates must not use future dates.
 
+Proof entries must keep:
+
+- Kebab-case, unique slugs.
+- Approved statuses: `draft`, `published`.
+- Valid `YYYY-MM-DD` dates.
+- Existing project slugs in `project`.
+- Required problem, build, proof, lesson, next step, summary, and caveat copy.
+- Valid link labels and URL/root-relative hrefs.
+
 ## Gate
 
-`npm run build` runs `npm run smoke:content` and
-`npm run smoke:update-workflow` after `astro check` and before `astro build`, so
+`npm run build` runs `npm run smoke:content`, `npm run smoke:update-workflow`,
+and `npm run smoke:proofs` after `astro check` and before `astro build`, so
 content problems fail before the static artifact is produced.

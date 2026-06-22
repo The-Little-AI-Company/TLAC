@@ -19,6 +19,7 @@ export async function GET() {
     `- Home: ${canonicalUrl("/")}`,
     `- Projects: ${canonicalUrl("/projects/")}`,
     `- Project gallery: ${canonicalUrl("/projects/gallery/")}`,
+    `- Proof: ${canonicalUrl("/proof/")}`,
     `- Learn: ${canonicalUrl("/learn/")}`,
     `- Project badge: ${canonicalUrl("/project-badge/")}`,
     `- Updates: ${canonicalUrl("/updates/")}`,

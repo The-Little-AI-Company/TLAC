@@ -5,6 +5,7 @@ const staticRoutes = [
   "/",
   "/projects/",
   "/projects/gallery/",
+  "/proof/",
   "/learn/",
   "/project-badge/",
   "/about/",

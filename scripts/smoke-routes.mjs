@@ -55,6 +55,16 @@ const routeChecks = [
     ],
   },
   {
+    label: "proof index",
+    file: "proof/index.html",
+    includes: ["Practical proof, kept honest.", "Vivary keeps the TLAC build coherent"],
+  },
+  {
+    label: "proof detail",
+    file: "proof/vivary-project-memory/index.html",
+    includes: ["Problem", "Build", "Proof", "Honest caveats"],
+  },
+  {
     label: "uses",
     file: "uses/index.html",
     includes: ["The TLAC working kit", "Project memory", "Verification"],
