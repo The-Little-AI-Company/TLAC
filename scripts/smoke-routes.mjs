@@ -1,0 +1,67 @@
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const distRoot = fileURLToPath(new URL("../dist/", import.meta.url));
+
+const routeChecks = [
+  {
+    label: "home",
+    file: "index.html",
+    includes: ["Useful things, made by hand and machine.", 'href="/projects/"', 'href="/updates/"'],
+  },
+  {
+    label: "projects index",
+    file: "projects/index.html",
+    includes: ["Useful AI work, easy to scan.", 'href="/projects/obscura/"'],
+  },
+  {
+    label: "project detail",
+    file: "projects/obscura/index.html",
+    includes: ["Obscura", "Project Links", "SoftwareApplication"],
+  },
+  {
+    label: "about",
+    file: "about/index.html",
+    includes: ["A small studio for useful AI work.", "Visit jeffkazzee.dev"],
+  },
+  {
+    label: "updates",
+    file: "updates/index.html",
+    includes: ["A short log of useful-AI progress.", "TLAC site takes its first shape"],
+  },
+  {
+    label: "404",
+    file: "404.html",
+    includes: ["Page not found.", 'href="/projects/"', 'href="/updates/"', 'href="/about/"'],
+  },
+];
+
+const failures = [];
+
+for (const check of routeChecks) {
+  const filePath = join(distRoot, check.file);
+
+  if (!existsSync(filePath)) {
+    failures.push(`${check.label}: missing ${check.file}`);
+    continue;
+  }
+
+  const html = readFileSync(filePath, "utf8");
+
+  for (const expectedText of check.includes) {
+    if (!html.includes(expectedText)) {
+      failures.push(`${check.label}: missing ${JSON.stringify(expectedText)} in ${check.file}`);
+    }
+  }
+}
+
+if (failures.length > 0) {
+  console.error("Route smoke failed:");
+  for (const failure of failures) {
+    console.error(`- ${failure}`);
+  }
+  process.exit(1);
+}
+
+console.log(`Route smoke passed: ${routeChecks.length} core routes`);

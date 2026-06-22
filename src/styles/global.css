@@ -683,6 +683,15 @@ h1 {
   justify-self: start;
 }
 
+.not-found-page {
+  min-height: 58vh;
+  align-content: center;
+}
+
+.not-found-page .lede {
+  max-width: 620px;
+}
+
 .site-footer {
   display: flex;
   flex-wrap: wrap;

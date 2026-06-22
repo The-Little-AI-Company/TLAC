@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found | The Little AI Company"
+  description="The requested page does not exist on The Little AI Company site."
+  canonicalPath="/404/"
+>
+  <section class="page-section not-found-page" aria-labelledby="not-found-title">
+    <p class="eyebrow">404</p>
+    <h1 id="not-found-title">Page not found.</h1>
+    <p class="lede">
+      That route does not have a TLAC page yet. The core site surfaces are still
+      close by.
+    </p>
+    <div class="actions" aria-label="Helpful routes">
+      <a class="button" href="/">Go home</a>
+      <a class="button secondary" href="/projects/">Projects</a>
+      <a class="button secondary" href="/updates/">Updates</a>
+      <a class="button secondary" href="/about/">About</a>
+    </div>
+  </section>
+</BaseLayout>

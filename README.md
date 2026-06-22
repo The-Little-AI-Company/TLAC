@@ -29,6 +29,7 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - `/about/` defines the studio lane and points broader personal work to Jeff's site.
 - `/updates/` renders the first structured update entry as a compact trajectory log.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, canonical links, and JSON-LD entity data are in place.
+- `/404.html` renders a branded recovery page, and `npm run build` includes core route smoke checks.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
 - Active development branch is `dev`.
@@ -46,9 +47,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the crawler surfaces, the next
+Work the GitHub backlog one issue at a time. After route smoke coverage, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/11
+- https://github.com/The-Little-AI-Company/TLAC/issues/12
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.
