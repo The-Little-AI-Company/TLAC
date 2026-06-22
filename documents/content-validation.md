@@ -11,7 +11,7 @@ TLAC content should fail early when source entries drift out of the public site 
 Project entries must keep:
 
 - Kebab-case, unique slugs.
-- Approved statuses: `planned`, `in-progress`, `live`, `paused`.
+- Approved statuses: `planned`, `in-progress`, `live`, `paused`, `research`.
 - Required plain-text fields for title, category, purpose, why, and leveled-up copy.
 - Valid link labels and URL/root-relative hrefs.
 - Existing image files with non-empty alt text.

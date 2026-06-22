@@ -29,7 +29,8 @@ useful AI tools, small apps, and AI-literacy projects with a clear public home.
 - Shared layout, header, navigation data, skip link, and footer shell are in place.
 - `/projects/` renders the seeded project set with status grouping and category summaries.
 - `/projects/[slug]/` renders reusable project detail pages from structured content.
-- `/about/` defines the studio lane and points broader personal work to Jeff's site.
+- `/roadmap/` renders a public project status and trajectory view.
+- `/about/` defines the studio lane and keeps the TLAC site focused on useful AI work.
 - `/updates/` renders the first structured update entry as a compact trajectory log.
 - `/uses/` renders a restrained TLAC working-kit page without changing primary navigation.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, canonical links, and JSON-LD entity data are in place.
@@ -57,9 +58,9 @@ npm run dev
 
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. After the optional uses page, the next
+Work the GitHub backlog one issue at a time. After the roadmap/status timeline, the next
 implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/19
+- https://github.com/The-Little-AI-Company/TLAC/issues/20
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.

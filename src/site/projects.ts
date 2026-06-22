@@ -3,6 +3,7 @@ export const statusLabels = {
   "in-progress": "In progress",
   live: "Live",
   paused: "Paused",
+  research: "Research",
 } as const;
 
-export const statusOrder = ["live", "in-progress", "planned", "paused"] as const;
+export const statusOrder = ["live", "in-progress", "planned", "research", "paused"] as const;

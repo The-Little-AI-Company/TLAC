@@ -31,6 +31,11 @@ const routeChecks = [
     includes: ["A short log of useful-AI progress.", "TLAC site takes its first shape"],
   },
   {
+    label: "roadmap",
+    file: "roadmap/index.html",
+    includes: ["TLAC roadmap", "Active", "Research"],
+  },
+  {
     label: "uses",
     file: "uses/index.html",
     includes: ["The TLAC working kit", "Project memory", "Verification"],

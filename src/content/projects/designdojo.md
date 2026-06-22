@@ -1,7 +1,7 @@
 ---
 title: DesignDojo
 year: 2026
-status: planned
+status: research
 category: AI learning surface
 purpose: A practical learning surface for building taste, iteration habits, and design judgment with AI assistance.
 why: Better AI-assisted design comes from reps, critique, and comparison, not prompt tricks alone.

@@ -806,6 +806,133 @@ h1 {
   line-height: 1.55;
 }
 
+.roadmap-page {
+  display: grid;
+  gap: 48px;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 32px;
+}
+
+.roadmap-lane {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.lane-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.lane-heading h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.lane-heading span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.roadmap-lane p,
+.roadmap-lane li,
+.roadmap-timeline p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.roadmap-lane p {
+  margin: 0;
+}
+
+.roadmap-lane ul {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roadmap-lane li {
+  display: grid;
+  gap: 6px;
+}
+
+.roadmap-lane a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.roadmap-lane a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.empty-state {
+  margin-top: 20px !important;
+}
+
+.roadmap-timeline {
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+
+.section-kicker h2 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+.roadmap-timeline ol {
+  display: grid;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roadmap-timeline li {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.32fr) minmax(0, 1fr);
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.roadmap-timeline time {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.roadmap-timeline h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  letter-spacing: 0;
+}
+
+.roadmap-timeline p {
+  margin: 0;
+}
+
 .not-found-page {
   min-height: 58vh;
   align-content: center;
@@ -870,6 +997,9 @@ h1 {
   .about-hero,
   .about-grid,
   .uses-grid,
+  .roadmap-grid,
+  .roadmap-timeline,
+  .roadmap-timeline li,
   .update-entry {
     grid-template-columns: 1fr;
   }

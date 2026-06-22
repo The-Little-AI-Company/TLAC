@@ -1,7 +1,7 @@
 ---
 title: The Token Repository
 year: 2026
-status: planned
+status: research
 category: AI reference tool
 purpose: A plain-spoken reference surface for understanding model tokens, context limits, and practical AI tradeoffs.
 why: Tokens and context windows shape real AI work, but most explanations are too abstract.
