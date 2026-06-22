@@ -20,17 +20,28 @@ personal portfolio.
 ## Current state
 
 - Starter docs and brand assets are in place.
+- Astro static site scaffolding is in place with npm scripts for local development,
+  checks, and builds.
 - Vivary `0.2.3` coding scaffold is installed for project memory and verification.
 - GitHub roadmap milestones and issues are published.
-- No site app exists yet.
 - Active development branch is `dev`.
 - Finished-product branch is `prod`.
 - Remote target: `The-Little-AI-Company/TLAC`.
 
+## Local development
+
+```bash
+npm install
+npm run check
+npm run build
+npm run dev
+```
+
 ## Next implementation slice
 
-Work the GitHub backlog one issue at a time. The first implementation issue is:
+Work the GitHub backlog one issue at a time. After the static-site foundation, the next
+implementation issue is:
 
-- https://github.com/The-Little-AI-Company/TLAC/issues/2
+- https://github.com/The-Little-AI-Company/TLAC/issues/3
 
 Every issue follows the same loop: plan, code, test, review, fix, merge.

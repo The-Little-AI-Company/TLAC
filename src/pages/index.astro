@@ -1,0 +1,111 @@
+---
+import "../styles/global.css";
+import logoConcept from "../../assets/brand/generated/2026-06-21/logo-concepts/tlac-logo-concept-05-folded-spark.png";
+
+const projects = [
+  {
+    title: "Obscura",
+    text: "Creative AI studio work that belongs under the TLAC label when it is useful, legible, and public-facing.",
+  },
+  {
+    title: "Vivary",
+    text: "Agent-native project memory used here as the project management layer, not the product being designed.",
+  },
+  {
+    title: "Learning Surfaces",
+    text: "Plain-spoken tools and guides for people learning to use AI well without getting sold a fantasy.",
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="The Little AI Company is a one-person AI studio by Jeff Kazzee that makes useful AI tools, apps, and learning surfaces."
+    />
+    <title>The Little AI Company</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header" aria-label="Site header">
+        <a class="brand" href="/" aria-label="The Little AI Company home">
+          <img src={logoConcept.src} width="88" height="88" alt="" loading="eager" />
+          <span>The Little AI Company</span>
+        </a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="#projects">Projects</a>
+          <a href="#about">About</a>
+        </nav>
+      </header>
+
+      <main>
+        <section id="about" class="hero" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">A one-person AI studio</p>
+            <h1 id="page-title">Useful things, made by hand and machine.</h1>
+            <p class="lede">
+              The Little AI Company is a selective label for practical AI tools,
+              apps, and learning surfaces. It is not the full Jeff Kazzee portfolio;
+              it is the lane where useful AI work gets a clear public home.
+            </p>
+            <div class="actions" aria-label="Primary actions">
+              <a class="button" href="#projects">See the first projects</a>
+              <a class="button secondary" href="#about">Read the boundary</a>
+            </div>
+          </div>
+
+          <aside class="mark-panel" aria-label="Brand and project facts">
+            <div class="mark-card">
+              <img
+                src={logoConcept.src}
+                width={logoConcept.width}
+                height={logoConcept.height}
+                alt="Abstract TLAC mark concept made from blue, amber, green, and red folded panels."
+                loading="eager"
+              />
+            </div>
+            <div class="facts">
+              <div class="fact">
+                <strong>Lane</strong>
+                <span>Useful AI work</span>
+              </div>
+              <div class="fact">
+                <strong>Shape</strong>
+                <span>Static, fast, plain</span>
+              </div>
+              <div class="fact">
+                <strong>Proof</strong>
+                <span>Projects and updates</span>
+              </div>
+              <div class="fact">
+                <strong>Boundary</strong>
+                <span>Not a resume site</span>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section id="projects" class="proof-strip" aria-label="Initial project lanes">
+          {
+            projects.map((project) => (
+              <article class="proof-card">
+                <b>{project.title}</b>
+                <p>{project.text}</p>
+                <div class="swatches" aria-hidden="true">
+                  <span class="blue"></span>
+                  <span class="amber"></span>
+                  <span class="green"></span>
+                  <span class="red"></span>
+                </div>
+              </article>
+            ))
+          }
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
