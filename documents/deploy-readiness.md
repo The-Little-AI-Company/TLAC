@@ -42,6 +42,8 @@ surfaces:
 - at least one project detail page
 - `/learn/`
 - `/project-badge/`
+- `/proof/`
+- at least one proof detail page
 - `/about/`
 - `/updates/`
 - `/roadmap/`

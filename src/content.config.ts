@@ -4,6 +4,7 @@ import { z } from "astro/zod";
 
 const projectStatus = z.enum(["planned", "in-progress", "live", "paused", "research"]);
 const updateStatus = z.enum(["draft", "published"]);
+const proofStatus = z.enum(["draft", "published"]);
 const projectPalette = z.enum(["blue", "amber", "green", "red"]);
 const linkHref = z.string().min(1).refine(
   (href) => {
@@ -67,4 +68,29 @@ const updates = defineCollection({
   }),
 });
 
-export const collections = { projects, updates };
+const proofs = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/proofs" }),
+  schema: z.object({
+    title: z.string().min(1),
+    status: proofStatus,
+    date: z.coerce.date(),
+    project: z.string().min(1),
+    summary: z.string().min(1),
+    problem: z.string().min(1),
+    build: z.string().min(1),
+    proof: z.string().min(1),
+    lesson: z.string().min(1),
+    nextStep: z.string().min(1),
+    caveats: z.array(z.string().min(1)).min(1),
+    links: z
+      .array(
+        z.object({
+          label: z.string().min(1),
+          href: linkHref,
+        }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = { projects, updates, proofs };

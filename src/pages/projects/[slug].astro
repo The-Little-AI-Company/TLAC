@@ -18,6 +18,9 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const projectData = project.data;
+const publishedProofs = (await getCollection("proofs")).filter(
+  (proof) => proof.data.status === "published" && proof.data.project === project.id,
+);
 const imageSrc = projectImages[projectData.image.src as keyof typeof projectImages];
 
 if (!imageSrc) {
@@ -131,6 +134,22 @@ const projectJsonLd = {
         )
       }
     </div>
+
+    {
+      publishedProofs.length > 0 && (
+        <section class="detail-section related-proofs" aria-labelledby="related-proofs-title">
+          <h2 id="related-proofs-title">Related Proof</h2>
+          <ul>
+            {publishedProofs.map((proof) => (
+              <li>
+                <a href={`/proof/${proof.id}/`}>{proof.data.title}</a>
+                <span>{proof.data.summary}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <section class="detail-section project-body" aria-label={`${projectData.title} notes`}>
       <Content />

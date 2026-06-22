@@ -17,6 +17,8 @@ const requiredDistFiles = [
   path.join("projects", "obscura", "index.html"),
   path.join("learn", "index.html"),
   path.join("project-badge", "index.html"),
+  path.join("proof", "index.html"),
+  path.join("proof", "vivary-project-memory", "index.html"),
   path.join("about", "index.html"),
   path.join("updates", "index.html"),
   path.join("roadmap", "index.html"),
