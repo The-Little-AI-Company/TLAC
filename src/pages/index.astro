@@ -1,21 +1,7 @@
 ---
 import "../styles/global.css";
 import logoConcept from "../../assets/brand/generated/2026-06-21/logo-concepts/tlac-logo-concept-05-folded-spark.png";
-
-const projects = [
-  {
-    title: "Obscura",
-    text: "Creative AI studio work that belongs under the TLAC label when it is useful, legible, and public-facing.",
-  },
-  {
-    title: "Vivary",
-    text: "Agent-native project memory used here as the project management layer, not the product being designed.",
-  },
-  {
-    title: "Learning Surfaces",
-    text: "Plain-spoken tools and guides for people learning to use AI well without getting sold a fantasy.",
-  },
-];
+import { featuredProject } from "../data/projects";
 ---
 
 <!doctype html>
@@ -45,12 +31,12 @@ const projects = [
       <main>
         <section id="about" class="hero" aria-labelledby="page-title">
           <div>
-            <p class="eyebrow">A one-person AI studio</p>
+            <p class="eyebrow">The Little AI Company is a one-person AI studio by Jeff Kazzee.</p>
             <h1 id="page-title">Useful things, made by hand and machine.</h1>
             <p class="lede">
-              The Little AI Company is a selective label for practical AI tools,
-              apps, and learning surfaces. It is not the full Jeff Kazzee portfolio;
-              it is the lane where useful AI work gets a clear public home.
+              It is a selective label for practical AI tools, apps, and learning
+              surfaces. It is not the full Jeff Kazzee portfolio; it is the lane
+              where useful AI work gets a clear public home.
             </p>
             <div class="actions" aria-label="Primary actions">
               <a class="button" href="#projects">See the first projects</a>
@@ -89,21 +75,35 @@ const projects = [
           </aside>
         </section>
 
-        <section id="projects" class="proof-strip" aria-label="Initial project lanes">
-          {
-            projects.map((project) => (
-              <article class="proof-card">
-                <b>{project.title}</b>
-                <p>{project.text}</p>
-                <div class="swatches" aria-hidden="true">
-                  <span class="blue"></span>
-                  <span class="amber"></span>
-                  <span class="green"></span>
-                  <span class="red"></span>
-                </div>
-              </article>
-            ))
-          }
+        <section id="projects" class="proof-strip" aria-labelledby="projects-title">
+          <div class="section-heading">
+            <p class="eyebrow">First proof point</p>
+            <h2 id="projects-title">One useful project with a clear lane.</h2>
+          </div>
+
+          <article class="proof-card featured-project">
+            <div class="project-meta">
+              <span>{featuredProject.category}</span>
+              <span>{featuredProject.status}</span>
+            </div>
+            <h3>{featuredProject.title}</h3>
+            <p>{featuredProject.summary}</p>
+            <p>{featuredProject.proof}</p>
+            <div class="project-footer">
+              <div class="swatches" aria-hidden="true">
+                {
+                  featuredProject.palette.map((color) => (
+                    <span class={color}></span>
+                  ))
+                }
+              </div>
+              {
+                featuredProject.links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))
+              }
+            </div>
+          </article>
         </section>
       </main>
     </div>
