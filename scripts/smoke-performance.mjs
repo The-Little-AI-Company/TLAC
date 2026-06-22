@@ -74,10 +74,11 @@ if (totalImageBytes > maxTotalImageBytes) {
 const projectsRoot = path.join(distRoot, "projects");
 const projectDetailPages = fs.existsSync(projectsRoot)
   ? fs.readdirSync(projectsRoot, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
+      .filter((entry) => entry.isDirectory() && entry.name !== "gallery")
       .map((entry) => path.join(projectsRoot, entry.name, "index.html"))
       .filter((filePath) => fs.existsSync(filePath))
   : [];
+const projectGalleryPage = path.join(projectsRoot, "gallery", "index.html");
 
 for (const filePath of projectDetailPages) {
   const html = fs.readFileSync(filePath, "utf8");
@@ -94,6 +95,18 @@ for (const filePath of projectDetailPages) {
 
 if (projectDetailPages.length === 0) {
   failures.push("dist/projects: no project detail pages found for image budget check");
+}
+
+if (fs.existsSync(projectGalleryPage)) {
+  const html = fs.readFileSync(projectGalleryPage, "utf8");
+
+  if (!/<figure class="gallery-media">[\s\S]*?<img\b[^>]*\bsrcset=/i.test(html)) {
+    failures.push("dist/projects/gallery/index.html: gallery image is missing responsive srcset");
+  }
+
+  if (!/<figure class="gallery-media">[\s\S]*?<img\b[^>]*\bsizes=/i.test(html)) {
+    failures.push("dist/projects/gallery/index.html: gallery image is missing sizes");
+  }
 }
 
 if (failures.length > 0) {

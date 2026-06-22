@@ -38,6 +38,7 @@ surfaces:
 
 - `/`
 - `/projects/`
+- `/projects/gallery/`
 - at least one project detail page
 - `/learn/`
 - `/project-badge/`

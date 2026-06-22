@@ -13,6 +13,7 @@ const requiredDistFiles = [
   "sitemap.xml",
   "llms.txt",
   path.join("projects", "index.html"),
+  path.join("projects", "gallery", "index.html"),
   path.join("projects", "obscura", "index.html"),
   path.join("learn", "index.html"),
   path.join("project-badge", "index.html"),

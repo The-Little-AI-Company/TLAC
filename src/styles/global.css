@@ -739,6 +739,13 @@ h1 {
   margin-bottom: 0;
 }
 
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+}
+
 .about-callout {
   display: grid;
   gap: 18px;
@@ -962,6 +969,125 @@ h1 {
   gap: 4px;
   border-top: 1px solid var(--line);
   padding-top: 14px;
+}
+
+.project-gallery-page {
+  display: grid;
+  gap: 52px;
+}
+
+.comparison-section {
+  display: grid;
+  gap: 20px;
+}
+
+.comparison-section h2,
+.gallery-section h2 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+.comparison-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table th {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.comparison-table td,
+.comparison-table span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.comparison-table tr:last-child th,
+.comparison-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.comparison-table a,
+.table-links a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.comparison-table a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.table-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery-section {
+  display: grid;
+  gap: 24px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.gallery-card {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 18px;
+}
+
+.gallery-media {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--cream);
+}
+
+.gallery-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.gallery-card h3 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: 0;
+}
+
+.gallery-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .uses-page {
@@ -1216,6 +1342,7 @@ h1 {
   .learn-principles,
   .badge-grid,
   .badge-guidance,
+  .gallery-grid,
   .uses-grid,
   .roadmap-grid,
   .roadmap-timeline,
@@ -1248,6 +1375,56 @@ h1 {
   .proof-board-heading {
     align-items: start;
     flex-direction: column;
+  }
+
+  .comparison-scroll {
+    overflow-x: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .comparison-table,
+  .comparison-table tbody,
+  .comparison-table tr,
+  .comparison-table th,
+  .comparison-table td {
+    display: grid;
+  }
+
+  .comparison-table {
+    min-width: 0;
+    gap: 12px;
+  }
+
+  .comparison-table thead {
+    display: none;
+  }
+
+  .comparison-table tbody {
+    gap: 12px;
+  }
+
+  .comparison-table tr {
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    padding: 14px;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    grid-template-columns: minmax(86px, 0.35fr) minmax(0, 1fr);
+    gap: 12px;
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .comparison-table th::before,
+  .comparison-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-weight: 700;
   }
 
   h1 {
