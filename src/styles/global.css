@@ -511,6 +511,91 @@ h1 {
   margin-top: 44px;
 }
 
+.about-page {
+  display: grid;
+  gap: 52px;
+}
+
+.about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: 44px;
+  align-items: start;
+}
+
+.about-facts {
+  display: grid;
+  gap: 0;
+  border-block: 1px solid var(--line);
+}
+
+.about-facts div {
+  display: grid;
+  gap: 4px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.about-facts div:last-child {
+  border-bottom: 0;
+}
+
+.about-facts strong {
+  font-size: 0.95rem;
+}
+
+.about-facts span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 32px;
+}
+
+.about-section {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.about-section h2 {
+  margin: 0 0 14px;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.about-section p,
+.about-section li {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.about-section p,
+.about-section ul {
+  margin: 0;
+}
+
+.about-section ul {
+  padding-left: 20px;
+}
+
+.compact-link {
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+
+.about-callout {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.about-callout .button {
+  justify-self: start;
+}
+
 .site-footer {
   display: flex;
   flex-wrap: wrap;
@@ -546,7 +631,9 @@ h1 {
   .index-toolbar,
   .project-grid,
   .project-detail-hero,
-  .detail-grid {
+  .detail-grid,
+  .about-hero,
+  .about-grid {
     grid-template-columns: 1fr;
   }
 
