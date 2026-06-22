@@ -7,9 +7,9 @@ Created: 2026-06-21
 ## Problem Statement
 
 Jeff has multiple AI-related projects and a growing practical AI-builder lane, but the public
-identity is split across personal sites, project sites, Zo surfaces, YouTube planning, and
-local workspace notes. A visitor, hiring manager, collaborator, or AI answer engine should be
-able to resolve one clear entity:
+identity is split across project sites, Zo surfaces, YouTube planning, and local workspace
+notes. A visitor, hiring manager, collaborator, or AI answer engine should be able to resolve
+one clear entity:
 
 **The Little AI Company is a one-person AI studio by Jeff Kazzee that makes useful AI tools,
 apps, and learning surfaces.**
@@ -42,8 +42,8 @@ art is text-free; exact logos and wordmarks are SVG.
    that I can try AI without feeling sold to.
 5. As a developer, I want to find tools like Vivary and Obscura, so that I can inspect the live
    product, docs, repo, or package.
-6. As Jeff, I want to separate TLAC from `jeffkazzee.dev`, so that the company label stays
-   curated while the personal site holds the full body of work.
+6. As Jeff, I want TLAC to stay curated, so that the company label remains focused on useful
+   AI tools, small apps, and learning surfaces.
 7. As Jeff, I want each project to carry a short "a Little AI Company project" identity, so
    that every project strengthens the parent label.
 8. As Jeff, I want to add a new project by editing structured content, so that the site can
@@ -62,7 +62,7 @@ art is text-free; exact logos and wordmarks are SVG.
   plus Cookbook.
 - Site map: home, projects index, project detail pages, about, updates, and optional uses.
 - Home page job: define the label, feature the strongest projects, show the folded-spark/Bit
-  identity, include a latest-updates strip, and link out to Jeff's personal site.
+  identity, include a latest-updates strip, and route visitors into current TLAC surfaces.
 - Projects are structured content with title, year, status, one-line purpose, category, links,
   screenshot or art, and a short "what leveled up here" line.
 - Each project detail page gives the plain definition, why it exists, current status,
@@ -98,7 +98,7 @@ art is text-free; exact logos and wordmarks are SVG.
 
 ## Out of Scope
 
-- Building `jeffkazzee.dev` or merging Jeff's personal site into TLAC.
+- Building or merging a separate all-purpose personal website into TLAC.
 - Publishing, sending, scheduling, or announcing anything externally.
 - Moving existing product repos into the GitHub org.
 - Creating the full AI-literacy guide library in v0.
