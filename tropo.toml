@@ -13,6 +13,7 @@ exclude = [
   "SOUL.md",
   "STRATO.md",
   "STATE.md",
+  "src/content",
   "USER.md",
   "MEMORY.md",
   "bug-risk-playbook.md",
