@@ -1,7 +1,16 @@
 import { getCollection } from "astro:content";
 import { canonicalUrl } from "../site/metadata";
 
-const staticRoutes = ["/", "/projects/", "/about/", "/updates/", "/llms.txt"];
+const staticRoutes = [
+  "/",
+  "/projects/",
+  "/learn/",
+  "/about/",
+  "/updates/",
+  "/roadmap/",
+  "/uses/",
+  "/llms.txt",
+];
 
 function escapeXml(value: string) {
   return value
