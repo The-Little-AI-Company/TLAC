@@ -1,4 +1,5 @@
 ---
+import logoMarkUrl from "../../assets/brand/svg/tlac-folded-spark-mark.svg?url";
 import "../styles/global.css";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -39,6 +40,7 @@ const structuredData = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="canonical" href={pageUrl} />
+    <link rel="icon" type="image/svg+xml" href={logoMarkUrl} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <title>{title}</title>
   </head>

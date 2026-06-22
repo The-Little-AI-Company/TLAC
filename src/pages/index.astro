@@ -1,5 +1,5 @@
 ---
-import logoConcept from "../../assets/brand/generated/2026-06-21/logo-concepts/tlac-logo-concept-05-folded-spark.png";
+import logoMarkUrl from "../../assets/brand/svg/tlac-folded-spark-mark.svg?url";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { statusLabels } from "../site/projects";
@@ -42,10 +42,10 @@ const featuredProject = featuredEntry.data;
     <aside class="mark-panel" aria-label="Brand and project facts">
       <div class="mark-card">
         <img
-          src={logoConcept.src}
-          width={logoConcept.width}
-          height={logoConcept.height}
-          alt="Abstract TLAC mark concept made from blue, amber, green, and red folded panels."
+          src={logoMarkUrl}
+          width="128"
+          height="128"
+          alt="Abstract TLAC folded-spark mark made from blue, amber, green, and red folded panels."
           loading="eager"
         />
       </div>
