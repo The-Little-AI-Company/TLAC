@@ -13,6 +13,7 @@ const projects = defineCollection({
     status: projectStatus,
     category: z.string().min(1),
     purpose: z.string().min(1),
+    why: z.string().min(1),
     links: z
       .array(
         z.object({
@@ -26,6 +27,7 @@ const projects = defineCollection({
       alt: z.string().min(1),
     }),
     leveledUp: z.string().min(1),
+    caveats: z.array(z.string().min(1)).default([]),
     featured: z.boolean().default(false),
     palette: z.array(projectPalette).min(1),
   }),
