@@ -55,7 +55,6 @@ const cards = [
       <small class="hint">Free: a prompt template + the “is AI wrong?” checklist. No spam.</small>
     </div>
     <div class="heroart">
-      <div class="blob" aria-hidden="true"></div>
       <img
         src="/mascot/pose-01.png"
         alt="The Little AI Company robot mascot waving hello"
@@ -110,17 +109,10 @@ const cards = [
     cursor: pointer;
   }
   .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
-  .heroart { position: relative; display: grid; place-items: center; }
-  .heroart .blob {
-    position: absolute;
-    width: 330px; height: 330px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 40%, #E8F7F3, var(--paper) 70%);
-  }
+  .heroart { display: grid; place-items: center; }
   .heroart img {
-    position: relative;
     width: 330px; height: auto;
-    filter: drop-shadow(0 18px 30px rgba(33, 29, 23, 0.12));
+    filter: drop-shadow(0 10px 18px rgba(33, 29, 23, 0.10));
   }
   .make { padding: 60px 0 20px; border-top: 1px solid var(--line); margin-top: 34px; }
   .make h2 { font-size: 32px; font-weight: 600; }
@@ -141,7 +133,7 @@ const cards = [
   @media (max-width: 760px) {
     .hero { grid-template-columns: 1fr; }
     .heroart { order: -1; }
-    .heroart img, .heroart .blob { width: 230px; }
+    .heroart img { width: 230px; }
     .grid { grid-template-columns: 1fr; }
   }
 </style>
