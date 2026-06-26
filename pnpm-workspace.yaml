@@ -1,0 +1,5 @@
+# pnpm 11 reads build-script approvals here. Only these known, audited
+# Astro deps may run install/build scripts (esbuild = bundler, sharp = images).
+allowBuilds:
+  esbuild: true
+  sharp: true

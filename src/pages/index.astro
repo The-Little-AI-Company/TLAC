@@ -1,140 +1,17 @@
 ---
-import logoMarkUrl from "../../assets/brand/svg/tlac-folded-spark-mark.svg?url";
-import { getCollection } from "astro:content";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { statusLabels } from "../site/projects";
 
-const projects = await getCollection("projects");
-const updates = (await getCollection("updates")).filter(
-  (update) => update.data.status === "published",
-);
-const featuredEntry = projects.find((project) => project.data.featured) ?? projects[0];
-const latestUpdate = [...updates].sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-)[0];
-const dateFormatter = new Intl.DateTimeFormat("en", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
-if (!featuredEntry) {
-  throw new Error("Expected at least one project entry.");
-}
-
-const featuredProject = featuredEntry.data;
-const featuredProjectPath = `/projects/${featuredEntry.id}/`;
-const inProgressCount = projects.filter(
-  (project) => project.data.status === "in-progress",
-).length;
-const plannedCount = projects.filter((project) => project.data.status === "planned").length;
 ---
 
-<BaseLayout>
-  <section id="about" class="hero proofroom-hero" aria-labelledby="page-title">
-    <div class="hero-copy">
-      <div class="identity-lockup">
-        <img
-          src={logoMarkUrl}
-          width="96"
-          height="96"
-          alt=""
-          loading="eager"
-        />
-        <p class="eyebrow">Proof of useful AI work</p>
-      </div>
-      <h1 id="page-title">The Little AI Company</h1>
-      <p class="lede">
-        A one-person AI studio building practical tools, small apps, and learning
-        surfaces for people who want clearer ways to work with AI.
-      </p>
-      <div class="actions" aria-label="Primary actions">
-        <a class="button" href="/projects/">View proof board</a>
-        <a class="button secondary" href="/about/">Meet the studio</a>
-      </div>
-    </div>
-
-    <aside class="proof-console" aria-label="Studio proof summary">
-      <div class="console-heading">
-        <span>Studio snapshot</span>
-        <a href="/updates/">Latest</a>
-      </div>
-      <div class="console-grid">
-        <div>
-          <strong>{projects.length}</strong>
-          <span>Projects tracked</span>
-        </div>
-        <div>
-          <strong>{inProgressCount}</strong>
-          <span>In progress</span>
-        </div>
-        <div>
-          <strong>{plannedCount}</strong>
-          <span>Planned</span>
-        </div>
-        <div>
-          <strong>9</strong>
-          <span>Route smoke checks</span>
-        </div>
-      </div>
-    </aside>
-  </section>
-
-  <section id="projects" class="proof-board" aria-labelledby="projects-title">
-    <div class="proof-board-heading">
-      <div>
-        <p class="eyebrow">Proof board</p>
-        <h2 id="projects-title">Current work, kept easy to scan.</h2>
-      </div>
-      <a class="text-link compact-link" href="/projects/">View all projects</a>
-    </div>
-
-    <div class="proof-grid">
-      <article class="proof-card featured-project">
-        <div class="project-meta">
-          <span>{featuredProject.category}</span>
-          <span>{statusLabels[featuredProject.status]}</span>
-        </div>
-        <h3>{featuredProject.title}</h3>
-        <p>{featuredProject.purpose}</p>
-        <p>{featuredProject.leveledUp}</p>
-        <div class="project-footer">
-          <div class="swatches" aria-hidden="true">
-            {
-              featuredProject.palette.map((color) => (
-                <span class={color}></span>
-              ))
-            }
-          </div>
-          <a href={featuredProjectPath}>View project</a>
-        </div>
-      </article>
-
-      {
-        latestUpdate && (
-          <article class="proof-card latest-update">
-            <p class="eyebrow">Latest update</p>
-            <time datetime={latestUpdate.data.date.toISOString()}>
-              {dateFormatter.format(latestUpdate.data.date)}
-            </time>
-            <h3>{latestUpdate.data.title}</h3>
-            <p>{latestUpdate.data.summary}</p>
-            <a href="/updates/">Read updates</a>
-          </article>
-        )
-      }
-
-      <article class="proof-card proof-snapshot">
-        <p class="eyebrow">Studio lane</p>
-        <h3>Useful AI tools and learning surfaces.</h3>
-        <ul>
-          <li>Structured project pages</li>
-          <li>Short update log</li>
-          <li>Build-time route smoke</li>
-        </ul>
-        <a href="/learn/">Find learning surfaces</a>
-      </article>
-    </div>
-  </section>
-</BaseLayout>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1>Astro</h1>
+	</body>
+</html>

@@ -1,6 +1,5 @@
-import { defineConfig } from "astro/config";
+// @ts-check
+import { defineConfig } from 'astro/config';
 
-export default defineConfig({
-  output: "static",
-  site: "https://littleaicompany.com",
-});
+// https://astro.build/config
+export default defineConfig({});

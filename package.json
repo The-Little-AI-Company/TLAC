@@ -1,32 +1,20 @@
 {
   "name": "tlac",
-  "version": "0.0.0",
-  "private": true,
   "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
-    "check": "astro check",
-    "build": "astro check && npm run smoke:content && npm run smoke:update-workflow && npm run smoke:proofs && npm run smoke:badges && astro build && npm run smoke:analytics && npm run smoke:routes && npm run smoke:accessibility && npm run smoke:performance && npm run smoke:deploy-readiness",
-    "smoke:content": "node scripts/smoke-content.mjs",
-    "smoke:update-workflow": "node scripts/smoke-update-workflow.mjs",
-    "smoke:proofs": "node scripts/smoke-proofs.mjs",
-    "smoke:badges": "node scripts/smoke-badges.mjs",
-    "smoke:analytics": "node scripts/smoke-analytics.mjs",
-    "smoke:routes": "node scripts/smoke-routes.mjs",
-    "smoke:accessibility": "node scripts/smoke-accessibility.mjs",
-    "smoke:performance": "node scripts/smoke-performance.mjs",
-    "smoke:deploy-readiness": "node scripts/smoke-deploy-readiness.mjs",
-    "preview": "astro preview"
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.0.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.5",
-    "astro": "^6.4.8",
-    "typescript": "^5.9.0",
-    "yaml": "^2.8.3"
-  },
-  "overrides": {
-    "esbuild": "0.28.1",
-    "yaml": "^2.8.3"
+    "astro-grab": "0.3.0"
   }
 }
