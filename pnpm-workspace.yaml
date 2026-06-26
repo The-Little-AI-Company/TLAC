@@ -3,3 +3,7 @@
 allowBuilds:
   esbuild: true
   sharp: true
+
+# Force a patched yaml (GHSA-48c2-rrv3-qjmp) through @astrojs/check's chain.
+overrides:
+  yaml: '^2.8.3'

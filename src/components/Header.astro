@@ -1,0 +1,66 @@
+---
+const links = [
+  { href: '/start-here', label: 'Start Here' },
+  { href: '/guides', label: 'Guides' },
+  { href: '/services', label: 'Services' },
+  { href: '/club', label: 'The Club' },
+  { href: '/about', label: 'About' },
+];
+---
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="/">
+      <img src="/owl-logo.png" alt="The Little AI Company" width="40" height="40" />
+      <span>The Little AI Company</span>
+    </a>
+    <nav aria-label="Primary">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <a class="navcta" href="/start-here">Start Here →</a>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgba(251, 246, 236, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; gap: 16px; }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 19px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand img {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 3px;
+    object-fit: contain;
+  }
+  nav { display: flex; gap: 26px; font-size: 15px; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--ink); }
+  .navcta {
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  @media (max-width: 820px) { nav { display: none; } }
+</style>

@@ -1,0 +1,45 @@
+---
+---
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/owl-logo.png" alt="" width="30" height="30" />
+      <span>The Little AI Company</span>
+    </div>
+    <p>
+      Learn AI by making useful things · © 2026 ·
+      <a href="/start-here">Start Here</a> · <a href="/club">The Club</a> ·
+      <a href="/contact">Contact</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    padding: 30px 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .foot-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .foot-brand img {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 2px;
+    object-fit: contain;
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--ink); }
+</style>

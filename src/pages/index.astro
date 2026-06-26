@@ -1,17 +1,147 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
 
+const cards = [
+  {
+    img: '/mascot/pose-06.png',
+    title: 'Your first useful thing',
+    href: '/start-here',
+    more: 'Start the build',
+    body: 'Turn a messy real task into a finished artifact today — a build-along, not a list of ideas.',
+  },
+  {
+    img: '/mascot/pose-12.png',
+    title: 'Know when AI is wrong',
+    href: '/guides/judgment',
+    more: 'Get the checklist',
+    body: 'A plain-English red-flags checklist for spotting when AI is confidently bluffing.',
+  },
+  {
+    img: '/mascot/pose-07.png',
+    title: 'Prompts that actually work',
+    href: '/guides/prompting',
+    more: 'Use the template',
+    body: 'A fill-in-the-blank anatomy: role, context, task, format, example.',
+  },
+  {
+    img: '/mascot/pose-08.png',
+    title: 'An AI second brain',
+    href: '/guides/second-brain',
+    more: 'Build it',
+    body: 'Markdown-first notes that stick — useful in minutes, not a weekend setup project.',
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">// practical AI education</span>
+      <h1>Learn AI by making useful things.</h1>
+      <p class="lede">
+        No hype. No jargon. No computer-science degree. Bring one real task and leave
+        with something useful you made with AI — plus the judgment to know when to trust it.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="/start-here">Start Here →</a>
+        <a class="btn btn-ghost" href="#make">See what you can make</a>
+      </div>
+      <form class="capture" method="post" action="#" aria-label="Get the free Starter Kit">
+        <label class="visually-hidden" for="email">Email address</label>
+        <input id="email" type="email" name="email" placeholder="you@email.com" required />
+        <button type="submit">Get the Starter Kit</button>
+      </form>
+      <small class="hint">Free: a prompt template + the “is AI wrong?” checklist. No spam.</small>
+    </div>
+    <div class="heroart">
+      <div class="blob" aria-hidden="true"></div>
+      <img
+        src="/mascot/pose-01.png"
+        alt="The Little AI Company robot mascot waving hello"
+        width="330"
+        height="330"
+      />
+    </div>
+  </section>
+
+  <section id="make" class="make">
+    <h2>What you can make</h2>
+    <p class="sub">Four first wins — each a real artifact you’ll actually use.</p>
+    <div class="grid">
+      {cards.map((c) => <Card img={c.img} title={c.title} href={c.href} more={c.more}>{c.body}</Card>)}
+    </div>
+  </section>
+
+  <p class="trust">
+    <img src="/mascot/pose-05.png" alt="" width="46" height="46" loading="lazy" />
+    <span>Model-agnostic. Beginner-first. Built around <b>useful artifacts</b>, not tool hype.</span>
+  </p>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 30px;
+    align-items: center;
+    padding: 64px 0 40px;
+  }
+  .hero .eyebrow { display: block; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(40px, 5.6vw, 66px); font-weight: 900; max-width: 13ch; }
+  .lede { font-size: 18.5px; color: var(--muted); max-width: 52ch; margin-top: 20px; }
+  .cta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .capture { display: flex; gap: 8px; max-width: 440px; margin-top: 22px; }
+  .capture input {
+    flex: 1;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    background: var(--surface);
+  }
+  .capture button {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--teal);
+    color: #04201f;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .heroart { position: relative; display: grid; place-items: center; }
+  .heroart .blob {
+    position: absolute;
+    width: 330px; height: 330px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #E8F7F3, var(--paper) 70%);
+  }
+  .heroart img {
+    position: relative;
+    width: 330px; height: auto;
+    filter: drop-shadow(0 18px 30px rgba(33, 29, 23, 0.12));
+  }
+  .make { padding: 60px 0 20px; border-top: 1px solid var(--line); margin-top: 34px; }
+  .make h2 { font-size: 32px; font-weight: 600; }
+  .sub { color: var(--muted); margin: 6px 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .trust {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: center;
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    padding: 40px 0 20px;
+  }
+  .trust b { color: var(--green); }
+  .trust img { width: 46px; height: 46px; }
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .heroart { order: -1; }
+    .heroart img, .heroart .blob { width: 230px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
