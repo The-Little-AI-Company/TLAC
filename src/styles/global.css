@@ -1,4 +1,6 @@
 :root {
+  /* Declare a light-only site so browser "auto dark mode" won't repaint it. */
+  color-scheme: light;
   --paper: #FBF6EC;
   --surface: #FFFDF8;
   --ink: #221D17;
