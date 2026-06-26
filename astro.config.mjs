@@ -12,5 +12,8 @@ if (process.env.NODE_ENV !== 'production') {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://littleaicompany.com',
+  // Dedicated dev port so TLAC never silently drifts onto another project's port.
+  // strictPort makes a collision a clear error instead of a confusing bump.
+  server: { port: 4399, strictPort: true },
   integrations,
 });
