@@ -47,12 +47,10 @@ const cards = [
         <a class="btn btn-primary" href="/start-here">Start Here →</a>
         <a class="btn btn-ghost" href="#make">See what you can make</a>
       </div>
-      <form class="capture" method="post" action="#" aria-label="Get the free Starter Kit">
-        <label class="visually-hidden" for="email">Email address</label>
-        <input id="email" type="email" name="email" placeholder="you@email.com" required />
-        <button type="submit">Get the Starter Kit</button>
-      </form>
-      <small class="hint">Free: a prompt template + the “is AI wrong?” checklist. No spam.</small>
+      <p class="kitline">
+        <a class="kitlink" href="/guides">Get the free Starter Kit →</a>
+      </p>
+      <small class="hint">Free: 7 plain-English guides — a prompt template, the “is AI wrong?” checklist, and more. No email needed.</small>
     </div>
     <div class="heroart">
       <img
@@ -90,24 +88,9 @@ const cards = [
   .hero h1 { font-size: clamp(40px, 5.6vw, 66px); font-weight: 900; max-width: 13ch; }
   .lede { font-size: 18.5px; color: var(--muted); max-width: 52ch; margin-top: 20px; }
   .cta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .capture { display: flex; gap: 8px; max-width: 440px; margin-top: 22px; }
-  .capture input {
-    flex: 1;
-    padding: 11px 13px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font: inherit;
-    background: var(--surface);
-  }
-  .capture button {
-    padding: 11px 16px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--teal);
-    color: #04201f;
-    font-weight: 700;
-    cursor: pointer;
-  }
+  .kitline { margin-top: 22px; }
+  .kitlink { display: inline-block; font-weight: 700; color: var(--signal); text-decoration: none; font-size: 16px; }
+  .kitlink:hover { text-decoration: underline; }
   .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
   .heroart { display: grid; place-items: center; }
   .heroart img {

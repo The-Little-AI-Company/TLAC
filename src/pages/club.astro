@@ -35,14 +35,10 @@ const pillars = [
     <h2>Be a founding member.</h2>
     <p>
       We're opening the Club with a small group of early members who'll help shape it — and
-      lock in founding-member perks. There's no price yet; join the list and you'll be the
+      lock in founding-member perks. There's no price yet; send a note and you'll be the
       first to know when the doors open.
     </p>
-    <form class="capture" method="post" action="#" aria-label="Join the Club waitlist">
-      <label class="visually-hidden" for="email">Email address</label>
-      <input id="email" type="email" name="email" placeholder="you@email.com" required />
-      <button type="submit">Join the waitlist</button>
-    </form>
+    <a class="btn btn-primary" href="mailto:hello@littleaicompany.com?subject=The%20Little%20AI%20Club%20waitlist">Join the waitlist →</a>
     <small class="hint">No spam. Just one note when the doors open.</small>
   </section>
 </BaseLayout>
@@ -63,15 +59,6 @@ const pillars = [
   }
   .waitlist h2 { font-size: 24px; font-weight: 600; }
   .waitlist p { color: var(--muted); margin: 8px 0 16px; max-width: 60ch; }
-  .capture { display: flex; gap: 8px; max-width: 440px; }
-  .capture input {
-    flex: 1; padding: 11px 13px; border: 1px solid var(--line);
-    border-radius: 8px; font: inherit; background: var(--surface);
-  }
-  .capture button {
-    padding: 11px 16px; border: 0; border-radius: 8px;
-    background: var(--teal); color: #04201f; font-weight: 700; cursor: pointer;
-  }
-  .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .hint { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
   @media (max-width: 640px) { .pillars { grid-template-columns: 1fr; } }
 </style>

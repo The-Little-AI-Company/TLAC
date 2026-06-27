@@ -30,8 +30,9 @@ describe('Home page (built output)', () => {
     expect(html).toMatch(/\/owl-logo\.png/);
   });
 
-  it('has an email-capture field', () => {
-    expect(html).toMatch(/type=["']email["']/);
+  it('routes to the free Starter Kit from the hero', () => {
+    expect(html).toContain('Get the free Starter Kit');
+    expect(html).toMatch(/href=["']\/guides["']/);
   });
 
   it('is accessible/SEO-sound: lang, title, meta description', () => {

@@ -63,12 +63,8 @@ const ladder = [
 
   <section id="list" class="list">
     <h2>Be first in line.</h2>
-    <p>Prices for the paid tiers are still being set — with our first members. Drop your email and you'll be first to know when each one opens (and you'll help shape it).</p>
-    <form class="capture" method="post" action="#" aria-label="Get notified about new offers">
-      <label class="visually-hidden" for="email">Email address</label>
-      <input id="email" type="email" name="email" placeholder="you@email.com" required />
-      <button type="submit">Keep me posted</button>
-    </form>
+    <p>Prices for the paid tiers are still being set — with our first members. Send a note and you'll be first to know when each one opens (and you'll help shape it).</p>
+    <a class="btn btn-primary" href="mailto:hello@littleaicompany.com?subject=Keep%20me%20posted">Email to get on the list →</a>
     <small class="hint">No spam. Just a note when something useful is ready.</small>
   </section>
 </BaseLayout>
@@ -96,14 +92,5 @@ const ladder = [
   }
   .list h2 { font-size: 24px; font-weight: 600; }
   .list p { color: var(--muted); margin: 8px 0 16px; max-width: 60ch; }
-  .capture { display: flex; gap: 8px; max-width: 440px; }
-  .capture input {
-    flex: 1; padding: 11px 13px; border: 1px solid var(--line);
-    border-radius: 8px; font: inherit; background: var(--surface);
-  }
-  .capture button {
-    padding: 11px 16px; border: 0; border-radius: 8px;
-    background: var(--teal); color: #04201f; font-weight: 700; cursor: pointer;
-  }
-  .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .hint { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
 </style>
