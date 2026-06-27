@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const ladder = [
+  {
+    tag: 'Free · available now',
+    title: 'The Starter Kit',
+    body: 'Seven plain-English guides to make your first useful thing and learn when to trust AI. No cost, no catch.',
+    cta: 'Open the kit',
+    href: '/guides',
+    live: true,
+  },
+  {
+    tag: 'Coming soon',
+    title: 'Beginner AI Starter Kit (deluxe)',
+    body: 'A printable, expanded bundle: the worksheet, prompt anatomy, context + evaluation checklists, ready-to-use workflow templates, and printable visual explainers.',
+    cta: 'Get on the early list',
+    href: '#list',
+    live: false,
+  },
+  {
+    tag: 'Coming soon',
+    title: 'The Little AI Club',
+    body: 'The membership: the full prompt + workflow library, printable posters, build-alongs, workshop replays, learning paths, and office hours.',
+    cta: 'Join the waitlist',
+    href: '/club',
+    live: false,
+  },
+  {
+    tag: 'By request',
+    title: '1-on-1 Sessions',
+    body: 'Direct help to get set up and confident — an AI setup session, a coaching package, or a workflow / second-brain build, tailored to you.',
+    cta: 'Ask about a session',
+    href: '/contact',
+    live: false,
+  },
+];
+---
+
+<BaseLayout
+  title="Services — The Little AI Company"
+  description="From a free Starter Kit to a membership and 1-on-1 help — every step hands you something useful you can actually use."
+>
+  <section class="svc-hero">
+    <span class="eyebrow">// what we offer</span>
+    <h1>Start free. Go as deep as you want.</h1>
+    <p class="lede">
+      Every step keeps the same promise: bring one messy task, leave with a useful artifact
+      and a better way to think with AI. Start free today; the rest opens as we build it.
+    </p>
+  </section>
+
+  <div class="ladder">
+    {ladder.map((r) => (
+      <article class="rung">
+        <span class="eyebrow tag">{r.tag}</span>
+        <h2>{r.title}</h2>
+        <p>{r.body}</p>
+        <a class:list={['more', { live: r.live }]} href={r.href}>{r.cta} →</a>
+      </article>
+    ))}
+  </div>
+
+  <section id="list" class="list">
+    <h2>Be first in line.</h2>
+    <p>Prices for the paid tiers are still being set — with our first members. Send a note and you'll be first to know when each one opens (and you'll help shape it).</p>
+    <a class="btn btn-primary" href="mailto:hello@littleaicompany.com?subject=Keep%20me%20posted">Email to get on the list →</a>
+    <small class="hint">No spam. Just a note when something useful is ready.</small>
+  </section>
+</BaseLayout>
+
+<style>
+  .svc-hero { max-width: 720px; padding: 56px 0 26px; }
+  .svc-hero h1 { font-size: clamp(34px, 5.2vw, 56px); font-weight: 900; margin: 16px 0 0; }
+  .lede { color: var(--muted); font-size: 18.5px; margin: 18px 0 0; max-width: 60ch; }
+
+  .ladder { display: grid; gap: 14px; padding: 8px 0 30px; }
+  .rung {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  .rung .tag { color: var(--signal); }
+  .rung h2 { font-size: 22px; font-weight: 600; margin: 8px 0 6px; }
+  .rung p { color: var(--muted); font-size: 15.5px; max-width: 70ch; }
+  .more { display: inline-block; margin-top: 12px; color: var(--muted); font-weight: 600; font-size: 14px; text-decoration: none; }
+  .more.live { color: var(--signal); }
+  .more:hover { text-decoration: underline; }
+
+  .list {
+    margin-top: 18px; padding: 28px 24px; border: 1px solid var(--line);
+    border-radius: var(--radius); background: var(--paper);
+  }
+  .list h2 { font-size: 24px; font-weight: 600; }
+  .list p { color: var(--muted); margin: 8px 0 16px; max-width: 60ch; }
+  .hint { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
+</style>

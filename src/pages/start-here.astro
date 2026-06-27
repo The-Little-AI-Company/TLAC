@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Start Here — The Little AI Company"
+  description="New to AI? Make your first useful thing in about 15 minutes, then keep the cheat-sheets that make it stick."
+>
+  <section class="sh">
+    <div class="sh-copy">
+      <span class="eyebrow">// start here</span>
+      <h1>Make your first useful thing.</h1>
+      <p class="lede">
+        You don't learn AI by reading about it — you learn it by making one useful thing,
+        start to finish. Bring a real task. In about 15 minutes you'll have something you
+        can use, plus the judgment to know when to trust it.
+      </p>
+      <a class="btn btn-primary" href="/guides/first-useful-thing">Open the worksheet →</a>
+
+      <ol class="path">
+        <li><b>Pick a task.</b> Not sure? <a href="/guides/use-case-menu">Steal one from the menu.</a></li>
+        <li><b>Write the brief.</b> Five parts, fill in the blanks — <a href="/guides/prompt-anatomy">the Prompt Anatomy.</a></li>
+        <li><b>Check it.</b> Make sure it isn't bluffing — <a href="/guides/is-ai-wrong">the Is-AI-Wrong checklist.</a></li>
+      </ol>
+      <p class="all"><a href="/guides">Or browse the whole Starter Kit →</a></p>
+    </div>
+    <div class="sh-art">
+      <img src="/mascot/pose-06.png" alt="" width="220" height="220" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sh { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: center; padding: 56px 0 40px; }
+  .sh h1 { font-size: clamp(36px, 5.4vw, 60px); font-weight: 900; margin: 16px 0 0; max-width: 12ch; }
+  .lede { color: var(--muted); font-size: 18.5px; margin: 18px 0 26px; max-width: 52ch; }
+  .path { margin: 30px 0 0; padding-left: 22px; display: grid; gap: 12px; max-width: 54ch; }
+  .path li { padding-left: 6px; }
+  .path a { color: var(--signal); }
+  .all { margin-top: 22px; font-weight: 600; }
+  .all a { color: var(--signal); text-decoration: none; }
+  .sh-art { display: grid; place-items: center; }
+  .sh-art img { width: 220px; height: auto; filter: drop-shadow(0 10px 18px rgba(33, 29, 23, 0.10)); }
+  @media (max-width: 760px) {
+    .sh { grid-template-columns: 1fr; }
+    .sh-art { order: -1; }
+    .sh-art img { width: 150px; }
+  }
+</style>

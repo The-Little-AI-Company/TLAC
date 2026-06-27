@@ -1,4 +1,9 @@
 ---
+const zo = [
+  { href: 'https://zocomputer101.wiki', label: 'Zo 101' },
+  { href: 'https://www.zo-cookbook.space', label: 'Zo Cookbook' },
+  { href: 'https://zo-computer.cello.so/X9jcdFXqh9Z', label: 'My Zo Computer' },
+];
 ---
 
 <footer>
@@ -7,19 +12,29 @@
       <img src="/owl-logo.png" alt="" width="30" height="30" />
       <span>The Little AI Company</span>
     </div>
-    <p>
-      Learn AI by making useful things · © 2026 ·
-      <a href="/start-here">Start Here</a> · <a href="/club">The Club</a> ·
+    <nav class="foot-links" aria-label="Footer">
+      <a href="/start-here">Start Here</a>
+      <a href="/guides">Guides</a>
+      <a href="/club">The Club</a>
       <a href="/contact">Contact</a>
-    </p>
+    </nav>
   </div>
+
+  <div class="wrap foot-zo">
+    <span class="foot-zo-label">Learning Zo Computer? Explore:</span>
+    <nav aria-label="Zo resources">
+      {zo.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}</a>)}
+    </nav>
+  </div>
+
+  <p class="wrap foot-legal">Learn AI by making useful things · © 2026</p>
 </footer>
 
 <style>
   footer {
     border-top: 1px solid var(--line);
     margin-top: 24px;
-    padding: 30px 0;
+    padding: 30px 0 34px;
     color: var(--muted);
     font-size: 14px;
   }
@@ -40,6 +55,19 @@
     padding: 2px;
     object-fit: contain;
   }
-  footer a { color: var(--muted); }
-  footer a:hover { color: var(--ink); }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 18px; }
+  .foot-zo {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px;
+    margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line);
+  }
+  .foot-zo-label {
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase;
+  }
+  .foot-zo nav { display: flex; flex-wrap: wrap; gap: 16px; }
+  .foot-zo a { color: var(--teal); font-weight: 600; }
+  .foot-legal { margin-top: 16px; font-size: 13px; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--ink); text-decoration: underline; }
+  .foot-zo a:hover { color: var(--ink); }
 </style>
