@@ -53,4 +53,4 @@ This isn't about fearing AI — it's about its fluency. Use it like a fast, shar
 Got an answer that passed? Turn the prompt that produced it into a reusable one with **[The Prompt Anatomy](/guides/prompt-anatomy)**.
 
 ---
-*Sources: OpenAI, "Why Language Models Hallucinate" (2025); Anthropic, sycophancy research (2023); Walters & Wilder, *Scientific Reports* (2023); Dell'Acqua et al. (HBS/BCG), "Navigating the Jagged Technological Frontier" (2023); Vectara Hallucination Leaderboard. See `_research-notes.md` for figures + links. Numbers as-published — re-verify before printing.*
+*Sources: OpenAI, "Why Language Models Hallucinate" (2025); Anthropic, sycophancy research (2023); Walters & Wilder, *Scientific Reports* (2023); Dell'Acqua et al. (HBS/BCG), "Navigating the Jagged Technological Frontier" (2023); Vectara Hallucination Leaderboard. Figures are as-published — re-verify before you rely on them.*
