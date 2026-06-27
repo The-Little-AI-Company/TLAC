@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// NOTE: branded inbox — needs forwarding/mailbox set up (or swap to a preferred address).
+const email = 'hello@littleaicompany.com';
+---
+
+<BaseLayout
+  title="Contact — The Little AI Company"
+  description="Questions, ideas, or want to work together? Get in touch."
+>
+  <section class="contact">
+    <span class="eyebrow">// say hello</span>
+    <h1>Get in touch.</h1>
+    <p class="lede">
+      Got a question, an idea, or a messy task you're not sure AI can help with? We'd love
+      to hear from you — no question is too basic.
+    </p>
+    <p class="email">
+      <a class="btn btn-primary" href={`mailto:${email}`}>Email {email} →</a>
+    </p>
+    <p class="alt">
+      Prefer to start making? <a href="/start-here">Grab the free Starter Kit</a> — most
+      questions answer themselves once you've made your first useful thing.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact { max-width: 640px; margin: 0 auto; padding: 64px 0 48px; }
+  .contact h1 { font-size: clamp(34px, 5.4vw, 56px); font-weight: 900; margin: 16px 0 0; }
+  .lede { color: var(--muted); font-size: 19px; margin: 20px 0 28px; }
+  .email { margin: 0 0 24px; }
+  .email a { word-break: break-word; }
+  .alt { color: var(--muted); font-size: 16px; }
+  .alt a { color: var(--signal); }
+</style>

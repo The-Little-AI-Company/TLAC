@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About — The Little AI Company"
+  description="Why we exist: to help beginners use AI well — and know when to trust it — by making useful things, not chasing hype."
+>
+  <section class="about">
+    <span class="eyebrow">// about</span>
+    <h1>We help you use AI well — and know when to trust it.</h1>
+    <p class="lede">
+      Most AI advice is hype, jargon, or a firehose of tools. Beginners end up stuck in
+      chatbot mode — overtrusting confident answers, undertrusting useful drafts, and
+      rushing into "agents" before the basics click. The Little AI Company is the
+      friendly fix. Our whole approach fits in one line: <b>learn AI by making useful things.</b>
+    </p>
+
+    <h2>What we believe</h2>
+    <ul class="beliefs">
+      <li>
+        <b>Make useful things first.</b> You learn AI by finishing one real, useful thing —
+        not by mastering every trend. Every guide hands you an artifact you'll actually use.
+      </li>
+      <li>
+        <b>Judgment before automation.</b> AI sounds sure even when it's guessing. Knowing
+        <i>when to trust it</i> is the skill almost nobody teaches — so we lead with it.
+      </li>
+      <li>
+        <b>Skills that transfer.</b> We teach the primitives — prompting, judgment,
+        workflows, a second brain — not loyalty to one tool. Models change; the thinking lasts.
+      </li>
+    </ul>
+
+    <h2>Prompt mode vs. work mode</h2>
+    <p class="body">
+      Most people only ever ask AI for an answer — that's <b>prompt mode</b>. The bigger
+      unlock is <b>work mode</b>: handing a job to a system that can carry state, stop,
+      resume, and show its receipts. That's where AI stops being a party trick and starts
+      doing real work — and it's what we'll teach you to do, safely and in plain English.
+    </p>
+
+    <p class="trustline">
+      Model-agnostic. Beginner-first. Built around useful artifacts, not tool hype.
+    </p>
+
+    <div class="cta">
+      <a class="btn btn-primary" href="/start-here">Start Here →</a>
+      <a class="btn btn-ghost" href="/guides">Browse the Starter Kit</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about { max-width: 720px; margin: 0 auto; padding: 56px 0 40px; }
+  .about h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 900; margin: 16px 0 0; }
+  .lede { color: var(--muted); font-size: 19px; margin: 20px 0 8px; }
+  .about h2 { font-size: 26px; font-weight: 600; margin: 40px 0 14px; }
+  .body { font-size: 17px; }
+  .beliefs { list-style: none; display: grid; gap: 14px; }
+  .beliefs li {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px 18px; font-size: 16px;
+  }
+  .trustline { margin-top: 36px; color: var(--green); font-weight: 600; }
+  .cta { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+</style>
