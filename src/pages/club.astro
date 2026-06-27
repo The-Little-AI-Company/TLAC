@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Signup from '../components/Signup.astro';
 
 const pillars = [
   'The full prompt & workflow library — copy, tweak, reuse.',
@@ -35,10 +36,10 @@ const pillars = [
     <h2>Be a founding member.</h2>
     <p>
       We're opening the Club with a small group of early members who'll help shape it — and
-      lock in founding-member perks. There's no price yet; send a note and you'll be the
+      lock in founding-member perks. There's no price yet; drop your email and you'll be the
       first to know when the doors open.
     </p>
-    <a class="btn btn-primary" href="mailto:jeffkazzee@gmail.com?subject=The%20Little%20AI%20Club%20waitlist">Join the waitlist →</a>
+    <Signup source="club-waitlist" subject="TLAC Club waitlist signup" cta="Join the waitlist" />
     <small class="hint">No spam. Just one note when the doors open.</small>
   </section>
 </BaseLayout>

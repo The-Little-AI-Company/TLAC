@@ -45,3 +45,19 @@ describe('Navigation resolves (built output)', () => {
     }
   });
 });
+
+describe('Email capture wired (Formspree)', () => {
+  const pages: Record<string, string> = {
+    home: 'dist/index.html',
+    services: 'dist/services/index.html',
+    club: 'dist/club/index.html',
+  };
+  for (const [name, file] of Object.entries(pages)) {
+    it(`${name} posts signups to Formspree`, () => {
+      const html = read(file);
+      expect(html).toContain('https://formspree.io/f/mgvzzqek');
+      expect(html).toMatch(/name=["']email["']/);
+      expect(html).toMatch(/method=["']POST["']/i);
+    });
+  }
+});
