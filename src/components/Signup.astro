@@ -22,26 +22,44 @@ const id = `email-${source}`;
 </form>
 
 <style>
-  .signup { display: flex; gap: 8px; max-width: 440px; }
+  .signup { display: flex; gap: 8px; max-width: 460px; width: 100%; }
   .signup input[type='email'] {
     flex: 1;
-    padding: 11px 13px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
+    min-width: 0;
+    padding: 13px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 11px;
     font: inherit;
+    font-size: 15px;
+    color: var(--ink);
     background: var(--surface);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .signup input[type='email']::placeholder { color: #ab9f8c; }
+  .signup input[type='email']:focus {
+    outline: none;
+    border-color: var(--signal);
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.16);
   }
   .signup button {
-    padding: 11px 18px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--teal);
-    color: #04201f;
-    font-weight: 700;
+    flex: none;
+    padding: 13px 22px;
+    border: 1.5px solid var(--ink);
+    border-radius: 11px;
+    background: var(--ink);
+    color: var(--paper);
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
     white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, transform 0.08s;
   }
-  .signup button:hover { background: #1aa3a3; }
+  .signup button:hover { background: var(--coral); border-color: var(--coral); }
+  .signup button:active { transform: translateY(1px); }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-  @media (max-width: 480px) { .signup { flex-direction: column; } }
+  @media (max-width: 480px) {
+    .signup { flex-direction: column; }
+    .signup button { width: 100%; }
+  }
 </style>

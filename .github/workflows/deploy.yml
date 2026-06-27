@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+# Builds the static Astro site and publishes it to GitHub Pages on every push to dev.
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+# Permissions the deploy needs: read the repo, write Pages, mint the OIDC token.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; cancel an in-progress run if a newer push lands.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install, build, and upload the site
+        uses: withastro/action@v6
+        # package manager (pnpm) is auto-detected from pnpm-lock.yaml
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
