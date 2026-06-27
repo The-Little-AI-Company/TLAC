@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="The Starter Kit — The Little AI Company"
+  description="A free, beginner-first kit: write prompts that work, know when AI is wrong, and make your first useful thing."
+>
+  <section class="kit-hero">
+    <span class="eyebrow">// the free starter kit</span>
+    <h1>The Starter Kit</h1>
+    <p class="lede">
+      Seven short, practical guides to use AI well — and know when to trust it. No hype,
+      no jargon. Start with the worksheet; keep the cheat-sheets.
+    </p>
+    <a class="btn btn-primary" href="/start-here">New here? Start here →</a>
+  </section>
+
+  <div class="kit-grid">
+    {guides.map((g) => (
+      <a class="kit-card" href={`/guides/${g.id}`}>
+        <span class="eyebrow">{g.data.pillar}</span>
+        <h2>{g.data.title}</h2>
+        <p>{g.data.description}</p>
+        <span class="more">Read →</span>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .kit-hero { padding: 56px 0 30px; max-width: 720px; }
+  .kit-hero h1 { font-size: clamp(38px, 5.4vw, 60px); font-weight: 900; margin: 16px 0 0; }
+  .kit-hero .lede { color: var(--muted); font-size: 18.5px; margin: 18px 0 26px; max-width: 56ch; }
+  .kit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding-bottom: 34px; }
+  .kit-card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .kit-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(33, 29, 23, 0.07); border-color: #E0D4BD; }
+  .kit-card .eyebrow { color: var(--signal); }
+  .kit-card h2 { font-size: 21px; font-weight: 600; margin: 8px 0 6px; }
+  .kit-card p { color: var(--muted); font-size: 14.5px; }
+  .kit-card .more { display: inline-block; margin-top: 12px; color: var(--signal); font-weight: 600; font-size: 13.5px; }
+  @media (max-width: 760px) { .kit-grid { grid-template-columns: 1fr; } }
+</style>
