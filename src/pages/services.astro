@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Signup from '../components/Signup.astro';
 
 const ladder = [
   {
@@ -63,8 +64,8 @@ const ladder = [
 
   <section id="list" class="list">
     <h2>Be first in line.</h2>
-    <p>Prices for the paid tiers are still being set — with our first members. Send a note and you'll be first to know when each one opens (and you'll help shape it).</p>
-    <a class="btn btn-primary" href="mailto:jeffkazzee@gmail.com?subject=Keep%20me%20posted">Email to get on the list →</a>
+    <p>Prices for the paid tiers are still being set — with our first members. Drop your email and you'll be first to know when each one opens (and you'll help shape it).</p>
+    <Signup source="services-early-list" subject="TLAC early-list signup" cta="Keep me posted" />
     <small class="hint">No spam. Just a note when something useful is ready.</small>
   </section>
 </BaseLayout>

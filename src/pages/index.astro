@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Card from '../components/Card.astro';
+import Signup from '../components/Signup.astro';
 
 const cards = [
   {
@@ -70,6 +71,12 @@ const cards = [
     </div>
   </section>
 
+  <section class="home-signup">
+    <h2>Get useful things by email</h2>
+    <p>New guides and the occasional genuinely-useful AI tip — no spam, no hype.</p>
+    <Signup source="home-newsletter" subject="TLAC newsletter signup" cta="Subscribe" />
+  </section>
+
   <p class="trust">
     <img src="/mascot/pose-05.png" alt="" width="46" height="46" loading="lazy" />
     <span>Model-agnostic. Beginner-first. Built around <b>useful artifacts</b>, not tool hype.</span>
@@ -101,6 +108,15 @@ const cards = [
   .make h2 { font-size: 32px; font-weight: 600; }
   .sub { color: var(--muted); margin: 6px 0 32px; }
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .home-signup {
+    margin-top: 40px;
+    padding: 30px 0 6px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .home-signup h2 { font-size: 26px; font-weight: 600; }
+  .home-signup p { color: var(--muted); margin: 8px auto 18px; max-width: 48ch; }
+  .home-signup :global(.signup) { margin-inline: auto; }
   .trust {
     display: flex;
     align-items: center;

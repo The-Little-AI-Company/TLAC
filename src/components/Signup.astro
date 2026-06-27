@@ -1,0 +1,47 @@
+---
+// Real email capture via Formspree (no JS; plain POST works on static hosting).
+// The endpoint lives here only — every signup form on the site uses this component.
+interface Props {
+  source: string; // which form (sent as a hidden field so signups are distinguishable)
+  subject: string; // Formspree notification email subject
+  cta?: string;
+}
+const { source, subject, cta = 'Subscribe' } = Astro.props;
+const ENDPOINT = 'https://formspree.io/f/mgvzzqek';
+const id = `email-${source}`;
+---
+
+<form class="signup" action={ENDPOINT} method="POST">
+  <input type="hidden" name="_subject" value={subject} />
+  <input type="hidden" name="source" value={source} />
+  <!-- honeypot: real users leave this empty; bots fill it and get dropped -->
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <label class="visually-hidden" for={id}>Email address</label>
+  <input id={id} type="email" name="email" placeholder="you@email.com" required />
+  <button type="submit">{cta}</button>
+</form>
+
+<style>
+  .signup { display: flex; gap: 8px; max-width: 440px; }
+  .signup input[type='email'] {
+    flex: 1;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    background: var(--surface);
+  }
+  .signup button {
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--teal);
+    color: #04201f;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .signup button:hover { background: #1aa3a3; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  @media (max-width: 480px) { .signup { flex-direction: column; } }
+</style>
