@@ -25,6 +25,7 @@ describe('Core nav pages (built output)', () => {
     expect(html).toContain('Agent Relay');
     expect(html).toContain('github.com/The-Little-AI-Company/bellamente');
     expect(html).toContain('github.com/The-Little-AI-Company/open-work-relay');
+    expect(html).toMatch(/<h2[^>]*>Current projects<\/h2>/i);
   });
 
   it('services: supports the product company without invented prices', () => {

@@ -9,7 +9,6 @@ const ladder = [
     body: 'Turn a recurring AI-assisted job into a workflow with clear inputs, limits, stop points, and receipts.',
     cta: 'Talk about the work',
     href: '/contact',
-    live: true,
   },
   {
     tag: 'By request',
@@ -17,7 +16,6 @@ const ladder = [
     body: 'Focused help prototyping or shipping a small, practical AI product without hiding the hard parts behind a demo.',
     cta: 'Talk about a product',
     href: '/contact',
-    live: false,
   },
   {
     tag: 'Workshops',
@@ -25,7 +23,6 @@ const ladder = [
     body: 'Plain-English, build-along learning for teams that want useful capability and better judgment — not another tool tour.',
     cta: 'Ask about a workshop',
     href: '/contact',
-    live: false,
   },
   {
     tag: 'Free · available now',
@@ -33,7 +30,6 @@ const ladder = [
     body: 'Seven plain-English guides for making something useful, checking AI output, and protecting private information.',
     cta: 'Use the free guides',
     href: '/guides',
-    live: false,
   },
 ];
 ---
@@ -57,7 +53,7 @@ const ladder = [
         <span class="eyebrow tag">{r.tag}</span>
         <h2>{r.title}</h2>
         <p>{r.body}</p>
-        <a class:list={['more', { live: r.live }]} href={r.href}>{r.cta} →</a>
+        <a class="more" href={r.href}>{r.cta} →</a>
       </article>
     ))}
   </div>
@@ -83,8 +79,7 @@ const ladder = [
   .rung .tag { color: var(--signal); }
   .rung h2 { font-size: 22px; font-weight: 600; margin: 8px 0 6px; }
   .rung p { color: var(--muted); font-size: 15.5px; max-width: 70ch; }
-  .more { display: inline-block; margin-top: 12px; color: var(--muted); font-weight: 600; font-size: 14px; text-decoration: none; }
-  .more.live { color: var(--signal); }
+  .more { display: inline-block; margin-top: 12px; color: var(--signal); font-weight: 600; font-size: 14px; text-decoration: none; }
   .more:hover { text-decoration: underline; }
 
   .list {
