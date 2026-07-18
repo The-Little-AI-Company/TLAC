@@ -1,9 +1,9 @@
 # Brand source
 
-These are reviewed website exports from the canonical brand kit in:
+These are reviewed website exports from the canonical owl illustration library in:
 
 `The-Little-AI-Company/.github/brand`
 
-Source commit: `7aa98e1b2f8b3d11c6380544a12838a4a9978797`
+Source commit: `e4a0aee539f62d27affa44066ba495ed2a77b255`
 
 Do not edit these derivatives independently.

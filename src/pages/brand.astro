@@ -1,0 +1,402 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { brandPoses } from '../data/brand';
+
+const markVariants = [
+  { slug: 'tlac-owl-mark', label: 'Full color', field: 'paper' },
+  { slug: 'tlac-owl-mark-one-color', label: 'One color', field: 'paper' },
+  { slug: 'tlac-owl-mark-reversed', label: 'Reversed', field: 'dark' },
+  { slug: 'tlac-owl-mark-grayscale', label: 'Grayscale', field: 'paper' },
+  { slug: 'tlac-owl-mark-silhouette', label: 'Silhouette', field: 'paper' },
+];
+---
+
+<BaseLayout
+  title="Hollis — The Little AI Company"
+  description="Meet Hollis, the owl who helps The Little AI Company build, check, explain, and ship useful software."
+>
+  <section class="brand-hero">
+    <div>
+      <span class="eyebrow">// our visual language</span>
+      <h1>Meet Hollis.</h1>
+      <p class="lede">
+        Calm, mildly skeptical, and useful when it counts. Hollis gives our
+        software one recognizable character—and shows up when there is real
+        work to announce.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#illustrations">Explore the illustrations ↓</a>
+        <a class="text-link" href="/brand/DESIGN.md">Read the design specification</a>
+      </div>
+    </div>
+    <img
+      src="/brand/poses/tlac-owl-celebrating.svg"
+      alt="Hollis, the Little AI Company owl, raising a coffee mug with a quiet thumbs-up"
+      width="520"
+      height="520"
+    />
+  </section>
+
+  <section class="story" aria-labelledby="story-title">
+    <div class="story-art">
+      <img
+        src="/brand/poses/tlac-owl-shipping.svg"
+        alt=""
+        width="420"
+        height="420"
+        loading="lazy"
+      />
+    </div>
+    <div class="story-copy">
+      <span class="eyebrow">// the late shift</span>
+      <h2 id="story-title">He came for the light. He stayed for the work.</h2>
+      <p>
+        One night, Hollis noticed the workshop light was still on. He came in
+        to see what was being built, found three unlabeled boxes and a pot of
+        cold coffee, and stayed to straighten things out.
+      </p>
+      <p>
+        He has worked the late shift ever since: reading the notes, asking the
+        useful question nobody wants to ask, checking the build, and carrying
+        finished work to the door.
+      </p>
+      <blockquote>
+        Nobody remembers giving him a key. The work keeps getting shipped, so
+        nobody has asked.
+      </blockquote>
+      <a class="text-link" href="/brand/CHARACTER.md">Read the character specification</a>
+    </div>
+  </section>
+
+  <section class="identity" aria-labelledby="identity-title">
+    <div class="identity-copy">
+      <span class="eyebrow">// the mark</span>
+      <h2 id="identity-title">One face. Five useful forms.</h2>
+      <p>
+        The owl-head mark does the identity work at every size. Each version is
+        path-only SVG: portable, inspectable, and sharp from a favicon to a wall.
+      </p>
+    </div>
+    <div class="mark-grid">
+      {markVariants.map((variant) => (
+        <article class:list={['mark-card', { dark: variant.field === 'dark' }]}>
+          <img
+            src={`/brand/mark/svg/${variant.slug}.svg`}
+            alt=""
+            width="180"
+            height="180"
+            loading="lazy"
+          />
+          <div>
+            <h3>{variant.label}</h3>
+            <a href={`/brand/mark/svg/${variant.slug}.svg`} download>Download SVG</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="illustrations" class="illustrations" aria-labelledby="illustrations-title">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">// the working owl</span>
+        <h2 id="illustrations-title">Eighteen scenes built for actual work.</h2>
+      </div>
+      <p>
+        Not decorative filler. Each scene has a job: building, testing,
+        protecting, explaining, connecting, or shipping something real.
+      </p>
+    </div>
+
+    <div class="pose-grid">
+      {brandPoses.map((pose) => (
+        <article class="pose-card">
+          <div class="pose-art">
+            <img
+              src={`/brand/poses/tlac-owl-${pose.slug}.svg`}
+              alt=""
+              width="260"
+              height="260"
+              loading="lazy"
+            />
+          </div>
+          <div class="pose-copy">
+            <span>{pose.family}</span>
+            <h3>{pose.label}</h3>
+            <p>{pose.use}</p>
+            <a href={`/brand/poses/tlac-owl-${pose.slug}.svg`} download>SVG ↓</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="downloads" aria-labelledby="downloads-title">
+    <div>
+      <span class="eyebrow">// useful formats</span>
+      <h2 id="downloads-title">The essentials.</h2>
+      <p>
+        Ready-made identity files for the places that need more than a scene.
+        Every public SVG uses geometry only—no embedded image or external font.
+      </p>
+    </div>
+    <div class="download-list">
+      <a href="/brand/lockups/tlac-owl-lockup-horizontal.svg" download>
+        <strong>Horizontal lockup</strong><span>SVG · wide placements</span>
+      </a>
+      <a href="/brand/lockups/tlac-owl-lockup-compact.svg" download>
+        <strong>Compact lockup</strong><span>SVG · square placements</span>
+      </a>
+      <a href="/brand/avatar/tlac-avatar-512.png" download>
+        <strong>Company avatar</strong><span>PNG · 512 pixels</span>
+      </a>
+      <a href="/brand/social/tlac-social-card.png" download>
+        <strong>Social card</strong><span>PNG · 1280 × 640</span>
+      </a>
+      <a href="/brand/social/tlac-social-square.png" download>
+        <strong>Social square</strong><span>PNG · 1080 × 1080</span>
+      </a>
+      <a href="/brand/DESIGN.md">
+        <strong>Design specification</strong><span>Markdown · rules and production standard</span>
+      </a>
+      <a href="/brand/CHARACTER.md">
+        <strong>Character specification</strong><span>Markdown · story, voice, and release system</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="principles">
+    <span class="eyebrow">// keep it ours</span>
+    <div class="principle-grid">
+      <article>
+        <h2>Recognizable, not loud.</h2>
+        <p>The same face, wardrobe, colors, and calm expression hold the system together.</p>
+      </article>
+      <article>
+        <h2>Useful, not ornamental.</h2>
+        <p>Every pose supports a real action. If a scene adds nothing, we use the mark or no image.</p>
+      </article>
+      <article>
+        <h2>Distinctive by design.</h2>
+        <p>A calm, capable owl gives the company a visual language that belongs to the work.</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .brand-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+    gap: 48px;
+    align-items: center;
+    min-height: 620px;
+    padding: 64px 0 52px;
+  }
+  .brand-hero h1 {
+    max-width: 8ch;
+    margin-top: 18px;
+    font-size: clamp(60px, 10vw, 112px);
+    font-weight: 900;
+  }
+  .lede {
+    max-width: 57ch;
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: clamp(18px, 2.2vw, 22px);
+  }
+  .brand-hero > img {
+    width: min(100%, 500px);
+    justify-self: end;
+    filter: drop-shadow(0 20px 28px rgba(43, 33, 24, .09));
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 30px;
+  }
+  .text-link {
+    color: var(--signal);
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+  .story, .identity, .illustrations, .downloads {
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+  }
+  .story {
+    display: grid;
+    grid-template-columns: minmax(280px, .75fr) minmax(0, 1.25fr);
+    gap: 64px;
+    align-items: center;
+  }
+  .story-art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 26px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+  .story-art img { width: 100%; height: 100%; object-fit: contain; }
+  .story-copy h2 {
+    max-width: 14ch;
+    margin-top: 14px;
+    font-size: clamp(38px, 5.5vw, 62px);
+    font-weight: 900;
+  }
+  .story-copy p {
+    max-width: 62ch;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  .story-copy blockquote {
+    max-width: 58ch;
+    margin: 22px 0;
+    padding-left: 18px;
+    border-left: 4px solid var(--coral);
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .identity-copy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: end;
+    margin-bottom: 32px;
+  }
+  .identity-copy h2, .section-head h2, .downloads h2 {
+    margin-top: 12px;
+    font-size: clamp(38px, 5.5vw, 62px);
+    font-weight: 900;
+  }
+  .identity-copy p, .section-head > p, .downloads > div:first-child p {
+    max-width: 56ch;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  .mark-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mark-card {
+    display: grid;
+    min-height: 285px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .mark-card.dark { background: #201A15; color: var(--paper); }
+  .mark-card img { width: 100%; height: 180px; object-fit: contain; }
+  .mark-card h3 { font-size: 19px; }
+  .mark-card a { color: var(--signal); font-size: 13px; font-weight: 700; }
+  .mark-card.dark a { color: #9FD1CE; }
+  .section-head {
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 36px;
+    align-items: end;
+    margin-bottom: 36px;
+  }
+  .pose-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .pose-card {
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .pose-art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1.18;
+    padding: 18px;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .88), transparent 62%),
+      #E9DECC;
+  }
+  .pose-art img { width: 100%; height: 100%; object-fit: contain; }
+  .pose-copy {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3px 12px;
+    align-items: end;
+    padding: 18px 20px 20px;
+  }
+  .pose-copy span {
+    grid-column: 1 / -1;
+    color: var(--signal);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .pose-copy h3 { font-size: 25px; }
+  .pose-copy p { grid-column: 1; color: var(--muted); font-size: 14px; }
+  .pose-copy a {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    color: var(--signal);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .downloads {
+    display: grid;
+    grid-template-columns: .8fr 1.2fr;
+    gap: 56px;
+  }
+  .download-list { display: grid; gap: 10px; }
+  .download-list a {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 17px 19px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .download-list a:hover { border-color: var(--signal); }
+  .download-list span { color: var(--muted); font-size: 13px; text-align: right; }
+  .principles { padding: 28px 0 60px; }
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+  }
+  .principle-grid article {
+    padding: 24px;
+    border-left: 4px solid var(--coral);
+    background: rgba(255, 253, 248, .5);
+  }
+  .principle-grid h2 { font-size: 25px; }
+  .principle-grid p { margin-top: 9px; color: var(--muted); font-size: 15px; }
+  @media (max-width: 900px) {
+    .brand-hero { grid-template-columns: 1fr; min-height: 0; }
+    .brand-hero > img { justify-self: center; width: min(80vw, 440px); }
+    .story { grid-template-columns: 1fr; }
+    .story-art { width: min(80vw, 420px); justify-self: center; }
+    .mark-grid { grid-template-columns: repeat(3, 1fr); }
+    .pose-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .brand-hero { gap: 20px; padding-top: 44px; }
+    .identity-copy, .section-head, .downloads { grid-template-columns: 1fr; }
+    .mark-grid { grid-template-columns: repeat(2, 1fr); }
+    .pose-grid, .principle-grid { grid-template-columns: 1fr; }
+    .pose-art { aspect-ratio: 1.08; }
+    .download-list a { align-items: flex-start; flex-direction: column; gap: 2px; }
+    .download-list span { text-align: left; }
+  }
+</style>

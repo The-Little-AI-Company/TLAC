@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 
 // Smoke + content checks for the core nav pages, against built output.
 const read = (p: string) => readFileSync(resolve(p), 'utf-8');
-const PAGES = ['projects', 'about', 'services', 'club', 'contact'];
+const PAGES = ['projects', 'about', 'services', 'club', 'contact', 'brand'];
 
 describe('Core nav pages (built output)', () => {
   it('builds every page (no 404s)', () => {
@@ -36,6 +36,27 @@ describe('Core nav pages (built output)', () => {
     expect(html).not.toMatch(/\$\d/);
   });
 
+  it('brand: publishes the complete SVG illustration library and design specification', () => {
+    const html = read('dist/brand/index.html');
+    expect(html).toMatch(/Meet Hollis/i);
+    expect(html).toMatch(/He came for the light\. He stayed for the work\./i);
+    expect(html).toContain('/brand/CHARACTER.md');
+    expect(html).toMatch(/Eighteen scenes built for actual work/i);
+    expect(html).toContain('/brand/DESIGN.md');
+    const posePaths = new Set(html.match(/\/brand\/poses\/tlac-owl-[a-z-]+\.svg/g) ?? []);
+    expect(posePaths.size).toBe(18);
+    for (const posePath of posePaths) {
+      expect(existsSync(resolve(`public${posePath}`)), posePath).toBe(true);
+    }
+    const downloadPaths = new Set(
+      html.match(/\/brand\/[a-z0-9./-]+\.(?:md|png|svg)/gi) ?? [],
+    );
+    for (const downloadPath of downloadPaths) {
+      expect(existsSync(resolve(`public${downloadPath}`)), downloadPath).toBe(true);
+    }
+    expect(existsSync(resolve('public/brand/DESIGN.md'))).toBe(true);
+  });
+
   it('club: puts shipping software ahead of a speculative membership', () => {
     const html = read('dist/club/index.html');
     expect(html).toMatch(/Club/i);
@@ -54,6 +75,11 @@ describe('Navigation resolves (built output)', () => {
     for (const route of ['projects', 'guides', 'about']) {
       expect(existsSync(resolve(`dist/${route}/index.html`)), route).toBe(true);
     }
+  });
+
+  it('footer routes include the public owl page', () => {
+    expect(read('dist/index.html')).toContain('href="/brand"');
+    expect(existsSync(resolve('dist/brand/index.html'))).toBe(true);
   });
 });
 
