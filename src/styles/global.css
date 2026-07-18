@@ -1,16 +1,17 @@
 :root {
   /* Declare a light-only site so browser "auto dark mode" won't repaint it. */
   color-scheme: light;
-  --paper: #FBF6EC;
+  --paper: #F3EBDD;
   --surface: #FFFDF8;
-  --ink: #221D17;
+  --ink: #2B2118;
   --muted: #6E6456;
-  --line: #EBE2D1;
-  --signal: #2F6BFF;
-  --green: #1F9D6B;
-  --coral: #FF5A47;
-  --yellow: #FFD25A;
-  --teal: #21B4B4;
+  --line: #DED1BD;
+  --signal: #205F5D;
+  --green: #205F5D;
+  --coral: #B85C38;
+  --coral-ui: #9B482C;
+  --yellow: #D5A343;
+  --teal: #205F5D;
   --radius: 12px;
   --font-head: "Fraunces", Georgia, serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
@@ -51,7 +52,7 @@ img { max-width: 100%; display: block; }
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .btn-primary { background: var(--ink); color: var(--paper); }
-.btn-primary:hover { background: var(--coral); border-color: var(--coral); }
+.btn-primary:hover { background: #7F3F29; border-color: #7F3F29; }
 .btn-ghost { background: transparent; }
 .btn-ghost:hover { background: var(--surface); }
 .visually-hidden {

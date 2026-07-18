@@ -9,9 +9,11 @@ interface Props {
 }
 
 const {
-  title = 'The Little AI Company — Learn AI by making useful things',
-  description = 'Practical, beginner-first AI education. Bring one real task and leave with something useful you made with AI — plus the judgment to know when to trust it.',
+  title = 'The Little AI Company — Useful software for real AI work',
+  description = 'An independent software studio building practical, inspectable tools for AI memory, handoffs, and trustworthy work.',
 } = Astro.props;
+
+const socialImage = new URL('/brand/social/tlac-social-card.png', Astro.site);
 ---
 
 <!doctype html>
@@ -20,13 +22,23 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#FBF6EC" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#F3EBDD" />
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon/favicon.svg" />
+    <link rel="icon" href="/brand/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/favicon-180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="The Little AI Company — practical AI systems for real work" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={socialImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

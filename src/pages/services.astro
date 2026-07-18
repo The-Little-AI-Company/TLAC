@@ -4,50 +4,46 @@ import Signup from '../components/Signup.astro';
 
 const ladder = [
   {
-    tag: 'Free · available now',
-    title: 'The Starter Kit',
-    body: 'Seven plain-English guides to make your first useful thing and learn when to trust AI. No cost, no catch.',
-    cta: 'Open the kit',
-    href: '/guides',
-    live: true,
-  },
-  {
-    tag: 'Coming soon',
-    title: 'Beginner AI Starter Kit (deluxe)',
-    body: 'A printable, expanded bundle: the worksheet, prompt anatomy, context + evaluation checklists, ready-to-use workflow templates, and printable visual explainers.',
-    cta: 'Get on the early list',
-    href: '#list',
-    live: false,
-  },
-  {
-    tag: 'Coming soon',
-    title: 'The Little AI Club',
-    body: 'The membership: the full prompt + workflow library, printable posters, build-alongs, workshop replays, learning paths, and office hours.',
-    cta: 'Join the waitlist',
-    href: '/club',
-    live: false,
+    tag: 'By request',
+    title: 'Workflow and tool design',
+    body: 'Turn a recurring AI-assisted job into a workflow with clear inputs, limits, stop points, and receipts.',
+    cta: 'Talk about the work',
+    href: '/contact',
   },
   {
     tag: 'By request',
-    title: '1-on-1 Sessions',
-    body: 'Direct help to get set up and confident — an AI setup session, a coaching package, or a workflow / second-brain build, tailored to you.',
-    cta: 'Ask about a session',
+    title: 'Product implementation',
+    body: 'Focused help prototyping or shipping a small, practical AI product without hiding the hard parts behind a demo.',
+    cta: 'Talk about a product',
     href: '/contact',
-    live: false,
+  },
+  {
+    tag: 'Workshops',
+    title: 'Practical AI education',
+    body: 'Plain-English, build-along learning for teams that want useful capability and better judgment — not another tool tour.',
+    cta: 'Ask about a workshop',
+    href: '/contact',
+  },
+  {
+    tag: 'Free · available now',
+    title: 'The AI Starter Kit',
+    body: 'Seven plain-English guides for making something useful, checking AI output, and protecting private information.',
+    cta: 'Use the free guides',
+    href: '/guides',
   },
 ];
 ---
 
 <BaseLayout
-  title="Services — The Little AI Company"
-  description="From a free Starter Kit to a membership and 1-on-1 help — every step hands you something useful you can actually use."
+  title="Work with us — The Little AI Company"
+  description="Focused product, workflow, and practical AI education work from The Little AI Company."
 >
   <section class="svc-hero">
-    <span class="eyebrow">// what we offer</span>
-    <h1>Start free. Go as deep as you want.</h1>
+    <span class="eyebrow">// work with us</span>
+    <h1>Need help making the useful thing real?</h1>
     <p class="lede">
-      Every step keeps the same promise: bring one messy task, leave with a useful artifact
-      and a better way to think with AI. Start free today; the rest opens as we build it.
+      The products come first. We also take on focused work where our way of building
+      is a fit: small scope, real users, visible limits, and evidence that it works.
     </p>
   </section>
 
@@ -57,16 +53,16 @@ const ladder = [
         <span class="eyebrow tag">{r.tag}</span>
         <h2>{r.title}</h2>
         <p>{r.body}</p>
-        <a class:list={['more', { live: r.live }]} href={r.href}>{r.cta} →</a>
+        <a class="more" href={r.href}>{r.cta} →</a>
       </article>
     ))}
   </div>
 
   <section id="list" class="list">
-    <h2>Be first in line.</h2>
-    <p>Prices for the paid tiers are still being set — with our first members. Drop your email and you'll be first to know when each one opens (and you'll help shape it).</p>
-    <Signup source="services-early-list" subject="TLAC early-list signup" cta="Keep me posted" />
-    <small class="hint">No spam. Just a note when something useful is ready.</small>
+    <h2>Follow what we ship.</h2>
+    <p>New releases, build notes, and the occasional useful guide — sent when there is something worth showing.</p>
+    <Signup source="services-early-list" subject="TLAC build notes signup" cta="Keep me posted" />
+    <small class="hint">No spam. No fake urgency.</small>
   </section>
 </BaseLayout>
 
@@ -83,8 +79,7 @@ const ladder = [
   .rung .tag { color: var(--signal); }
   .rung h2 { font-size: 22px; font-weight: 600; margin: 8px 0 6px; }
   .rung p { color: var(--muted); font-size: 15.5px; max-width: 70ch; }
-  .more { display: inline-block; margin-top: 12px; color: var(--muted); font-weight: 600; font-size: 14px; text-decoration: none; }
-  .more.live { color: var(--signal); }
+  .more { display: inline-block; margin-top: 12px; color: var(--signal); font-weight: 600; font-size: 14px; text-decoration: none; }
   .more:hover { text-decoration: underline; }
 
   .list {

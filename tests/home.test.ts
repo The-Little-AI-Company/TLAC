@@ -8,30 +8,41 @@ const html = readFileSync(resolve('dist/index.html'), 'utf-8');
 
 describe('Home page (built output)', () => {
   it('renders the brand promise', () => {
-    expect(html).toContain('Learn AI by making useful things');
+    expect(html).toContain('We make useful software for people working with AI');
   });
 
-  it('has a prominent Start Here CTA', () => {
-    expect(html).toMatch(/Start Here/i);
+  it('has a prominent projects CTA', () => {
+    expect(html).toContain("See what we're building");
+    expect(html).toMatch(/href=["']\/projects["']/);
   });
 
-  it('shows the four "what you can make" cards', () => {
-    expect(html).toContain('Your first useful thing');
-    expect(html).toContain('Know when AI is wrong');
-    expect(html).toContain('Prompts that actually work');
-    expect(html).toContain('An AI second brain');
+  it('leads with the software the company makes', () => {
+    expect(html).toContain('Bellamente');
+    expect(html).toContain('Agent Relay');
+    expect(html).toContain('Things we make');
   });
 
-  it('uses the robot mascot as the hero image', () => {
-    expect(html).toMatch(/\/mascot\/pose-01\.png/);
+  it('uses the building owl mascot as the hero image', () => {
+    expect(html).toMatch(/\/brand\/mascot\/tlac-owl-building\.webp/);
+    expect(html).not.toMatch(/\/mascot\/pose-\d+\.png/);
   });
 
-  it('uses the owl logo', () => {
-    expect(html).toMatch(/\/owl-logo\.png/);
+  it('uses product-specific owl artwork instead of legacy robot-era assets', () => {
+    expect(html).toContain('/brand/mascot/tlac-owl-filing.webp');
+    expect(html).toContain('/brand/mascot/tlac-owl-relay.webp');
+    expect(html).toContain('/brand/mascot/tlac-owl-teaching.webp');
+    expect(html).not.toContain('/owl-logo.png');
   });
 
-  it('routes to the free Starter Kit from the hero', () => {
-    expect(html).toContain('Get the free Starter Kit');
+  it('uses the canonical owl mark', () => {
+    expect(html).toMatch(/\/brand\/mark\/tlac-owl-mark-128\.png/);
+    expect(html).toMatch(/aria-label=["']The Little AI Company — home["']/);
+    expect(html).not.toMatch(/\/owl-logo\.png/);
+  });
+
+  it('keeps the free Starter Kit as supporting material', () => {
+    expect(html).toContain('Here to learn?');
+    expect(html).toContain('Use the free AI Starter Kit');
     expect(html).toMatch(/href=["']\/guides["']/);
   });
 
@@ -43,5 +54,6 @@ describe('Home page (built output)', () => {
 
   it('exposes Open Graph tags', () => {
     expect(html).toMatch(/property=["']og:title["']/);
+    expect(html).toMatch(/\/brand\/social\/tlac-social-card\.png/);
   });
 });
