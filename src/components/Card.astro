@@ -11,7 +11,7 @@ const { img, alt = '', title, href, more } = Astro.props;
 ---
 
 <article class="card">
-  <img src={img} alt={alt} width="60" height="60" loading="lazy" />
+  <img src={img} alt={alt} width="92" height="92" loading="lazy" />
   <div>
     <h3>{title}</h3>
     <p><slot /></p>
@@ -35,7 +35,12 @@ const { img, alt = '', title, href, more } = Astro.props;
     box-shadow: 0 14px 30px rgba(33, 29, 23, 0.07);
     border-color: #E0D4BD;
   }
-  .card img { width: 60px; height: 60px; flex: none; }
+  .card img {
+    width: 92px;
+    height: 92px;
+    flex: none;
+    object-fit: contain;
+  }
   .card h3 { font-size: 20px; font-weight: 600; margin-bottom: 5px; }
   .card p { color: var(--muted); font-size: 14.5px; }
   .more {
@@ -47,4 +52,8 @@ const { img, alt = '', title, href, more } = Astro.props;
     text-decoration: none;
   }
   .more:hover { text-decoration: underline; }
+  @media (max-width: 520px) {
+    .card { padding: 18px; }
+    .card img { width: 72px; height: 72px; }
+  }
 </style>

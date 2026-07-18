@@ -25,7 +25,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="all"><a href="/guides">Or browse the whole Starter Kit →</a></p>
     </div>
     <div class="sh-art">
-      <img src="/mascot/pose-06.png" alt="" width="220" height="220" />
+      <img
+        src="/brand/mascot/tlac-owl-writing.webp"
+        alt="The Little AI Company owl working through a notebook"
+        width="300"
+        height="300"
+      />
     </div>
   </section>
 </BaseLayout>
@@ -40,10 +45,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .all { margin-top: 22px; font-weight: 600; }
   .all a { color: var(--signal); text-decoration: none; }
   .sh-art { display: grid; place-items: center; }
-  .sh-art img { width: 220px; height: auto; filter: drop-shadow(0 10px 18px rgba(33, 29, 23, 0.10)); }
+  .sh-art img { width: 300px; height: auto; filter: drop-shadow(0 10px 18px rgba(33, 29, 23, 0.10)); }
   @media (max-width: 760px) {
     .sh { grid-template-columns: 1fr; }
     .sh-art { order: -1; }
-    .sh-art img { width: 150px; }
+    .sh-art img { width: 210px; }
   }
 </style>

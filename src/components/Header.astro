@@ -10,8 +10,13 @@ const links = [
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="/">
-      <img src="/owl-logo.png" alt="The Little AI Company" width="40" height="40" />
+    <a class="brand" href="/" aria-label="The Little AI Company — home">
+      <img
+        src="/brand/mark/tlac-owl-mark-128.png"
+        alt=""
+        width="46"
+        height="46"
+      />
       <span>The Little AI Company</span>
     </a>
     <nav aria-label="Primary">
@@ -26,7 +31,7 @@ const links = [
     position: sticky;
     top: 0;
     z-index: 5;
-    background: rgba(251, 246, 236, 0.85);
+    background: rgba(243, 235, 221, 0.9);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
   }
@@ -42,11 +47,7 @@ const links = [
     white-space: nowrap;
   }
   .brand img {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: #fff;
-    border: 1px solid var(--line);
-    padding: 3px;
+    width: 46px; height: 46px;
     object-fit: contain;
   }
   nav { display: flex; gap: 26px; font-size: 15px; }
@@ -63,4 +64,9 @@ const links = [
     white-space: nowrap;
   }
   @media (max-width: 820px) { nav { display: none; } }
+  @media (max-width: 520px) {
+    .brand span { display: none; }
+    .nav { gap: 10px; }
+    .navcta { padding: 9px 13px; }
+  }
 </style>

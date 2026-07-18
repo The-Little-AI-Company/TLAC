@@ -1,43 +1,40 @@
-# Astro Starter Kit: Minimal
+# The Little AI Company website
+
+The public company website for [The Little AI Company](https://littleaicompany.com).
+It teaches practical AI through useful things people can build, while helping
+them develop the judgment to know when AI should and should not be trusted.
+
+## Stack
+
+- Astro static site
+- TypeScript
+- Vitest
+- GitHub Pages
+
+## Local development
 
 ```sh
-pnpm create astro@latest -- --template minimal
+pnpm install
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The local site runs at `http://127.0.0.1:4399`.
 
-## 🚀 Project Structure
+## Verification
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+pnpm verify
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+This runs Astro checks, the production build, and the test suite.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Deployment
 
-Any static assets, like images, can be placed in the `public/` directory.
+Pushes to `dev` deploy through `.github/workflows/deploy.yml` to GitHub Pages.
+The custom domain is recorded in `public/CNAME`.
 
-## 🧞 Commands
+## Brand assets
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Reviewed website copies live under `public/brand/`. Canonical organization assets
+and export tooling live in the `The-Little-AI-Company/.github` repository under
+`brand/`.

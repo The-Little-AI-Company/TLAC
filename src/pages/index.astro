@@ -5,28 +5,28 @@ import Signup from '../components/Signup.astro';
 
 const cards = [
   {
-    img: '/mascot/pose-06.png',
+    img: '/brand/mascot/tlac-owl-welcome.webp',
     title: 'Your first useful thing',
     href: '/start-here',
     more: 'Start the build',
     body: 'Turn a messy real task into a finished artifact today — a build-along, not a list of ideas.',
   },
   {
-    img: '/mascot/pose-12.png',
+    img: '/brand/mascot/tlac-owl-checking.webp',
     title: 'Know when AI is wrong',
     href: '/guides/is-ai-wrong',
     more: 'Get the checklist',
     body: 'A plain-English red-flags checklist for spotting when AI is confidently bluffing.',
   },
   {
-    img: '/mascot/pose-07.png',
+    img: '/brand/mascot/tlac-owl-writing.webp',
     title: 'Prompts that actually work',
     href: '/guides/prompt-anatomy',
     more: 'Use the template',
     body: 'A fill-in-the-blank anatomy: role, context, task, format, example.',
   },
   {
-    img: '/mascot/pose-08.png',
+    img: '/brand/mascot/tlac-owl-memory.webp',
     title: 'An AI second brain',
     href: '/guides',
     more: 'Explore the kit',
@@ -55,10 +55,10 @@ const cards = [
     </div>
     <div class="heroart">
       <img
-        src="/mascot/pose-01.png"
-        alt="The Little AI Company robot mascot waving hello"
-        width="330"
-        height="330"
+        src="/brand/mascot/tlac-owl-welcome.webp"
+        alt="The Little AI Company owl waving hello"
+        width="420"
+        height="420"
       />
     </div>
   </section>
@@ -78,7 +78,13 @@ const cards = [
   </section>
 
   <p class="trust">
-    <img src="/mascot/pose-05.png" alt="" width="46" height="46" loading="lazy" />
+    <img
+      src="/brand/mascot/tlac-owl-coffee.webp"
+      alt=""
+      width="64"
+      height="64"
+      loading="lazy"
+    />
     <span>Model-agnostic. Beginner-first. Built around <b>useful artifacts</b>, not tool hype.</span>
   </p>
 </BaseLayout>
@@ -101,7 +107,7 @@ const cards = [
   .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
   .heroart { display: grid; place-items: center; }
   .heroart img {
-    width: 330px; height: auto;
+    width: 420px; height: auto;
     filter: drop-shadow(0 10px 18px rgba(33, 29, 23, 0.10));
   }
   .make { padding: 60px 0 20px; border-top: 1px solid var(--line); margin-top: 34px; }
@@ -128,11 +134,11 @@ const cards = [
     padding: 40px 0 20px;
   }
   .trust b { color: var(--green); }
-  .trust img { width: 46px; height: 46px; }
+  .trust img { width: 64px; height: 64px; object-fit: contain; }
   @media (max-width: 760px) {
     .hero { grid-template-columns: 1fr; }
     .heroart { order: -1; }
-    .heroart img { width: 230px; }
+    .heroart img { width: 280px; }
     .grid { grid-template-columns: 1fr; }
   }
 </style>

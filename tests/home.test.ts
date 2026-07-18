@@ -22,12 +22,15 @@ describe('Home page (built output)', () => {
     expect(html).toContain('An AI second brain');
   });
 
-  it('uses the robot mascot as the hero image', () => {
-    expect(html).toMatch(/\/mascot\/pose-01\.png/);
+  it('uses the welcoming owl mascot as the hero image', () => {
+    expect(html).toMatch(/\/brand\/mascot\/tlac-owl-welcome\.webp/);
+    expect(html).not.toMatch(/\/mascot\/pose-\d+\.png/);
   });
 
-  it('uses the owl logo', () => {
-    expect(html).toMatch(/\/owl-logo\.png/);
+  it('uses the canonical owl mark', () => {
+    expect(html).toMatch(/\/brand\/mark\/tlac-owl-mark-128\.png/);
+    expect(html).toMatch(/aria-label=["']The Little AI Company — home["']/);
+    expect(html).not.toMatch(/\/owl-logo\.png/);
   });
 
   it('routes to the free Starter Kit from the hero', () => {
@@ -43,5 +46,6 @@ describe('Home page (built output)', () => {
 
   it('exposes Open Graph tags', () => {
     expect(html).toMatch(/property=["']og:title["']/);
+    expect(html).toMatch(/\/brand\/social\/tlac-social-card\.png/);
   });
 });
