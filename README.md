@@ -43,3 +43,10 @@ and export tooling live in the `The-Little-AI-Company/.github` repository under
 The public `/brand` page introduces Hollis and presents the mark, illustration
 library, downloads, visual-system specification, and character contract without
 turning the company profile into asset documentation.
+
+## Site directory
+
+The primary header stays deliberately small. The footer links to `/pages`, the
+complete human-readable directory of every top-level page and Starter Kit guide.
+Built-output tests fail when a public page is orphaned or omitted from that
+directory. See `docs/site-discoverability.md` for the maintained checklist.

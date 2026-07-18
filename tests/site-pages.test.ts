@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
 
@@ -85,6 +85,23 @@ describe('Navigation resolves (built output)', () => {
   it('footer routes include the public owl page', () => {
     expect(read('dist/index.html')).toContain('href="/brand"');
     expect(existsSync(resolve('dist/brand/index.html'))).toBe(true);
+  });
+
+  it('provides one visible directory linking every public page and guide', () => {
+    const file = 'dist/pages/index.html';
+    expect(existsSync(resolve(file))).toBe(true);
+    const html = read(file);
+    const routes = readdirSync(resolve('dist'), { recursive: true })
+      .map(String)
+      .filter((path) => path.endsWith('.html'))
+      .map((path) => {
+        const normalized = path.replace(/\\/g, '/');
+        if (normalized === 'index.html') return '/';
+        return `/${normalized.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`;
+      });
+    for (const route of routes) {
+      expect(html, route).toContain(`href="${route}"`);
+    }
   });
 });
 
