@@ -45,6 +45,11 @@ describe('Core nav pages (built output)', () => {
     expect(html).toContain('/brand/DESIGN.md');
     const posePaths = new Set(html.match(/\/brand\/poses\/tlac-owl-[a-z-]+\.svg/g) ?? []);
     expect(posePaths.size).toBe(18);
+    const poseImageTags = html.match(/<img[^>]*\/brand\/poses\/[^>]*>/gi) ?? [];
+    expect(poseImageTags.length).toBeGreaterThanOrEqual(18);
+    for (const imageTag of poseImageTags) {
+      expect(imageTag).not.toMatch(/loading=["']lazy["']/i);
+    }
     for (const posePath of posePaths) {
       expect(existsSync(resolve(`public${posePath}`)), posePath).toBe(true);
     }
