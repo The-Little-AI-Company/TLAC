@@ -74,10 +74,10 @@ describe('Start Here (/start-here)', () => {
 });
 
 describe('Home wiring (built output)', () => {
-  it('cards point to real guide routes, not placeholder slugs', () => {
+  it('keeps education routed through the real guides hub', () => {
     const html = read('dist/index.html');
-    expect(html).toContain('/guides/is-ai-wrong');
-    expect(html).toContain('/guides/prompt-anatomy');
+    expect(html).toContain('Use the free AI Starter Kit');
+    expect(html).toContain('href="/guides"');
     expect(html).not.toContain('/guides/judgment');
     expect(html).not.toContain('/guides/second-brain');
   });

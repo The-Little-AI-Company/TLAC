@@ -1,9 +1,7 @@
 ---
 const links = [
-  { href: '/start-here', label: 'Start Here' },
+  { href: '/projects', label: 'Projects' },
   { href: '/guides', label: 'Guides' },
-  { href: '/services', label: 'Services' },
-  { href: '/club', label: 'The Club' },
   { href: '/about', label: 'About' },
 ];
 ---
@@ -22,7 +20,7 @@ const links = [
     <nav aria-label="Primary">
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
-    <a class="navcta" href="/start-here">Start Here →</a>
+    <a class="navcta" href="/projects">Explore the work →</a>
   </div>
 </header>
 

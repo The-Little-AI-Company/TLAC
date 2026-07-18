@@ -1,8 +1,9 @@
 # The Little AI Company website
 
 The public company website for [The Little AI Company](https://littleaicompany.com).
-It teaches practical AI through useful things people can build, while helping
-them develop the judgment to know when AI should and should not be trusted.
+It is the front door for the software, open-source projects, and practical
+resources the company makes. Education supports the products; it is not the
+company's primary identity.
 
 ## Stack
 

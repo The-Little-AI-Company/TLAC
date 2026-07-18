@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 
 // Smoke + content checks for the core nav pages, against built output.
 const read = (p: string) => readFileSync(resolve(p), 'utf-8');
-const PAGES = ['about', 'services', 'club', 'contact'];
+const PAGES = ['projects', 'about', 'services', 'club', 'contact'];
 
 describe('Core nav pages (built output)', () => {
   it('builds every page (no 404s)', () => {
@@ -13,23 +13,33 @@ describe('Core nav pages (built output)', () => {
     }
   });
 
-  it('about: states the mission and the judgment angle', () => {
+  it('about: states the software-first mission and keeps education secondary', () => {
     const html = read('dist/about/index.html');
-    expect(html).toMatch(/Learn AI by making useful things/i);
-    expect(html).toMatch(/when to trust/i);
+    expect(html).toMatch(/independent software studio/i);
+    expect(html).toMatch(/Software first\. Education alongside it/i);
   });
 
-  it('services: shows the ladder incl. the free Starter Kit and the Club, no invented prices', () => {
+  it('projects: presents the current public products and their source', () => {
+    const html = read('dist/projects/index.html');
+    expect(html).toContain('Bellamente');
+    expect(html).toContain('Agent Relay');
+    expect(html).toContain('github.com/The-Little-AI-Company/bellamente');
+    expect(html).toContain('github.com/The-Little-AI-Company/open-work-relay');
+  });
+
+  it('services: supports the product company without invented prices', () => {
     const html = read('dist/services/index.html');
-    expect(html).toMatch(/Starter Kit/i);
-    expect(html).toMatch(/Club/i);
+    expect(html).toMatch(/Workflow and tool design/i);
+    expect(html).toMatch(/Product implementation/i);
+    expect(html).toMatch(/AI Starter Kit/i);
     expect(html).not.toMatch(/\$\d/);
   });
 
-  it('club: value + waitlist framing, no committed price', () => {
+  it('club: puts shipping software ahead of a speculative membership', () => {
     const html = read('dist/club/index.html');
     expect(html).toMatch(/Club/i);
-    expect(html).toMatch(/waitlist|founding/i);
+    expect(html).toMatch(/The club can wait/i);
+    expect(html).toMatch(/Bellamente/i);
     expect(html).not.toMatch(/\$\d/);
   });
 
@@ -40,7 +50,7 @@ describe('Core nav pages (built output)', () => {
 
 describe('Navigation resolves (built output)', () => {
   it('every header nav target exists', () => {
-    for (const route of ['start-here', 'guides', 'services', 'club', 'about']) {
+    for (const route of ['projects', 'guides', 'about']) {
       expect(existsSync(resolve(`dist/${route}/index.html`)), route).toBe(true);
     }
   });

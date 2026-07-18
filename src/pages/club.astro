@@ -1,46 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Signup from '../components/Signup.astro';
-
-const pillars = [
-  'The full prompt & workflow library — copy, tweak, reuse.',
-  'A printable visual library — posters, diagrams, cheat-sheets.',
-  'Build-alongs & practice — small useful projects, not theory.',
-  'Workshop replays — watch the thinking, not just the result.',
-  'Learning paths — a clear track from beginner to capable.',
-  'Office hours & Q&A — get unstuck with real help.',
-];
 ---
 
 <BaseLayout
   title="The Club — The Little AI Company"
-  description="The membership for people who want to go deeper: the full library, build-alongs, workshops, learning paths, and office hours."
+  description="The Little AI Company is focusing on shipping software. Follow the workshop for releases, build notes, and future community plans."
 >
   <section class="club-hero">
     <span class="eyebrow">// the little ai club</span>
-    <h1>Go deeper, together.</h1>
+    <h1>The club can wait. We're building.</h1>
     <p class="lede">
-      The free Starter Kit gets you your first wins. The Club is where you build the habit —
-      the full library, hands-on practice, workshops, and support, organized as a path from
-      beginner to genuinely capable.
+      We still like the idea of a useful community around the work. But we are not going
+      to pretend a membership is the product. Right now, the job is to ship Bellamente,
+      Agent Relay, and whatever earns its way out of the workshop next.
     </p>
-    <a class="btn btn-primary" href="#waitlist">Join the waitlist →</a>
+    <a class="btn btn-primary" href="/projects">See what we're building →</a>
   </section>
 
-  <h2 class="ph">What members get</h2>
-  <ul class="pillars">
-    {pillars.map((p) => <li>{p}</li>)}
-  </ul>
-
   <section id="waitlist" class="waitlist">
-    <h2>Be a founding member.</h2>
+    <h2>Follow the workshop.</h2>
     <p>
-      We're opening the Club with a small group of early members who'll help shape it — and
-      lock in founding-member perks. There's no price yet; drop your email and you'll be the
-      first to know when the doors open.
+      Get releases, honest build notes, and the occasional practical guide. If a community
+      grows around the products later, people following the work will hear about it first.
     </p>
-    <Signup source="club-waitlist" subject="TLAC Club waitlist signup" cta="Join the waitlist" />
-    <small class="hint">No spam. Just one note when the doors open.</small>
+    <Signup source="club-waitlist" subject="TLAC build notes signup" cta="Keep me posted" />
+    <small class="hint">No spam. No fake countdown.</small>
   </section>
 </BaseLayout>
 
@@ -48,12 +33,6 @@ const pillars = [
   .club-hero { max-width: 720px; padding: 56px 0 26px; }
   .club-hero h1 { font-size: clamp(34px, 5.2vw, 56px); font-weight: 900; margin: 16px 0 0; }
   .lede { color: var(--muted); font-size: 18.5px; margin: 18px 0 24px; max-width: 58ch; }
-  .ph { font-size: 26px; font-weight: 600; margin: 18px 0 14px; }
-  .pillars { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 12px; }
-  .pillars li {
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 15px 17px; font-size: 15.5px;
-  }
   .waitlist {
     margin-top: 26px; padding: 28px 24px; border: 1px solid var(--line);
     border-radius: var(--radius); background: var(--paper);
@@ -61,5 +40,4 @@ const pillars = [
   .waitlist h2 { font-size: 24px; font-weight: 600; }
   .waitlist p { color: var(--muted); margin: 8px 0 16px; max-width: 60ch; }
   .hint { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
-  @media (max-width: 640px) { .pillars { grid-template-columns: 1fr; } }
 </style>
