@@ -39,3 +39,7 @@ The custom domain is recorded in `public/CNAME`.
 Reviewed website copies live under `public/brand/`. Canonical organization assets
 and export tooling live in the `The-Little-AI-Company/.github` repository under
 `brand/`.
+
+The public `/brand` page introduces Hollis and presents the mark, illustration
+library, downloads, visual-system specification, and character contract without
+turning the company profile into asset documentation.
