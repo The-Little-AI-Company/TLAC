@@ -30,6 +30,19 @@ function resolvesInDist(path: string): boolean {
   return existsSync(join(DIST, rel, 'index.html')) || existsSync(join(DIST, `${rel}.html`));
 }
 
+function routeForHtmlFile(file: string): string {
+  const rel = file.slice(DIST.length).replace(/\\/g, '/');
+  if (rel === '/index.html') return '/';
+  return rel.replace(/\/index\.html$/, '').replace(/\.html$/, '');
+}
+
+function linkedPageRoutes(html: string, knownRoutes: Set<string>): string[] {
+  return matchAll(html, /\bhref=["']([^"']+)["']/g)
+    .filter((ref) => ref.startsWith('/'))
+    .map((ref) => ref.split(/[?#]/)[0].replace(/\/$/, '') || '/')
+    .filter((route) => knownRoutes.has(route));
+}
+
 describe('Link integrity (built output)', () => {
   const files = htmlFiles();
 
@@ -62,5 +75,30 @@ describe('Link integrity (built output)', () => {
       }
     }
     expect(broken, `\nBroken links found:\n${broken.join('\n')}\n`).toEqual([]);
+  });
+
+  it('makes every public HTML page reachable from home through visible internal links', () => {
+    const routeFiles = new Map(files.map((file) => [routeForHtmlFile(file), file]));
+    const knownRoutes = new Set(routeFiles.keys());
+    const visited = new Set<string>();
+    const queue = ['/'];
+
+    while (queue.length > 0) {
+      const route = queue.shift()!;
+      if (visited.has(route)) continue;
+      visited.add(route);
+      const file = routeFiles.get(route);
+      if (!file) continue;
+      const html = readFileSync(file, 'utf-8');
+      for (const linkedRoute of linkedPageRoutes(html, knownRoutes)) {
+        if (!visited.has(linkedRoute)) queue.push(linkedRoute);
+      }
+    }
+
+    const unreachable = [...knownRoutes].filter((route) => !visited.has(route)).sort();
+    expect(
+      unreachable,
+      `\nPublic pages with no visible path from home:\n${unreachable.join('\n')}\n`,
+    ).toEqual([]);
   });
 });
