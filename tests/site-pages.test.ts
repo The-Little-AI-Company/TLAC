@@ -38,7 +38,7 @@ describe('Core nav pages (built output)', () => {
 
   it('brand: publishes the complete SVG illustration library and design specification', () => {
     const html = read('dist/brand/index.html');
-    expect(html).toMatch(/Meet Hollis/i);
+    expect(html).toMatch(/Meet Hoolio/i);
     expect(html).toMatch(/He came for the light\. He stayed for the work\./i);
     expect(html).toContain('/brand/CHARACTER.md');
     expect(html).toMatch(/Eighteen scenes built for actual work/i);

@@ -40,7 +40,7 @@ Reviewed website copies live under `public/brand/`. Canonical organization asset
 and export tooling live in the `The-Little-AI-Company/.github` repository under
 `brand/`.
 
-The public `/brand` page introduces Hollis and presents the mark, illustration
+The public `/brand` page introduces Hoolio and presents the mark, illustration
 library, downloads, visual-system specification, and character contract without
 turning the company profile into asset documentation.
 
