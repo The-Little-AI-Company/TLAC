@@ -4,6 +4,6 @@ These are reviewed website exports from the canonical owl illustration library i
 
 `The-Little-AI-Company/.github/brand`
 
-Source commit: `64cdf3175ba8f2035b20139fe0ad9186a0c62315`
+Source commit: `21cf1a514d2bc7e730928e124dca6461a3be1e9b`
 
 Do not edit these derivatives independently.
