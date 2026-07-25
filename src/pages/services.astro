@@ -4,24 +4,24 @@ import Signup from '../components/Signup.astro';
 
 const ladder = [
   {
-    tag: 'By request',
-    title: 'Workflow and tool design',
-    body: 'Turn a recurring AI-assisted job into a workflow with clear inputs, limits, stop points, and receipts.',
-    cta: 'Talk about the work',
-    href: '/contact',
-  },
-  {
-    tag: 'By request',
-    title: 'Product implementation',
-    body: 'Focused help prototyping or shipping a small, practical AI product without hiding the hard parts behind a demo.',
-    cta: 'Talk about a product',
-    href: '/contact',
-  },
-  {
     tag: 'Workshops',
-    title: 'Practical AI education',
-    body: 'Plain-English, build-along learning for teams that want useful capability and better judgment — not another tool tour.',
+    title: 'Practical AI workshops',
+    body: 'Plain-English, build-along sessions that help non-technical people use AI with more confidence, judgment, and control.',
     cta: 'Ask about a workshop',
+    href: '/contact',
+  },
+  {
+    tag: 'By request',
+    title: 'AI workflow and agent coaching',
+    body: 'Hands-on help turning a recurring job into a reliable workflow with clear inputs, verification, limits, and human decisions.',
+    cta: 'Talk about your workflow',
+    href: '/contact',
+  },
+  {
+    tag: 'Focused builds',
+    title: 'Workflow and tool design',
+    body: 'When software is the useful answer, we prototype focused tools that make AI-assisted work easier to understand and verify.',
+    cta: 'Talk about a tool',
     href: '/contact',
   },
   {
@@ -36,14 +36,15 @@ const ladder = [
 
 <BaseLayout
   title="Work with us — The Little AI Company"
-  description="Focused product, workflow, and practical AI education work from The Little AI Company."
+  description="Practical AI workshops, agent coaching, and focused workflow design for non-technical people and teams."
 >
   <section class="svc-hero">
     <span class="eyebrow">// work with us</span>
-    <h1>Need help making the useful thing real?</h1>
+    <h1>Build real AI capability — not just another pile of tools.</h1>
     <p class="lede">
-      The products come first. We also take on focused work where our way of building
-      is a fit: small scope, real users, visible limits, and evidence that it works.
+      We teach people how to work with AI and AI agents through practical workshops,
+      coaching, and hands-on workflow design. When software helps, we build it with
+      visible limits and evidence that it works.
     </p>
   </section>
 
@@ -59,8 +60,8 @@ const ladder = [
   </div>
 
   <section id="list" class="list">
-    <h2>Follow what we ship.</h2>
-    <p>New releases, build notes, and the occasional useful guide — sent when there is something worth showing.</p>
+    <h2>Follow what we teach and build.</h2>
+    <p>Useful guides, workshop lessons, new tools, and honest build notes — sent when there is something worth sharing.</p>
     <Signup source="services-early-list" subject="TLAC build notes signup" cta="Keep me posted" />
     <small class="hint">No spam. No fake urgency.</small>
   </section>

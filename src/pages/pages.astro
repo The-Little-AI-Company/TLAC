@@ -6,27 +6,27 @@ const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.d
 
 const sections = [
   {
-    title: 'Software and services',
-    description: 'What we make and how to work with us.',
-    links: [
-      { href: '/projects', label: 'Projects', description: 'Software and open-source work from the studio.' },
-      { href: '/services', label: 'Work with us', description: 'Product, workflow, and implementation help.' },
-    ],
-  },
-  {
-    title: 'Learn',
-    description: 'Practical material that grows out of the work.',
+    title: 'Learn and get help',
+    description: 'Build practical AI skills or work with us directly.',
     links: [
       { href: '/start-here', label: 'Start here', description: 'A short route into the free AI Starter Kit.' },
       { href: '/guides', label: 'All guides', description: 'The complete beginner-first Starter Kit.' },
+      { href: '/services', label: 'Work with us', description: 'Practical workshops, agent coaching, and workflow design.' },
+    ],
+  },
+  {
+    title: 'Tools',
+    description: 'Inspectable software that supports reliable AI work.',
+    links: [
+      { href: '/projects', label: 'Projects', description: 'Vivary, Agent Relay, Bellamente, and related open work.' },
     ],
   },
   {
     title: 'Company',
     description: 'Who we are, how to reach us, and the character behind the workbench.',
     links: [
-      { href: '/about', label: 'About', description: 'The software-first mission and working principles.' },
-      { href: '/club', label: 'Club', description: 'Why shipping useful software comes before membership.' },
+      { href: '/about', label: 'About', description: 'Our education-first mission and working principles.' },
+      { href: '/club', label: 'Club', description: 'Learn and build in public with the company.' },
       { href: '/brand', label: 'The owl', description: 'Meet Hoolio and browse the reusable illustration system.' },
       { href: '/contact', label: 'Contact', description: 'Questions, collaborations, and project inquiries.' },
     ],

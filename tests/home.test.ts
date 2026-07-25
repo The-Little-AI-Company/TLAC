@@ -7,30 +7,32 @@ import { describe, it, expect } from 'vitest';
 const html = readFileSync(resolve('dist/index.html'), 'utf-8');
 
 describe('Home page (built output)', () => {
-  it('renders the brand promise', () => {
-    expect(html).toContain('We make useful software for people working with AI');
+  it('renders the practical AI education promise', () => {
+    expect(html).toContain('Learn to use AI and AI agents with more skill');
+    expect(html).toContain('non-technical people');
   });
 
-  it('has a prominent projects CTA', () => {
-    expect(html).toContain("See what we're building");
-    expect(html).toMatch(/href=["']\/projects["']/);
+  it('has a prominent learning CTA', () => {
+    expect(html).toContain('Start learning');
+    expect(html).toMatch(/href=["']\/start-here["']/);
   });
 
-  it('leads with the software the company makes', () => {
+  it('presents software as tools supporting the mission', () => {
+    expect(html).toContain('Vivary');
     expect(html).toContain('Bellamente');
     expect(html).toContain('Agent Relay');
-    expect(html).toContain('Things we make');
+    expect(html).toContain('Tools from the workshop');
   });
 
-  it('uses the building owl mascot as the hero image', () => {
-    expect(html).toMatch(/\/brand\/mascot\/tlac-owl-building\.webp/);
+  it('uses the teaching owl mascot as the hero image', () => {
+    expect(html).toMatch(/\/brand\/mascot\/tlac-owl-teaching\.webp/);
     expect(html).not.toMatch(/\/mascot\/pose-\d+\.png/);
   });
 
   it('uses product-specific owl artwork instead of legacy robot-era assets', () => {
+    expect(html).toContain('/brand/mascot/tlac-owl-memory.webp');
     expect(html).toContain('/brand/mascot/tlac-owl-filing.webp');
     expect(html).toContain('/brand/mascot/tlac-owl-relay.webp');
-    expect(html).toContain('/brand/mascot/tlac-owl-teaching.webp');
     expect(html).not.toContain('/owl-logo.png');
   });
 
@@ -40,8 +42,8 @@ describe('Home page (built output)', () => {
     expect(html).not.toMatch(/\/owl-logo\.png/);
   });
 
-  it('keeps the free Starter Kit as supporting material', () => {
-    expect(html).toContain('Here to learn?');
+  it('makes the free Starter Kit a primary way to begin', () => {
+    expect(html).toContain('Build practical AI fluency');
     expect(html).toContain('Use the free AI Starter Kit');
     expect(html).toMatch(/href=["']\/guides["']/);
   });

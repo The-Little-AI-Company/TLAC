@@ -6,45 +6,61 @@ import { projects } from '../data/projects';
 ---
 
 <BaseLayout
-  title="The Little AI Company — Useful software for real AI work"
-  description="An independent software studio building practical, inspectable tools for AI memory, handoffs, and trustworthy work."
+  title="The Little AI Company — Practical AI skills and reliable agents"
+  description="Plain-English AI education, hands-on help, and inspectable tools for non-technical people who want to use AI and AI agents reliably."
 >
   <section class="hero">
     <div>
-      <span class="eyebrow">// independent AI software studio</span>
-      <h1>We make useful software for people working with AI.</h1>
+      <span class="eyebrow">// practical AI education and tools</span>
+      <h1>Learn to use AI and AI agents with more skill — and less guesswork.</h1>
       <p class="lede">
-        The Little AI Company builds small, practical tools for memory, handoffs,
-        and trustworthy AI work. We publish the code, the receipts, and what we learn.
+        We help non-technical people turn AI into useful, reliable work through
+        plain-English guides, hands-on workshops, and inspectable tools. Build
+        capability. Check the work. Keep control.
       </p>
       <div class="cta">
-        <a class="btn btn-primary" href="/projects">See what we're building →</a>
-        <a
-          class="btn btn-ghost"
-          href="https://github.com/The-Little-AI-Company"
-          target="_blank"
-          rel="noopener"
-        >Follow on GitHub</a>
+        <a class="btn btn-primary" href="/start-here">Start learning →</a>
+        <a class="btn btn-ghost" href="/services">Work with us</a>
       </div>
       <p class="learnline">
-        Here to learn? <a href="/guides">Use the free AI Starter Kit →</a>
+        Already experimenting? <a href="/guides">Browse the practical guides →</a>
       </p>
     </div>
     <div class="heroart">
       <img
-        src="/brand/mascot/tlac-owl-building.webp"
-        alt="The Little AI Company owl building software at a workbench"
+        src="/brand/mascot/tlac-owl-teaching.webp"
+        alt="The Little AI Company owl teaching practical AI skills"
         width="420"
         height="420"
       />
     </div>
   </section>
 
+  <section class="field-notes">
+    <div>
+      <span class="eyebrow">// learn by doing</span>
+      <h2>Build practical AI fluency.</h2>
+      <p>
+        Learn how to choose useful tasks, give AI the right context, check its
+        output, protect private information, build repeatable workflows, and
+        work with agents without handing over your judgment.
+      </p>
+      <a class="more" href="/guides">Use the free AI Starter Kit →</a>
+    </div>
+    <img
+      src="/brand/mascot/tlac-owl-writing.webp"
+      alt=""
+      width="190"
+      height="190"
+      loading="lazy"
+    />
+  </section>
+
   <section class="work">
     <div class="section-heading">
       <div>
-        <span class="eyebrow">// shipping now</span>
-        <h2>Things we make</h2>
+        <span class="eyebrow">// supporting tools</span>
+        <h2>Tools from the workshop</h2>
       </div>
       <a href="/projects">All projects →</a>
     </div>
@@ -53,29 +69,9 @@ import { projects } from '../data/projects';
     </div>
   </section>
 
-  <section class="field-notes">
-    <div>
-      <span class="eyebrow">// educational material</span>
-      <h2>Learn from the work.</h2>
-      <p>
-        We also publish short, plain-English guides for using AI well:
-        how to brief it, check it, protect private information, and turn a useful result
-        into a repeatable workflow.
-      </p>
-      <a class="more" href="/guides">Open the free Starter Kit →</a>
-    </div>
-    <img
-      src="/brand/mascot/tlac-owl-teaching.webp"
-      alt=""
-      width="190"
-      height="190"
-      loading="lazy"
-    />
-  </section>
-
   <section class="home-signup">
-    <h2>Follow the workshop.</h2>
-    <p>New releases, honest build notes, and the occasional useful guide. No hype cycle.</p>
+    <h2>Learn and build with us.</h2>
+    <p>Practical guides, workshop notes, and useful tools — sent when there is something worth sharing.</p>
     <Signup source="home-newsletter" subject="TLAC build notes signup" cta="Keep me posted" />
   </section>
 
@@ -87,7 +83,7 @@ import { projects } from '../data/projects';
       height="64"
       loading="lazy"
     />
-    <span>Small company. Real software. <b>Useful before impressive.</b></span>
+    <span>Practical skills. Inspectable tools. <b>Better AI judgment.</b></span>
   </p>
 </BaseLayout>
 
@@ -132,7 +128,7 @@ import { projects } from '../data/projects';
     grid-template-columns: 1fr 190px;
     gap: 30px;
     align-items: center;
-    margin-top: 54px;
+    margin-top: 34px;
     padding: 30px;
     background: var(--surface);
     border: 1px solid var(--line);

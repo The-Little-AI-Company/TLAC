@@ -1,9 +1,10 @@
 # The Little AI Company website
 
 The public company website for [The Little AI Company](https://littleaicompany.com).
-It is the front door for the software, open-source projects, and practical
-resources the company makes. Education supports the products; it is not the
-company's primary identity.
+It is the front door for practical AI education, workshops, free resources, and
+inspectable software that helps non-technical people use AI and AI agents more
+reliably. Education and enablement are the mission; the products support and
+prove that work.
 
 ## Stack
 
