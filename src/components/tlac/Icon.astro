@@ -1,0 +1,58 @@
+---
+import { ICONS, type IconName } from '../../icons/registry';
+
+/**
+ * Renders a registry icon as inline SVG.
+ *
+ * The accessibility rule is the whole reason this component exists rather than
+ * pasting SVG into pages. An icon is either decorative or it carries meaning,
+ * and the two need opposite markup:
+ *
+ *   decorative  aria-hidden, no accessible name, invisible to a screen reader
+ *   meaningful  role="img" and a real label, announced once
+ *
+ * A decorative icon that reaches the accessibility tree turns a clean page into
+ * noise. A meaningful icon that hides from it removes information. Requiring a
+ * `label` for anything not marked decorative makes the choice deliberate.
+ */
+
+interface Props {
+  name: IconName;
+  /**
+   * Accessible name. Required unless `decorative` is set — an icon with meaning
+   * and no name is unusable, and the type system should say so.
+   */
+  label?: string;
+  decorative?: boolean;
+  /** Any CSS length. Defaults to the current font size, so it sits on the text. */
+  size?: string;
+  class?: string;
+}
+
+const { name, label, decorative = false, size = '1em', class: className } = Astro.props;
+
+const icon = ICONS[name];
+
+if (!icon) {
+  throw new Error(`Icon: "${name}" is not in the registry. Add it to src/icons/registry.ts with its collection and licence before using it.`);
+}
+
+if (!decorative && !label) {
+  throw new Error(
+    `Icon "${name}" needs either a label or decorative. An icon that carries meaning without an accessible name is invisible to a screen reader, and a decorative one that announces itself is noise.`,
+  );
+}
+---
+
+<svg
+  viewBox={icon.viewBox}
+  width={size}
+  height={size}
+  fill="none"
+  class:list={['inline-block shrink-0 align-[-0.125em]', className]}
+  role={decorative ? undefined : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : label}
+  focusable="false"
+  set:html={icon.body}
+/>

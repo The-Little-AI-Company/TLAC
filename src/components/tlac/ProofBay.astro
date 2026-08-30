@@ -1,0 +1,56 @@
+---
+/**
+ * The proof bay — TLAC's compound pattern.
+ *
+ * A bordered bay with a labelled head, a subject, and a foot of receipts. It
+ * comes from the Night Ledger prototype, where evidence is the visual argument:
+ * the company's claim is that work is checked, so the page shows the check
+ * rather than asserting it.
+ *
+ * Static Astro. It needs no client state, so it ships no JavaScript.
+ */
+
+interface Receipt {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  /** Small label, upper left of the head. */
+  eyebrow: string;
+  /** Small label, upper right. Usually a status or a date. */
+  status?: string;
+  /** Receipts along the foot. Two or three read best. */
+  receipts?: Receipt[];
+  class?: string;
+}
+
+const { eyebrow, status, receipts = [], class: className } = Astro.props;
+---
+
+<figure class:list={['m-0 border border-rule-accent bg-surface-raised', className]}>
+  <div
+    class="grid grid-cols-2 items-center gap-3 border-b border-rule-accent px-4 py-3"
+  >
+    <span class="label-mono text-ink-accent">{eyebrow}</span>
+    {status && <span class="label-mono justify-self-end text-ink-muted">{status}</span>}
+  </div>
+
+  <div class="relative">
+    <slot />
+  </div>
+
+  {
+    receipts.length > 0 && (
+      <figcaption class="grid gap-x-4 border-t border-rule-accent px-4 py-3 sm:grid-flow-col sm:auto-cols-fr">
+        {receipts.map((receipt) => (
+          <div class="flex flex-col gap-1 py-1">
+            <span class="label-mono text-ink-muted">{receipt.label}</span>
+            {/* Receipts are data. Tabular figures stop them dancing between rows. */}
+            <span class="font-mono text-sm tabular-nums text-ink-primary">{receipt.value}</span>
+          </div>
+        ))}
+      </figcaption>
+    )
+  }
+</figure>

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prototype:motion": "python -m http.server 4404",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",

@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * A referral or affiliate link, with the disclosure attached to it.
+ *
+ * The disclosure is part of the component rather than a note somewhere on the
+ * page, because a disclosure a reader has to go looking for is not a
+ * disclosure. Advertising rules ask for it to be clear and close to the link,
+ * and putting it in the component is the only way to guarantee that every use
+ * carries one.
+ *
+ * `rel="sponsored"` is the correct value for a paid or affiliate destination.
+ * Marking it stops the link being read as an editorial endorsement, which
+ * protects both the reader and the site.
+ *
+ * `data-referral` lets the outbound tracker separate referral clicks from
+ * ordinary outbound clicks without keeping a hardcoded list of hosts.
+ */
+
+interface Props {
+  href: string;
+  /** What the reader is going to. Used in the disclosure sentence. */
+  product: string;
+  class?: string;
+}
+
+const { href, product, class: className } = Astro.props;
+---
+
+<span class:list={['inline-flex flex-wrap items-baseline gap-x-3 gap-y-1', className]}>
+  <a
+    href={href}
+    rel="sponsored noopener"
+    data-referral="true"
+    class="inline-flex items-center gap-2 font-display font-bold text-ink-link underline-offset-4 hover:underline"
+  >
+    <slot />
+    <Icon name="ArrowRight" decorative />
+  </a>
+  <!-- Visible, adjacent, and in plain words. Not a footnote. -->
+  <small class="label-mono text-ink-muted">
+    Referral link. We may get credit if you sign up for {product}.
+  </small>
+</span>

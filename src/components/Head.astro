@@ -1,0 +1,50 @@
+---
+import { buildHead } from '../seo/head';
+import type { PageMeta } from '../seo/types';
+
+interface Props {
+  meta: PageMeta;
+}
+
+const { meta } = Astro.props;
+
+if (!Astro.site) {
+  throw new Error(
+    'Head.astro requires `site` to be set in astro.config.mjs (via the SITE_URL env var). ' +
+      'A missing site would silently produce a wrong canonical URL, which is the exact failure this module exists to prevent.',
+  );
+}
+
+const head = buildHead(meta, { site: Astro.site.href, base: import.meta.env.BASE_URL });
+
+/*
+ * Icons live in public/, which Astro does NOT prefix with the base path. They
+ * go through the same URL helper as everything else so the subpath build does
+ * not 404 on them.
+ */
+const icon = (file: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${file}`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{head.title}</title>
+<meta name="description" content={head.description} />
+<link rel="canonical" href={head.canonical} />
+
+<link rel="icon" href={icon('favicon.ico')} sizes="any" />
+<link rel="apple-touch-icon" href={icon('favicon-180.png')} />
+<meta name="color-scheme" content="dark light" />
+
+<meta property="og:title" content={head.og.title} />
+<meta property="og:description" content={head.og.description} />
+<meta property="og:url" content={head.og.url} />
+<meta property="og:type" content={head.og.type} />
+<meta property="og:site_name" content={head.og.siteName} />
+{head.og.image && <meta property="og:image" content={head.og.image} />}
+
+<meta name="twitter:card" content={head.twitter.card} />
+<meta name="twitter:title" content={head.twitter.title} />
+<meta name="twitter:description" content={head.twitter.description} />
+{head.twitter.image && <meta name="twitter:image" content={head.twitter.image} />}
+
+<script type="application/ld+json" set:html={JSON.stringify(head.jsonLd)} is:inline />

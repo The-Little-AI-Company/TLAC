@@ -1,0 +1,124 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * The footer.
+ *
+ * A page that stops dead after its closing call to action reads as cut off.
+ * This gives the reader somewhere to go once they have decided not to write an
+ * email yet, which is most readers.
+ *
+ * MODULARITY NOTE. This used to import one site's landing copy directly, which
+ * meant a second site could not use it without inheriting the first site's
+ * words. Every string now arrives as a prop. The component owns the shape of a
+ * footer; the caller owns what goes in it.
+ *
+ * Nothing here renders a placeholder link. A dead link in a footer is the
+ * cheapest possible way to look unfinished, so a group with no links renders
+ * nothing at all.
+ */
+
+export interface FooterLink {
+  label: string;
+  href: string;
+  /** Optional right-aligned note, such as a status. */
+  note?: string;
+}
+
+export interface FooterGroup {
+  heading: string;
+  links: readonly FooterLink[];
+}
+
+/*
+ * Readonly throughout. Copy modules are declared `as const` so nothing can
+ * mutate them by accident, and a component that demands a mutable array is
+ * asking for a permission it never uses.
+ */
+interface Props {
+  /** Brand name. Line breaks are the caller's choice, so it arrives as lines. */
+  brandLines: readonly string[];
+  blurb: string;
+  primaryLink: FooterLink;
+  groups: readonly FooterGroup[];
+  /** Shown bottom left, usually a copyright line. */
+  smallPrint: string;
+  /** Shown bottom right. */
+  colophon?: string;
+}
+
+const { brandLines, blurb, primaryLink, groups, smallPrint, colophon } = Astro.props;
+
+const columns = groups.length + 1;
+---
+
+<footer class="border-t border-rule-strong bg-surface-sunken px-gutter py-section">
+  <div
+    class="grid gap-12"
+    style={`--footer-columns: ${columns}`}
+    data-footer-grid
+  >
+    <div>
+      <p class="font-display text-2xl font-black leading-display tracking-display">
+        {brandLines.map((line, i) => (i === 0 ? line : <><br />{line}</>))}
+      </p>
+      <p class="mt-5 measure-tight text-ink-secondary">{blurb}</p>
+      <a
+        class="mt-6 inline-flex items-center gap-2 font-display font-bold text-ink-link underline-offset-4 hover:underline"
+        href={primaryLink.href}
+      >
+        {primaryLink.label}
+        <Icon name="ArrowRight" decorative />
+      </a>
+    </div>
+
+    {
+      groups.map((group) => (
+        <nav aria-label={group.heading}>
+          <h2 class="label-mono text-ink-accent">{group.heading}</h2>
+          <ul class="mt-5 list-none p-0">
+            {group.links.map((link) => (
+              <li class="border-b border-rule-subtle">
+                <a
+                  class="flex items-baseline justify-between gap-4 py-3 hover:text-ink-link"
+                  href={link.href}
+                >
+                  <span class="font-bold">{link.label}</span>
+                  {link.note && <span class="label-mono text-ink-muted">{link.note}</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+
+  <div
+    class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-rule-default pt-6"
+  >
+    <p class="label-mono text-ink-muted">{smallPrint}</p>
+    {
+      colophon && (
+        <p class="label-mono text-ink-muted">
+          {colophon}
+          <Icon name="Anchor" decorative class="ml-1 text-ink-accent" />
+        </p>
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  /* Column count follows the number of groups, so adding one does not need a
+     class change at the call site. */
+  [data-footer-grid] {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    [data-footer-grid] {
+      grid-template-columns: 1.2fr repeat(calc(var(--footer-columns) - 1), 1fr);
+    }
+  }
+</style>

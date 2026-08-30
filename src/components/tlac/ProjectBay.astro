@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * A project, given the room to argue for itself.
+ *
+ * MODULARITY NOTE. This component used to import three specific Hoolio images
+ * and the `WorkItem` type from one site's copy file. Both were backwards. A
+ * component typed by a particular site's content cannot be reused by another
+ * one, and a component holding a hardcoded asset map needs editing every time
+ * a project is added.
+ *
+ * It now declares the shape it needs and receives the image. The caller owns
+ * which project and which picture; this file owns how a project is presented.
+ * `ProofBay` is the reference for this: zero imports, everything through props.
+ */
+
+/** Readonly throughout, because copy modules are declared `as const`. */
+export interface ProjectBayItem {
+  /** Ordinal shown beside the name and in the figure caption. */
+  index: string;
+  name: string;
+  /** One line. What it is, before any detail. */
+  what: string;
+  /** Checkable facts. Three reads best. */
+  facts: readonly string[];
+  status: string;
+  licence: string;
+  href: string;
+}
+
+interface Props {
+  item: ProjectBayItem;
+  /** The figure. Passed in, so this file knows nothing about brand assets. */
+  image: ImageMetadata;
+  imageAlt: string;
+  /** Even bays put the figure on the right, odd on the left. */
+  flip?: boolean;
+  /** Status string that counts as shipped, for the tick versus compass icon. */
+  shippedStatus?: string;
+}
+
+const { item, image, imageAlt, flip = false, shippedStatus = 'Public' } = Astro.props;
+
+const isShipped = item.status === shippedStatus;
+---
+
+<article
+  class="grid items-center gap-10 border-b border-rule-default py-section lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]"
+  data-reveal
+>
+  <div class:list={[flip && 'lg:order-2']}>
+    <div class="flex items-baseline gap-5">
+      <span class="font-mono text-sm tabular-nums text-ink-muted">{item.index}</span>
+      <h3 class="font-display text-display-3 font-black leading-display tracking-display">
+        {item.name}
+      </h3>
+    </div>
+
+    <p class="mt-5 measure-body text-xl leading-copy text-ink-secondary">{item.what}</p>
+
+    <ul class="mt-8 list-none border-t border-rule-subtle p-0">
+      {
+        item.facts.map((fact) => (
+          <li class="flex items-start gap-4 border-b border-rule-subtle py-4">
+            <Icon
+              name={isShipped ? 'Check' : 'Compass'}
+              decorative
+              class:list={['mt-1', isShipped ? 'text-state-success' : 'text-ink-accent']}
+            />
+            <span class="measure-body text-ink-secondary">{fact}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4">
+      <div>
+        <p class="label-mono text-ink-muted">Status</p>
+        <p class:list={['mt-1 font-mono text-sm', isShipped ? 'text-state-success' : 'text-ink-accent']}>
+          {item.status}
+        </p>
+      </div>
+      <div>
+        <p class="label-mono text-ink-muted">Licence</p>
+        <p class="mt-1 font-mono text-sm">{item.licence}</p>
+      </div>
+      <a
+        class="inline-flex items-center gap-2 font-display font-bold text-ink-link underline-offset-4 hover:underline"
+        href={item.href}
+      >
+        {isShipped ? 'Read the source' : 'Ask about it'}
+        <Icon name="ArrowRight" decorative />
+      </a>
+    </div>
+  </div>
+
+  <!-- The figure sits in a bay so it reads as an exhibit with a label, which is
+       the same grammar as the hero's proof bay. -->
+  <figure class:list={['m-0 border border-rule-accent bg-surface-raised', flip && 'lg:order-1']}>
+    <figcaption
+      class="flex items-center justify-between gap-3 border-b border-rule-accent px-4 py-3 label-mono"
+    >
+      <span class="text-ink-accent">{item.name}</span>
+      <span class="text-ink-muted">Fig. {item.index}</span>
+    </figcaption>
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[280, 460, 620]}
+      sizes="(min-width: 1024px) 30vw, 85vw"
+      class="w-full object-cover"
+      loading="lazy"
+    />
+  </figure>
+</article>

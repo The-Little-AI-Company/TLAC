@@ -1,0 +1,397 @@
+/*
+ * TLAC design tokens — the single source.
+ *
+ * Layout of this file, and the reason for it:
+ *
+ *   1. `@theme`        static design values. Tailwind owns these, emits them
+ *                      once as :root custom properties, and generates the
+ *                      matching utilities. Fonts, type scale, spacing, radius,
+ *                      and easing never change between themes, so they belong
+ *                      here rather than in a theme block.
+ *
+ *   2. `:root`         semantic colors and depth. These DO change per theme,
+ *                      so Tailwind must not own them.
+ *
+ *   3. `@theme inline` publishes the semantics to Tailwind as `--color-*`
+ *                      utilities. `inline` means the utility resolves through
+ *                      the custom property at use time, so switching the theme
+ *                      restyles the page without regenerating one class.
+ *
+ * Naming rule that keeps this working: anything Tailwind already claims a
+ * namespace for (--font-*, --text-*, --leading-*, --tracking-*, --radius-*,
+ * --ease-*, --shadow-*, --color-*) is either declared inside `@theme` or given
+ * a different prefix. Writing `--font-display: var(--font-display)` inside
+ * `@theme inline` produces a circular reference that silently kills the font.
+ * That bug shipped once in this file. It is why the rule is written down.
+ *
+ * The rule that keeps the system honest: no component file declares a raw
+ * color. A test enforces it, so drift cannot start quietly.
+ *
+ * Direction: Night Ledger. The prototype came back with one note — more depth,
+ * clearer separation between layers. That is why the night ramp has six steps
+ * instead of two, and why rules and depth are tokens rather than opacities
+ * invented at the call site.
+ */
+
+/* ------------------------------------------------------------------ */
+/* 1. Static design values — Tailwind owns these                       */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* ---- Color primitives ------------------------------------------ */
+  /* A component must never name one of these. Components name a
+     semantic token, and the semantic tokens are defined further down. */
+
+  /* Night — the ledger ground. Warm-shifted navy, not a neutral grey. */
+  --color-tlac-night-950: #0b1120;
+  --color-tlac-night-900: #11182b;
+  --color-tlac-night-800: #18243d;
+  --color-tlac-night-700: #1f2d4b;
+  --color-tlac-night-600: #283a5e;
+  --color-tlac-night-500: #35496f;
+
+  /* Bone — warm paper. */
+  --color-tlac-bone-50:  #fbf7ef;
+  --color-tlac-bone-100: #f3ebdd;
+  --color-tlac-bone-200: #e9ddc9;
+  --color-tlac-bone-300: #dccdb2;
+  --color-tlac-bone-400: #c4b192;
+
+  /* Electric blue — structure, links, the primary action. */
+  --color-tlac-blue-300: #b3c2ff;
+  --color-tlac-blue-400: #8ba3ff;
+  --color-tlac-blue-500: #5b7cff;
+  --color-tlac-blue-600: #3d5ce0;
+  --color-tlac-blue-700: #2f4fd8;
+
+  /* Amber — the highlight. Labels, eyebrows, the second action. */
+  --color-tlac-amber-300: #ffd9a3;
+  --color-tlac-amber-400: #ffc470;
+  --color-tlac-amber-500: #ffb04a;
+  --color-tlac-amber-600: #d98c1f;
+  --color-tlac-amber-700: #8a5a00;
+
+  /* Coral — heat. Warnings, closing bays, the thing you must not miss. */
+  --color-tlac-coral-300: #ffb3a3;
+  --color-tlac-coral-400: #ff8a72;
+  --color-tlac-coral-500: #ed7058;
+  --color-tlac-coral-600: #c9432b;
+  --color-tlac-coral-700: #b5361d;
+
+  /* Teal — confirmation. Taken from Hoolio's trousers, not from a default. */
+  --color-tlac-teal-400: #7fd4bc;
+  --color-tlac-teal-500: #5fc4a8;
+  --color-tlac-teal-600: #2f8f74;
+  --color-tlac-teal-700: #1d6b56;
+
+  /* ---- Type ------------------------------------------------------ */
+  /* Each stack names the intended face first and degrades to a real
+     system face. The lab self-hosts the variable fonts, so no request
+     leaves the page. */
+
+  --font-display: "Archivo Variable", "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-body:    "Manrope Variable", "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Added to Tailwind's scale rather than replacing it. Display sizes are
+     fluid and separately named, so `text-2xl` keeps its ordinary meaning
+     and a hero opts in to `text-display-2` deliberately. */
+  --text-micro: 0.6875rem;
+
+  --text-display-1: clamp(3.5rem,  1.5rem + 8.6vw, 8.25rem);
+  --text-display-2: clamp(2.75rem, 1.6rem + 5.2vw, 5.5rem);
+  --text-display-3: clamp(2rem,    1.4rem + 2.8vw, 3.25rem);
+  --text-display-4: clamp(1.5rem,  1.2rem + 1.4vw, 2.125rem);
+
+  --leading-display: 0.92;
+  --leading-snug:    1.15;
+  --leading-copy:    1.55;
+  --leading-loose:   1.7;
+
+  --tracking-display: -0.045em;
+  --tracking-label:   0.08em;
+  --tracking-wider:   0.14em;
+
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-semi:    600;
+  --font-weight-bold:    700;
+  --font-weight-black:   800;
+
+  /* ---- Space ----------------------------------------------------- */
+  /* Section rhythm is fluid so a phone does not inherit desktop air. */
+
+  --spacing-section: clamp(4rem, 9vw, 11rem);
+  --spacing-gutter:  clamp(1.25rem, 4vw, 6rem);
+
+  /* ---- Radius ---------------------------------------------------- */
+  /* The ledger direction is square. Radius is the exception, not the rule. */
+
+  --radius-none: 0px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+
+  /* ---- Motion ---------------------------------------------------- */
+
+  --ease-out:   cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in:    cubic-bezier(0.6, 0, 0.9, 0.3);
+  --ease-inout: cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+/* Values Tailwind claims no namespace for. Safe to declare at the root. */
+:root {
+  --measure-tight: 38ch;
+  --measure-body:  62ch;
+  --measure-wide:  74ch;
+
+  --duration-instant: 90ms;
+  --duration-fast:    180ms;
+  --duration-base:    280ms;
+  --duration-slow:    520ms;
+  --duration-reveal:  720ms;
+
+  --stagger-step: 65ms;
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Semantics — Night Ledger is the default. The brand is dark.      */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces, deepest to nearest. Six steps is what "more depth" meant. */
+  --surface-sunken:  var(--color-tlac-night-950);
+  --surface-page:    var(--color-tlac-night-900);
+  --surface-raised:  var(--color-tlac-night-800);
+  --surface-overlay: var(--color-tlac-night-700);
+  --surface-lifted:  var(--color-tlac-night-600);
+  --surface-inverse: var(--color-tlac-bone-100);
+
+  --ink-primary:   var(--color-tlac-bone-100);
+  --ink-secondary: color-mix(in srgb, var(--color-tlac-bone-100) 78%, transparent);
+  --ink-muted:     color-mix(in srgb, var(--color-tlac-bone-100) 56%, transparent);
+  --ink-inverse:   var(--color-tlac-night-900);
+  --ink-accent:    var(--color-tlac-amber-500);
+  --ink-link:      var(--color-tlac-blue-400);
+  /* Emphasis in running text. coral-500 is a surface weight and is too dark
+     to sit on the night ground, so the ink version steps lighter. */
+  --ink-hot:       var(--color-tlac-coral-400);
+
+  /* Three rule strengths. One border token is what made the prototype
+     read flat — every edge carried the same weight. */
+  --rule-subtle:  color-mix(in srgb, var(--color-tlac-bone-100) 12%, transparent);
+  --rule-default: color-mix(in srgb, var(--color-tlac-bone-100) 22%, transparent);
+  --rule-strong:  color-mix(in srgb, var(--color-tlac-bone-100) 42%, transparent);
+  --rule-accent:  var(--color-tlac-blue-500);
+
+  /* blue-600, not blue-500. The prototype filled this button with blue-500 and
+     set white text, which measures 3.64:1 and fails AA. Stepping the surface one
+     stop down keeps the white-on-blue the direction asked for and reaches
+     5.52:1. blue-500 stays the hairline accent below, where the rule differs. */
+  --accent-primary:    var(--color-tlac-blue-600);
+  --accent-primary-on: #ffffff;
+  --accent-warm:       var(--color-tlac-amber-500);
+  --accent-warm-on:    var(--color-tlac-night-900);
+  --accent-hot:        var(--color-tlac-coral-500);
+  --accent-hot-on:     var(--color-tlac-night-900);
+
+  --state-success:    var(--color-tlac-teal-500);
+  --state-success-on: var(--color-tlac-night-900);
+  --state-warning:    var(--color-tlac-amber-500);
+  --state-danger:     var(--color-tlac-coral-400);
+  --state-info:       var(--color-tlac-blue-400);
+
+  --focus-ring:   var(--color-tlac-amber-500);
+  --focus-width:  3px;
+  --focus-offset: 3px;
+
+  /* Hover steps. A filled control moves along its own ramp instead of growing
+     a shadow, so the interaction reads as ink pressing rather than as a card
+     floating.
+
+     THE RULE: hover moves AWAY from the foreground, never toward it. A surface
+     carrying dark text gets lighter, one carrying light text gets darker, so
+     contrast rises on hover instead of falling. Stepping the wrong way put the
+     coral hover at 3.63:1 and the paper amber hover at 2.98:1, both below AA,
+     while the resting states passed. The harness measures every hover pair for
+     exactly that reason. */
+  --accent-primary-hover:  var(--color-tlac-blue-700);
+  --accent-warm-hover:     var(--color-tlac-amber-400);
+  --accent-hot-hover:      var(--color-tlac-coral-400);
+  --surface-inverse-hover: var(--color-tlac-bone-200);
+
+  /* One real shadow, for something that genuinely floats above the page.
+     Named `elevation` rather than `shadow` so it does not collide with
+     Tailwind's namespace.
+
+     There is deliberately no offset-shadow token. An accent-coloured hard
+     offset with a matching hover translate is a borrowed look, not this
+     system's, and putting amber behind every control made it louder still.
+     Depth here comes from the surface ramp and the three rule weights. */
+  --elevation-ambient: 0 24px 60px -20px rgb(0 0 0 / 0.7);
+}
+
+/* Paper ledger. Same system, inverted ground, re-picked accents.
+   The accents are NOT the dark-theme values — blue-500 on bone fails
+   contrast, so the paper theme steps down the ramp.
+
+   The selector is `[data-theme="light"]`, not `:root[data-theme="light"]`,
+   so any element can open a paper island inside a night page. A page that
+   wants one inverted band should not have to hand-pick inverse tokens and
+   hope they stay in step with the theme. Put the attribute on the section and
+   everything inside it flips together. */
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* A light ramp runs out of headroom at white, so the top two steps were both
+     #ffffff and the six-step ramp collapsed to five on paper. `overlay` now
+     sits between bone-50 and white so every step stays distinguishable. */
+  --surface-sunken:  var(--color-tlac-bone-300);
+  --surface-page:    var(--color-tlac-bone-100);
+  --surface-raised:  var(--color-tlac-bone-50);
+  --surface-overlay: #fdfaf4;
+  --surface-lifted:  #ffffff;
+  --surface-inverse: var(--color-tlac-night-900);
+
+  --ink-primary:   var(--color-tlac-night-900);
+  --ink-secondary: color-mix(in srgb, var(--color-tlac-night-900) 76%, transparent);
+  --ink-muted:     color-mix(in srgb, var(--color-tlac-night-900) 56%, transparent);
+  --ink-inverse:   var(--color-tlac-bone-100);
+  --ink-accent:    var(--color-tlac-amber-700);
+  --ink-link:      var(--color-tlac-blue-700);
+  --ink-hot:       var(--color-tlac-coral-600);
+
+  --rule-subtle:  color-mix(in srgb, var(--color-tlac-night-900) 12%, transparent);
+  --rule-default: color-mix(in srgb, var(--color-tlac-night-900) 20%, transparent);
+  /* 55%, not 44%. Ink on paper needs a heavier mix than bone on navy to reach
+     the same separation — 44% measured 2.75:1 against the page. */
+  --rule-strong:  color-mix(in srgb, var(--color-tlac-night-900) 55%, transparent);
+  --rule-accent:  var(--color-tlac-blue-700);
+
+  --accent-primary:    var(--color-tlac-blue-700);
+  --accent-primary-on: #ffffff;
+  --accent-warm:       var(--color-tlac-amber-600);
+  --accent-warm-on:    var(--color-tlac-night-900);
+  --accent-hot:        var(--color-tlac-coral-600);
+  --accent-hot-on:     #ffffff;
+
+  /* White, not night-900. Ink on teal-700 measures 2.77:1 and fails. */
+  --state-success:    var(--color-tlac-teal-700);
+  --state-success-on: #ffffff;
+  --state-warning:    var(--color-tlac-amber-700);
+  --state-danger:     var(--color-tlac-coral-700);
+  --state-info:       var(--color-tlac-blue-700);
+
+  --focus-ring: var(--color-tlac-blue-700);
+
+  --accent-primary-hover:  var(--color-tlac-blue-600);
+  --accent-warm-hover:     var(--color-tlac-amber-500);
+  --accent-hot-hover:      var(--color-tlac-coral-700);
+  --surface-inverse-hover: var(--color-tlac-night-800);
+
+  --elevation-ambient: 0 24px 60px -24px rgb(17 24 43 / 0.28);
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. shadcn remapping                                                 */
+/*                                                                     */
+/* shadcn components expect these exact names. Point them at TLAC       */
+/* semantics so a vendor component inherits the system instead of       */
+/* carrying its own palette in. One block serves both themes, because   */
+/* every value on the right already switches with the theme.            */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --background:             var(--surface-page);
+  --foreground:             var(--ink-primary);
+  --card:                   var(--surface-raised);
+  --card-foreground:        var(--ink-primary);
+  --popover:                var(--surface-overlay);
+  --popover-foreground:     var(--ink-primary);
+  --primary:                var(--accent-primary);
+  --primary-foreground:     var(--accent-primary-on);
+  --secondary:              var(--surface-raised);
+  --secondary-foreground:   var(--ink-primary);
+  --muted:                  var(--surface-raised);
+  --muted-foreground:       var(--ink-muted);
+  --accent:                 var(--accent-warm);
+  --accent-foreground:      var(--accent-warm-on);
+  --destructive:            var(--accent-hot);
+  --destructive-foreground: var(--accent-hot-on);
+  --border:                 var(--rule-default);
+  --input:                  var(--rule-default);
+  --ring:                   var(--focus-ring);
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. Tailwind color and depth map                                     */
+/* ------------------------------------------------------------------ */
+
+@theme inline {
+  --color-surface-sunken:  var(--surface-sunken);
+  --color-surface-page:    var(--surface-page);
+  --color-surface-raised:  var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-lifted:  var(--surface-lifted);
+  --color-surface-inverse: var(--surface-inverse);
+
+  --color-ink-primary:   var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted:     var(--ink-muted);
+  --color-ink-inverse:   var(--ink-inverse);
+  --color-ink-accent:    var(--ink-accent);
+  --color-ink-link:      var(--ink-link);
+  --color-ink-hot:       var(--ink-hot);
+
+  --color-rule-subtle:  var(--rule-subtle);
+  --color-rule-default: var(--rule-default);
+  --color-rule-strong:  var(--rule-strong);
+  --color-rule-accent:  var(--rule-accent);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-warm:    var(--accent-warm);
+  --color-accent-hot:     var(--accent-hot);
+
+  /* Foregrounds, so a filled surface can name the text colour that was
+     measured against it. Using --ink-inverse on a filled accent is the bug
+     these exist to prevent: it measured 3.20:1 on the primary. */
+  --color-on-primary: var(--accent-primary-on);
+  --color-on-warm:    var(--accent-warm-on);
+  --color-on-hot:     var(--accent-hot-on);
+  --color-on-success: var(--state-success-on);
+
+  --color-state-success: var(--state-success);
+  --color-state-warning: var(--state-warning);
+  --color-state-danger:  var(--state-danger);
+  --color-state-info:    var(--state-info);
+
+  /* shadcn's expected names, so its utilities resolve too. */
+  --color-background:             var(--background);
+  --color-foreground:             var(--foreground);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-foreground);
+  --color-popover:                var(--popover);
+  --color-popover-foreground:     var(--popover-foreground);
+  --color-primary:                var(--primary);
+  --color-primary-foreground:     var(--primary-foreground);
+  --color-secondary:              var(--secondary);
+  --color-secondary-foreground:   var(--secondary-foreground);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-accent:                 var(--accent);
+  --color-accent-foreground:      var(--accent-foreground);
+  --color-destructive:            var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:                 var(--border);
+  --color-input:                  var(--input);
+  --color-ring:                   var(--ring);
+
+  --color-accent-primary-hover:  var(--accent-primary-hover);
+  --color-accent-warm-hover:     var(--accent-warm-hover);
+  --color-accent-hot-hover:      var(--accent-hot-hover);
+  --color-surface-inverse-hover: var(--surface-inverse-hover);
+
+  --shadow-ambient: var(--elevation-ambient);
+}
