@@ -33,7 +33,7 @@ export const tools: Tool[] = [
       fallback: 'v0.2.0',
       source: { kind: 'github-release', repo: 'The-Little-AI-Company/callout' },
     },
-    primary: { label: 'Download for Windows', href: 'https://github.com/The-Little-AI-Company/callout/releases/latest' },
+    primary: { label: 'Download for Windows', href: 'https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe' },
     repo: 'https://github.com/The-Little-AI-Company/callout',
   },
   {
