@@ -1,36 +1,46 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-
-const email = 'jeffkazzee@gmail.com';
+import Base from '../layouts/Base.astro';
 ---
 
-<BaseLayout
-  title="Contact — The Little AI Company"
-  description="Questions, ideas, or want to work together? Get in touch."
+<Base
+  title="Contact"
+  description="Reach The Little AI Company by email or on GitHub. Bug reports go to each tool's issue tracker."
 >
-  <section class="contact">
-    <span class="eyebrow">// say hello</span>
-    <h1>Get in touch.</h1>
-    <p class="lede">
-      Found a bug? Have an idea for one of the products? Want to work together on a small,
-      practical AI system? Send a note.
-    </p>
-    <p class="email">
-      <a class="btn btn-primary" href={`mailto:${email}`}>Email {email} →</a>
-    </p>
-    <p class="alt">
-      Looking for the software? <a href="/projects">Browse the projects</a>.
-      Looking for educational material? <a href="/guides">Use the free guides</a>.
-    </p>
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>Contact</h1>
+      <p class="lede">One person answers this. Expect a reply within a few days.</p>
+    </div>
   </section>
-</BaseLayout>
 
-<style>
-  .contact { max-width: 640px; margin: 0 auto; padding: 64px 0 48px; }
-  .contact h1 { font-size: clamp(34px, 5.4vw, 56px); font-weight: 900; margin: 16px 0 0; }
-  .lede { color: var(--muted); font-size: 19px; margin: 20px 0 28px; }
-  .email { margin: 0 0 24px; }
-  .email a { word-break: break-word; }
-  .alt { color: var(--muted); font-size: 16px; }
-  .alt a { color: var(--signal); }
-</style>
+  <section class="section">
+    <div class="wrap">
+      <dl class="lanes">
+        <div class="lane">
+          <dt>Email</dt>
+          <dd><a href="mailto:jeff@littleaicompany.com">jeff@littleaicompany.com</a></dd>
+        </div>
+        <div class="lane">
+          <dt>Bugs</dt>
+          <dd>
+            Open an issue on the tool's repository: <a href="https://github.com/The-Little-AI-Company/callout/issues">Callout</a> or <a href="https://github.com/vivary-dev/vivary/issues">Vivary</a>.
+          </dd>
+        </div>
+        <div class="lane">
+          <dt>Security</dt>
+          <dd>
+            Email the address above with "security" in the subject. Don't open a public
+            issue for a vulnerability.
+          </dd>
+        </div>
+        <div class="lane">
+          <dt>Elsewhere</dt>
+          <dd>
+            <a href="https://github.com/The-Little-AI-Company">GitHub</a>, <a href="https://x.com/JeffKazzee">X</a>, and <a href="https://bsky.app/profile/jeffkazzee.bsky.social">Bluesky</a>.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Base>
+
