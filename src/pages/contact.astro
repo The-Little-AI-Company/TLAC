@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { tools } from '../data/tools';
 ---
 
 <Base
@@ -23,7 +24,11 @@ import Base from '../layouts/Base.astro';
         <div class="lane">
           <dt>Bugs</dt>
           <dd>
-            Open an issue on the tool's repository: <a href="https://github.com/The-Little-AI-Company/callout/issues">Callout</a> or <a href="https://github.com/vivary-dev/vivary/issues">Vivary</a>.
+            Open an issue on the tool's repository: {tools.map((t, i) => (
+              <>
+                <a href={`${t.repo}/issues`}>{t.name}</a>{i < tools.length - 1 ? ' or ' : '.'}
+              </>
+            ))}
           </dd>
         </div>
         <div class="lane">
