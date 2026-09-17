@@ -19,6 +19,7 @@
   --concrete: #8a8a85;
   --steel: #2a2d31;
   --orange: #ff5a1f;
+  --orange-deep: #b83a0a;
   --rule: #c9c6be;
 
   --display: 'Big Shoulders Stencil', 'Impact', 'Arial Narrow', sans-serif;
@@ -95,11 +96,11 @@ a {
 }
 
 a:hover {
-  color: var(--orange);
+  text-decoration-color: var(--orange);
 }
 
 :focus-visible {
-  outline: 3px solid var(--orange);
+  outline: 3px solid var(--orange-deep);
   outline-offset: 3px;
 }
 
@@ -200,7 +201,7 @@ pre code {
 }
 
 .facts dt {
-  color: var(--concrete);
+  color: var(--steel);
 }
 
 .facts dd {

@@ -30,16 +30,18 @@ Runs `astro check`, the production build, and the tests. The tests read
 
 | Path | What |
 | --- | --- |
-| `src/data/tools.ts` | The two tools: copy, status, links, and where the version comes from. Edit here first. |
+| `src/data/tools.ts` | The tools: copy, status, links, and where the version comes from. Edit here first. |
 | `src/pages/` | One file per page. |
 | `src/components/` | `Mark` (the skull bunny), `Plate` (a tool on the home page), `ToolHero` (a tool page header). |
 | `src/styles/global.css` | Tokens, fonts, and the shared layout classes. |
 | `public/fonts/` | Big Shoulders Stencil and Archivo, self-hosted under the OFL. |
 | `astro.config.mjs` | Redirects for URLs from the old education-era site. |
 
-Version stamps resolve at build time from the GitHub release (Callout) and
-npm (Vivary). If either lookup fails, the build uses the fallback in
-`tools.ts`, so update that fallback when you cut a release.
+A tool with a `version` entry in `tools.ts` gets its stamp at build time
+from that source (Callout reads the latest GitHub release). If the lookup
+fails, the build uses the entry's fallback, so update the fallback when you
+cut a release. A tool without a `version` entry shows its `status` instead
+(Vivary, until it has a public release).
 
 ## Deploy
 

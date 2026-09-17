@@ -28,12 +28,12 @@ export const tools: Tool[] = [
     summary:
       'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
     platform: 'Windows 10 and 11',
-    status: 'Private beta',
+    status: 'Released',
     version: {
       fallback: 'v0.2.0',
       source: { kind: 'github-release', repo: 'The-Little-AI-Company/callout' },
     },
-    primary: { label: 'Request beta access', href: 'https://the-little-ai-company.github.io/callout/' },
+    primary: { label: 'Download for Windows', href: 'https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe' },
     repo: 'https://github.com/The-Little-AI-Company/callout',
   },
   {
