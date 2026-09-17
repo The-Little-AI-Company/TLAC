@@ -38,7 +38,7 @@ describe('pages', () => {
 });
 
 describe('retired names', () => {
-  const banned = ['Wazoo', 'Hoolio', 'Bellamente', 'HarnessMax', 'Agent Relay', 'Starter Kit'];
+  const banned = ['Wazoo', 'Hoolio', 'Bellamente', 'HarnessMax', 'Agent Relay', 'Starter Kit', 'beta', 'Beta', 'Two tools'];
   it('do not appear on any page', () => {
     for (const p of pages) {
       const html = page(p);

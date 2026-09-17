@@ -111,13 +111,18 @@ const callout = tool('callout');
 
   <section class="section">
     <div class="wrap">
-      <h2 class="section-title">Status</h2>
+      <h2 class="section-title">Get it</h2>
       <p class="lede">
-        Private beta on Windows 10 and 11. Open source under MIT. Ask for access and
-        we'll send the installer and the setup guide.
+        Download the installer for Windows 10 and 11, run it, and paste your API keys
+        into Settings. No account. Open source under MIT.
       </p>
       <p class="status-actions">
         <a class="action" href={callout.primary.href}>{callout.primary.label}</a>
+      </p>
+      <p class="status-note">
+        The installer is not code-signed yet, so Windows SmartScreen warns on first
+        run. Choose More info, then Run anyway. The source is on GitHub if you'd
+        rather build it yourself.
       </p>
     </div>
   </section>
@@ -126,5 +131,11 @@ const callout = tool('callout');
 <style>
   .status-actions {
     margin-top: 24px;
+  }
+
+  .status-note {
+    margin-top: 20px;
+    color: var(--steel);
+    font-size: 0.95rem;
   }
 </style>
