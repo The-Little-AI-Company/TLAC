@@ -12,7 +12,7 @@ const version = await latestVersion(tool.version);
 <article class="plate" aria-labelledby={`plate-${tool.slug}`}>
   <header class="plate-head">
     <h3 id={`plate-${tool.slug}`}><a href={`/${tool.slug}/`}>{tool.name}</a></h3>
-    <span class="stamp">{version}</span>
+    <span class="stamp">{version ?? tool.status}</span>
   </header>
   <p class="plate-tagline">{tool.tagline}</p>
   <p class="plate-summary">{tool.summary}</p>

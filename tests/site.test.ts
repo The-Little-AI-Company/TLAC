@@ -29,9 +29,11 @@ describe('pages', () => {
     }
   });
 
-  it('shows a resolved version stamp for each tool on the home page', () => {
-    const stamps = page('').match(/class="stamp"[^>]*>v\d+\.\d+\.\d+</g) ?? [];
+  it('stamps Callout with a version and Vivary with its status on the home page', () => {
+    const stamps = page('').match(/class="stamp"[^>]*>([^<]+)</g) ?? [];
     expect(stamps).toHaveLength(2);
+    expect(stamps[0]).toMatch(/>v\d+\.\d+\.\d+</);
+    expect(stamps[1]).toMatch(/>In development</);
   });
 });
 

@@ -8,48 +8,55 @@ const vivary = tool('vivary');
 
 <Base
   title="Vivary"
-  description="Typed memory, search, and human gates for AI-agent workspaces, kept as plain Markdown files you can open and diff. One command scaffolds a workspace."
+  description="A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first, self-hostable, and everything stays on your machine."
 >
   <ToolHero tool={vivary} />
 
   <section class="section">
     <div class="wrap two-col">
       <div>
-        <h2 class="section-title">What it does</h2>
+        <h2 class="section-title">What it is</h2>
         <p>
-          Coding agents forget between sessions and overwrite each other within them.
-          Vivary gives a project a small, typed memory that agents read at the start of
-          work and write back to under rules you set.
+          One app where you open a project, talk to an agent about it, and watch what
+          the agent does to your files. The agents, your credentials, your files, and
+          the conversation history stay on the machine that runs Vivary.
         </p>
       </div>
       <dl class="lanes">
         <div class="lane">
-          <dt>Files, not a database</dt>
+          <dt>Work on a project</dt>
           <dd>
-            Every record is Markdown in your repository. You can open it, diff it, and
-            revert it with git. A new workspace starts with five small files.
+            Open a project and work with an agent that can read files, edit them, and run
+            tools. Every change lands in your own folder.
           </dd>
         </div>
         <div class="lane">
-          <dt>Typed context</dt>
+          <dt>Come back to it</dt>
           <dd>
-            Records have a declared type and a bounded size, so an agent gets the evidence
-            it needs for a task and not the whole history.
+            Return to a project's conversations, search past sessions, and keep the
+            memory worth keeping in files you can open.
           </dd>
         </div>
         <div class="lane">
-          <dt>Receipts and gates</dt>
+          <dt>Use the harnesses you have</dt>
           <dd>
-            Work carries provenance. A change to memory proposes a plan first, and the
-            plan applies only after you approve it. A doctor command checks the
-            workspace and rolls back a failed write.
+            Supported coding harnesses you already installed, such as Claude Code, run
+            inside the workspace with their own tools. Guidance for them lives in files
+            in the project.
           </dd>
         </div>
         <div class="lane">
-          <dt>Fits a project you already have</dt>
+          <dt>See what you're building</dt>
           <dd>
-            An existing repository keeps its own structure and gets at most three Vivary
-            files.
+            Preview the site or dashboard the agent is working on, and let the agent
+            inspect and debug it.
+          </dd>
+        </div>
+        <div class="lane">
+          <dt>Reach it from your phone</dt>
+          <dd>
+            Run the instance on your computer or a server of your own, and connect a
+            phone browser to it when you choose to turn on remote access.
           </dd>
         </div>
       </dl>
@@ -59,18 +66,22 @@ const vivary = tool('vivary');
   <section class="section">
     <div class="wrap two-col">
       <div>
-        <h2 class="section-title">Start a workspace</h2>
-        <p>One command, Python 3.11 or newer. The npm launcher runs the same scaffolder.</p>
+        <h2 class="section-title">What it asks of you</h2>
       </div>
-      <div class="snippets">
-        <pre><code>uvx create-vivary init my-workspace --preset coding
-uvx create-vivary doctor my-workspace</code></pre>
-        <pre><code>npx @vivary/create my-workspace --preset coding</code></pre>
-        <p>
-          The <a href={vivary.docs}>docs</a> cover presets, the record command, and
-          adopting an existing project.
-        </p>
-      </div>
+      <dl class="lanes">
+        <div class="lane">
+          <dt>No Vivary account</dt>
+          <dd>Local desktop use needs none. Your provider accounts are yours and separate.</dd>
+        </div>
+        <div class="lane">
+          <dt>Remote access is opt-in</dt>
+          <dd>Off until you set it up, and authenticated when it's on.</dd>
+        </div>
+        <div class="lane">
+          <dt>Windows first</dt>
+          <dd>The desktop app targets Windows. A Mac build is possible later work, not a promise.</dd>
+        </div>
+      </dl>
     </div>
   </section>
 
@@ -78,18 +89,22 @@ uvx create-vivary doctor my-workspace</code></pre>
     <div class="wrap">
       <h2 class="section-title">Status</h2>
       <p class="lede">
-        In development. The scaffolder is published on <a href="https://www.npmjs.com/package/@vivary/create">npm</a> and <a href="https://pypi.org/project/create-vivary/">PyPI</a> under MIT.
-        A desktop app is being built and is not released.
+        In development. A Windows candidate has been tested privately and is not a public
+        release. The <a href={vivary.primary.href}>release queue</a> lists what is verified
+        and what is still required, in the open. MIT.
+      </p>
+      <p class="original">
+        The original Vivary command-line tools, which scaffold typed memory for agent
+        workspaces, are preserved as <a href="https://www.npmjs.com/package/@vivary/create">@vivary/create</a> on npm and <a href="https://pypi.org/project/create-vivary/">create-vivary</a> on PyPI. They are not the desktop app.
       </p>
     </div>
   </section>
 </Base>
 
 <style>
-  .snippets {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-width: 0;
+  .original {
+    margin-top: 28px;
+    color: var(--steel);
+    font-size: 0.95rem;
   }
 </style>

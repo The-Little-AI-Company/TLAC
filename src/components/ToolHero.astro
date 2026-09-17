@@ -12,7 +12,7 @@ const version = await latestVersion(tool.version);
 <section class="tool-hero">
   <div class="wrap">
     <p class="tool-kicker">
-      <span class="stamp">{version}</span>
+      {version && <span class="stamp">{version}</span>}
       <span class="stamp">{tool.status}</span>
       <span class="stamp">{tool.platform}</span>
     </p>

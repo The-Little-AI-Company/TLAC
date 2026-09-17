@@ -14,10 +14,10 @@ export interface Tool {
   summary: string;
   platform: string;
   status: string;
-  version: { fallback: string; source: VersionSource };
+  // Absent when the tool has no public release to stamp.
+  version?: { fallback: string; source: VersionSource };
   primary: Link;
   repo: string;
-  docs?: string;
 }
 
 export const tools: Tool[] = [
@@ -39,18 +39,13 @@ export const tools: Tool[] = [
   {
     slug: 'vivary',
     name: 'Vivary',
-    tagline: 'Memory your agents keep in files you can read.',
+    tagline: 'Your projects. Your agents. Your machine.',
     summary:
-      'Typed memory, search, and human gates for AI-agent workspaces, kept as plain Markdown files you can open and diff. One command scaffolds a workspace.',
-    platform: 'Node 22 or Python 3.11 and later',
+      'A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app, with your agents, credentials, files, and history kept on the host.',
+    platform: 'Windows first. Web client for a self-hosted instance.',
     status: 'In development',
-    version: {
-      fallback: 'v0.4.2',
-      source: { kind: 'npm', pkg: '@vivary/create' },
-    },
-    primary: { label: 'Read the docs', href: 'https://vivary.vercel.app/' },
-    repo: 'https://github.com/vivary-dev/vivary',
-    docs: 'https://vivary.vercel.app/',
+    primary: { label: 'Watch the release queue', href: 'https://github.com/vivary-dev/Vivary-New/milestone/1' },
+    repo: 'https://github.com/vivary-dev/Vivary-New',
   },
 ];
 
@@ -60,9 +55,11 @@ export function tool(slug: Tool['slug']): Tool {
   return found;
 }
 
-// Resolved at build time so the plates show the shipped version without a
+// Resolved at build time so a plate shows the shipped version without a
 // hand edit per release. Any failure falls back to the registered value.
-export async function latestVersion({ fallback, source }: Tool['version']): Promise<string> {
+export async function latestVersion(version: Tool['version']): Promise<string | undefined> {
+  if (!version) return undefined;
+  const { fallback, source } = version;
   const url =
     source.kind === 'npm'
       ? `https://registry.npmjs.org/${source.pkg}/latest`
