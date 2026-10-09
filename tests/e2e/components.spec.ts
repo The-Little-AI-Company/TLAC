@@ -218,7 +218,7 @@ for (const scheme of SCHEMES) {
 
         test('inline links in prose carry an accent underline too', async ({ page }) => {
           await open(page, '/vivary/');
-          const link = page.getByRole('link', { name: 'release queue' });
+          const link = page.getByRole('link', { name: 'release queue', exact: true });
           const s = await style(link, ['text-decoration-line', 'text-decoration-color']);
           expect(s['text-decoration-line']).toBe('underline');
           expect(s['text-decoration-color']).toBe(rgb(scheme, 'accent'));
@@ -266,9 +266,13 @@ for (const scheme of SCHEMES) {
         test('the skip link is ink on the ground until focused and never covers the brand once hidden', async ({ page }) => {
           await open(page, '/');
           const skip = page.getByRole('link', { name: 'Skip to content' });
-          const hidden = await box(skip);
-          const visibleInViewport = hidden.x >= 0 && hidden.y >= 0 && hidden.x < width && hidden.y < VIEWPORT_HEIGHT && hidden.width > 1 && hidden.height > 1;
-          expect(visibleInViewport, 'the skip link should be off-screen or clipped until it has focus').toBe(false);
+          // Clipped or off-screen, nothing at the link's own position belongs to it until it has focus.
+          const reachable = await skip.evaluate((el) => {
+            const r = el.getBoundingClientRect();
+            const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            return hit === el || el.contains(hit);
+          });
+          expect(reachable, 'the skip link should be off-screen or clipped until it has focus').toBe(false);
           await page.keyboard.press('Tab');
           const focused = await box(skip);
           expect(focused.x).toBeGreaterThanOrEqual(0);

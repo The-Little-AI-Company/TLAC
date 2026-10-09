@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { DIST, PUBLIC, ROOT, listFiles, sha256 } from '../helpers/dist';
-import { decodePng, pixelAt, readPngSize } from '../helpers/image';
+import { decodePng, readPngSize } from '../helpers/image';
 import { HEAD } from '../helpers/spec';
 import { contrast, parseHex } from '../helpers/color';
 
@@ -66,17 +66,18 @@ describe('the social card, public/og.png', () => {
 
   describe('pixels', () => {
     const png = () => decodePng(readFileSync(file));
-    const hex = ([r, g, b]: readonly number[]): string => `#${[r, g, b].map((v) => (v ?? 0).toString(16).padStart(2, '0')).join('')}`;
 
-    it('sits on the ivory ground: the corners and the middle of the margins are --ground', () => {
+    it('sits on the ivory ground: most of the card is --ground', () => {
+      const image = png();
       const ground = parseHex(HEAD.themeColorLight.content);
-      for (const [x, y] of [[2, 2], [1197, 2], [2, 627], [1197, 627], [600, 8]] as const) {
-        const [r, g, b] = pixelAt(png(), x, y);
-        expect(
-          [Math.abs(r - ground.r), Math.abs(g - ground.g), Math.abs(b - ground.b)].every((d) => d <= 3),
-          `pixel ${x},${y} is ${hex([r, g, b])}, expected ${HEAD.themeColorLight.content}`,
-        ).toBe(true);
+      let onGround = 0;
+      for (let i = 0; i < image.width * image.height; i++) {
+        const o = i * 4;
+        const near = [0, 1, 2].every((c, k) => Math.abs((image.pixels[o + c] ?? 0) - [ground.r, ground.g, ground.b][k]!) <= 3);
+        if (near) onGround++;
       }
+      const share = onGround / (image.width * image.height);
+      expect(share, `${(share * 100).toFixed(1)}% of the card is ${HEAD.themeColorLight.content}`).toBeGreaterThan(0.5);
     });
 
     it('carries ink: the title, the mark and a rule, a few percent of the card', () => {

@@ -353,9 +353,10 @@ export const VIVARY_PAGE = {
     heading: 'Status',
     lede:
       'In development. A Windows preview came out on Sept 22, 2026 as a pre-release: an unsigned portable ZIP, not a stable release. The release queue lists what is verified and what is still required, in the open. MIT.',
+    // In the order they appear in the sentence.
     links: [
-      { label: 'release queue', href: 'https://github.com/vivary-dev/vivary/milestone/1' },
       { label: 'pre-release', href: 'https://github.com/vivary-dev/vivary/releases' },
+      { label: 'release queue', href: 'https://github.com/vivary-dev/vivary/milestone/1' },
     ],
     cli:
       'The original Vivary command-line tools, which scaffold typed memory for agent workspaces, are preserved as @vivary/create on npm and create-vivary on PyPI. They are not the desktop app.',

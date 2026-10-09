@@ -3,7 +3,7 @@
  * serves dist/404.html with a 404 status for unknown paths, so this checks the real behavior, from
  * paths at several depths, because the page must not depend on its own URL to find its styles.
  */
-import { expect, firstFamily, open, rgb, style, test } from './support';
+import { expect, firstFamily, open, pageBackground, rgb, style, test } from './support';
 
 const UNKNOWN = ['/this-page-does-not-exist', '/this-page-does-not-exist/', '/a/b/c/d', '/callout/nothing-here', '/img.png', '/services-old/?x=1#top'];
 
@@ -23,8 +23,7 @@ test.describe('unknown addresses', () => {
       await open(page, path, 404);
       expect(firstFamily((await style(page.getByRole('heading', { level: 1 }), ['font-family']))['font-family'] ?? '')).toBe('Instrument Serif');
       expect((await style(page.locator('body'), ['color']))['color']).not.toBe('rgb(0, 0, 0)');
-      const bg = await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
-      expect(bg).toBe(rgb('light', 'ground'));
+      expect(await pageBackground(page)).toBe(rgb('light', 'ground'));
       await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link')).toHaveCount(5);
       // Only the document itself is allowed to be a 404. Every asset the page needs loads fine.
       const self = page.url().split('#')[0] ?? '';

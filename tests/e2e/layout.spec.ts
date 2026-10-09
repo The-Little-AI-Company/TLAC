@@ -180,7 +180,9 @@ for (const width of LAYOUT_WIDTHS) {
       test(`keep their content inside ${sidePadding(width)}px page margins and ${CONTENT_MAX}px`, async ({ page }) => {
         await open(page, '/');
         const content = await page.evaluate(() => {
+          // Leaves only: sections and wrappers run edge to edge so their hairlines can.
           const rects = Array.from(document.querySelectorAll('main *'))
+            .filter((el) => el.children.length === 0 || el.tagName === 'IMG')
             .map((el) => el.getBoundingClientRect())
             .filter((r) => r.width > 0 && r.height > 0);
           return { left: Math.min(...rects.map((r) => r.left)), right: Math.max(...rects.map((r) => r.right)) };
@@ -379,8 +381,9 @@ for (const width of LAYOUT_WIDTHS) {
             }
           };
           await check('main .lede', 52);
-          await check('main p:not(.lede):not(.now):not(.numeral):not(.actions)', 62);
-          await check('main dd', 62);
+          // Prose only: not the lede, the now line, a numeral, a caption or quote, or a paragraph that holds a badge or button.
+          await check('main p:not(.lede):not(.now):not(.numeral):not(.caption):not(.actions):not(:has(.status)):not(:has(.btn))', 62);
+          await check('main dl.lanes dd', 62);
         });
       }
     });

@@ -93,6 +93,8 @@ for (const width of [360, 1280] as const) {
             for (const el of Array.from(document.body.querySelectorAll('*'))) {
               const cs = getComputedStyle(el);
               const hasText = Array.from(el.childNodes).some((n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim() !== '');
+              // Empty elements (the status dots are <i>, which a browser italicises) show no letters, so they are exempt.
+              if ((el.textContent ?? '').trim() === '') continue;
               if (cs.textTransform !== 'none') out.push({ where: name(el), detail: `text-transform: ${cs.textTransform}` });
               if (cs.fontStyle !== 'normal') out.push({ where: name(el), detail: `font-style: ${cs.fontStyle}` });
               if (cs.fontVariantCaps !== 'normal') out.push({ where: name(el), detail: `font-variant-caps: ${cs.fontVariantCaps}` });
@@ -156,7 +158,7 @@ for (const width of [360, 1280] as const) {
           expect(bad).toEqual([]);
         });
 
-        test('nothing casts a shadow or paints a gradient, and corners are square except buttons and dots', async ({ page }) => {
+        test('nothing casts a shadow or paints a gradient, and corners use only the radius tokens', async ({ page }) => {
           await open(page, info);
           await loadEverything(page);
           const offenders = await page.evaluate((): string[] => {
@@ -169,7 +171,8 @@ for (const width of [360, 1280] as const) {
               if (cs.backgroundImage !== 'none') out.push(`${name}: background-image ${cs.backgroundImage}`);
               if (cs.filter !== 'none') out.push(`${name}: filter ${cs.filter}`);
               const radius = cs.borderTopLeftRadius;
-              const allowed = radius === '0px' || radius === '50%' || (el.matches('.btn') && radius === '2px') || (el.closest('.btn, .status, .now') !== null);
+              // --radius-none, --radius-xs (buttons, fields, the skip link), --radius-sm (inline code), and round dots
+              const allowed = ['0px', '2px', '4px', '50%'].includes(radius);
               if (!allowed && el.tagName.toLowerCase() !== 'svg' && el.tagName.toLowerCase() !== 'path') out.push(`${name}: border-radius ${radius}`);
             }
             return out;

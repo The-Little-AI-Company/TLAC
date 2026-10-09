@@ -189,6 +189,19 @@ export function formatViolations(
     .join('\n\n');
 }
 
+/**
+ * The color the page paints behind everything: the body's background, or the html element's when
+ * the body has none. (Where the ground is set is the page's business; what a visitor sees is not.)
+ */
+export async function pageBackground(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    const opaque = (c: string): boolean => c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent';
+    const body = getComputedStyle(document.body).backgroundColor;
+    const html = getComputedStyle(document.documentElement).backgroundColor;
+    return opaque(body) ? body : html;
+  });
+}
+
 /** Name of the screenshot file for a page, width and scheme. */
 export const screenshotName = (info: PageInfo, width: number, scheme: Scheme): string => `${info.label}-${width}-${scheme}.png`;
 

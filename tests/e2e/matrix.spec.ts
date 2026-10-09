@@ -3,7 +3,7 @@
  * desktop, in light or dark, gets a page that fits, loads cleanly, talks only to this server,
  * sets in Instrument Serif and Instrument Sans, and wears the right colors.
  */
-import { SCHEMES, WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, firstFamily, fontsReady, loadEverything, open, rgb, style, test } from './support';
+import { SCHEMES, WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, firstFamily, fontsReady, loadEverything, open, pageBackground, rgb, style, test } from './support';
 
 for (const scheme of SCHEMES) {
   for (const width of WIDTHS) {
@@ -86,13 +86,7 @@ for (const scheme of SCHEMES) {
 
           test('paints the ground and the ink of its scheme', async ({ page }) => {
             await open(page, info);
-            const colors = await page.evaluate(() => {
-              const opaque = (c: string): boolean => c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent';
-              const body = getComputedStyle(document.body).backgroundColor;
-              const html = getComputedStyle(document.documentElement).backgroundColor;
-              return { background: opaque(body) ? body : html, bodyBackground: body, htmlBackground: html };
-            });
-            expect(colors.background, `body is ${colors.bodyBackground}, html is ${colors.htmlBackground}`).toBe(rgb(scheme, 'ground'));
+            expect(await pageBackground(page)).toBe(rgb(scheme, 'ground'));
             const h1 = await style(page.getByRole('heading', { level: 1 }), ['color']);
             expect(h1['color']).toBe(rgb(scheme, 'ink'));
           });

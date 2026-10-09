@@ -186,6 +186,7 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       const marks = all(brand, 'svg');
       expect(marks).toHaveLength(1);
       expect(attr(marks[0]!, 'aria-hidden')).toBe('true');
+      expect(all(marks[0]!, 'path[fill="currentColor"]').length, 'the mark is drawn in currentColor').toBeGreaterThan(0);
       const label = attr(brand, 'aria-label');
       if (label !== undefined) expect(label, 'an aria-label must contain the visible text').toContain(BRAND);
     });

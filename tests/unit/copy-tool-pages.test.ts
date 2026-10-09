@@ -166,7 +166,7 @@ describe('vivary: sections', () => {
       expect(textOf(paragraph(section(), s.lede))).toBe(s.lede);
     });
 
-    it('links "release queue" to the milestone and "pre-release" to the releases page', () => {
+    it('links "pre-release" to the releases page and "release queue" to the milestone', () => {
       expect(links(paragraph(section(), s.lede))).toEqual(s.links.map((l) => ({ label: l.label, href: l.href })));
     });
 
