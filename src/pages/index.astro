@@ -1,15 +1,41 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
+import Lanes from '../components/Lanes.astro';
 import NowLine from '../components/NowLine.astro';
-// Placeholder until the home page is rebuilt on the new components.
+import Plate from '../components/Plate.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import ProjectFeature from '../components/ProjectFeature.astro';
+import SpecPlate from '../components/SpecPlate.astro';
+import type { Fact } from '../components/types';
+import { projects } from '../data/projects';
+import { latestVersion, tool } from '../data/tools';
+
+const callout = tool('callout');
+// Stamped at build time from the latest GitHub release, so a new release needs no edit here.
+const version = await latestVersion(callout.version);
+if (!version) throw new Error('The Callout record in src/data/tools.ts needs a version to show on the home page.');
+
+const calloutFacts: Fact[] = [
+  { term: 'Runs on', detail: callout.platform },
+  { term: 'Version', detail: version },
+  { term: 'License', detail: 'MIT' },
+  { term: 'Price', detail: 'Free. Bring your own API keys.' },
+];
+
+const tenets: Fact[] = [
+  { term: 'You decide', detail: 'The tool proposes and you approve. A human gate is a feature, not a speed bump.' },
+  { term: 'You can read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
+  { term: 'You keep learning', detail: 'A tool that thinks for you leaves you weaker. Mine show their work so you get sharper.' },
+  { term: 'Sources or silence', detail: 'Every claim carries where it came from. Unsure is a real answer.' },
+];
 ---
 
 <Base
   title="The Little AI Company"
   description="I'm Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop workspace for AI agents. Small tools that keep you in charge."
 >
-  <section class="page-head">
+  <section class="hero">
     <div class="wrap">
       <NowLine tone="wip">Now building Vivary. A Windows preview came out Sept 22.</NowLine>
       <h1 class="display-xl">Tools for the work you keep doing by hand.</h1>
@@ -21,6 +47,190 @@ import NowLine from '../components/NowLine.astro';
         <Button href="/callout/" variant="primary">Get Callout</Button>
         <Button href="/vivary/">See Vivary</Button>
       </div>
+      <picture class="mascot">
+        <source media="(max-width: 860px)" srcset="/images/vivary-mascot-skate-640.webp" width="640" height="571" />
+        <img
+          src="/images/vivary-mascot-skate-760.webp"
+          width="760"
+          height="678"
+          alt="The Vivary mascot, a felt creature with antlers, riding a skateboard with a paintbrush, a potted flower and a notebook."
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+    </div>
+  </section>
+
+  <section id="work" class="section work">
+    <div class="wrap">
+      <ProjectFeature
+        numeral="I. The main project"
+        title="Vivary"
+        tone="wip"
+        status="Unsigned Windows preview · Sept 22, 2026"
+        href="/vivary/"
+        linkLabel="More about Vivary"
+      >
+        <Plate
+          slot="media"
+          src="/images/vivary-workspace-2026-10-03.webp"
+          width={1200}
+          height={844}
+          alt="Vivary development build, captured Oct 3, 2026, before Claude Code sign-in."
+          caption="Development build, Oct 3, 2026, before Claude Code sign-in."
+        />
+        <p class="text">
+          A desktop workspace for working with AI agents on your own projects. Conversations sit beside your
+          notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay
+          on your machine.
+        </p>
+      </ProjectFeature>
+
+      <ProjectFeature
+        reverse
+        numeral="II. Released"
+        title="Callout"
+        tone="shipped"
+        status={`Released · ${version}`}
+        href="/callout/"
+        linkLabel="More about Callout"
+      >
+        <SpecPlate
+          slot="media"
+          rows={calloutFacts}
+          quote="Signals in the text itself. Not a truth check."
+          caption="The header on every Callout result."
+        />
+        <p class="text">{callout.summary}</p>
+      </ProjectFeature>
+    </div>
+  </section>
+
+  <section id="other" class="section other">
+    <div class="wrap">
+      <h2 class="heading">Other things I have made</h2>
+      <ol class="contents">
+        {projects.map((project) => <ProjectEntry {...project} />)}
+      </ol>
+    </div>
+  </section>
+
+  <section id="how" class="section how">
+    <div class="wrap">
+      <div class="intro">
+        <h2 class="heading">How I work</h2>
+        <p class="text">Everything I make keeps you in the loop. You can read what it did, stop it, and undo it.</p>
+      </div>
+      <Lanes items={tenets} />
     </div>
   </section>
 </Base>
+
+<style>
+  /* Hero: centered, and the mascot stands on the hairline that opens the next section. */
+  .hero {
+    padding-top: 88px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    max-width: 12ch;
+    margin: 24px auto 0;
+    text-wrap: balance;
+  }
+
+  .hero .lede {
+    margin: 28px auto 0;
+    text-wrap: pretty;
+  }
+
+  .hero .actions {
+    justify-content: center;
+  }
+
+  /* The bottom margin pulls the next section up 3px, so the wheels stand on its top rule. */
+  .mascot {
+    display: block;
+    width: 470px;
+    max-width: 78%;
+    margin: 64px auto -3px;
+  }
+
+  .mascot img {
+    width: 100%;
+  }
+
+  /* Work: the two features, one above the other. */
+  .work .wrap {
+    display: grid;
+    gap: var(--space-9);
+  }
+
+  .work .text {
+    text-wrap: pretty;
+  }
+
+  /* Other things: a centered heading over a list that stops at 940px. */
+  .other h2 {
+    margin-bottom: 40px;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .other .contents {
+    max-width: 940px;
+    margin-inline: auto;
+  }
+
+  /* How I work: the statement on the left, the four tenets on the right. */
+  .how .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  /* The design system sets this one paragraph a point larger than body text. */
+  .how .intro .text {
+    font-size: 17px;
+    text-wrap: pretty;
+  }
+
+  /* The single breakpoint is 860px, as in global.css. */
+  @media (max-width: 860px) {
+    .hero {
+      padding-top: var(--space-6);
+    }
+
+    .hero h1 {
+      margin-top: 18px;
+    }
+
+    .hero .lede {
+      margin-top: var(--space-4);
+    }
+
+    /* The buttons stack and fill the row, so they are no longer centered as a group. */
+    .hero .actions {
+      justify-content: stretch;
+    }
+
+    .mascot {
+      width: 260px;
+      margin-top: var(--space-6);
+    }
+
+    .work .wrap {
+      gap: var(--space-7);
+    }
+
+    .other h2 {
+      margin-bottom: var(--space-5);
+    }
+
+    .how .wrap {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
+    }
+  }
+</style>
