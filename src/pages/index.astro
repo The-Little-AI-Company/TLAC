@@ -9,9 +9,9 @@ import ProjectEntry from '../components/ProjectEntry.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
 import SpecPlate from '../components/SpecPlate.astro';
 import SplitSection from '../components/SplitSection.astro';
-import type { Term } from '../components/types';
 import { projects } from '../data/projects';
 import { callout, calloutPlate, latestVersion, stampedStatus, vivary } from '../data/tools';
+import type { Term } from '../data/types';
 
 const version = await latestVersion(callout.version);
 const calloutStatus = await stampedStatus(callout);
@@ -30,7 +30,7 @@ const tenets: Term[] = [
 >
   <section class="hero">
     <div class="wrap">
-      <NowLine tone="wip">Now building Vivary. A Windows preview came out Sept 22, 2026.</NowLine>
+      <NowLine tone="wip">Now building Vivary. A Windows preview came out {vivary.previewDate}.</NowLine>
       <h1 class="display-xl">Tools for the work you keep doing by hand.</h1>
       <p class="lede">
         I’m Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop
@@ -119,6 +119,7 @@ const tenets: Term[] = [
 <style>
   /* Hero: centered, and the mascot stands on the hairline that opens the next section. */
   .hero {
+    /* 36px at 360px and below, 88px at 860px and above, and a straight line between (the formula is in global.css). */
     padding-top: clamp(var(--space-6), 10.4vw - 1.44px, 88px);
     text-align: center;
   }
@@ -138,7 +139,7 @@ const tenets: Term[] = [
     margin-inline: auto;
   }
 
-  /* 260px at 360px and below, 470px at 860px and above, and growing with the headline between. */
+  /* 260px at 360px and below, 470px at 860px and above, and a straight line between (the formula is in global.css). */
   .mascot {
     display: block;
     width: clamp(260px, 42vw + 108.8px, 470px);
@@ -164,7 +165,9 @@ const tenets: Term[] = [
 
   .other .contents {
     max-width: 940px;
-    margin-inline: auto;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
   }
 
   /* The design system sets this one paragraph a point larger than body text. */

@@ -73,11 +73,6 @@ describe('tokens.css structure', () => {
     expect(dark).toBeGreaterThan(lastRoot);
   });
 
-  it('says in a comment that the breakpoint is 860px (a media query cannot read a custom property)', () => {
-    const comments = [...readTokensCss().matchAll(/\/\*([\s\S]*?)\*\//g)].map((m) => m[1] ?? '');
-    expect(comments.some((c) => /860px/.test(c) && /breakpoint/i.test(c))).toBe(true);
-  });
-
   it('does not define the design system tokens the site has no use for: a pill radius, shadows, a second content width, font aliases', () => {
     const vars = lightVars();
     for (const skipped of ['--radius', '--radius-pill', '--shadow-rest', '--shadow-soft', '--shadow-none', '--site-max', '--font-serif', '--font-sans']) {

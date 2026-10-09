@@ -495,8 +495,8 @@ export const TOOLS_EXPECTED = {
 // ---------------------------------------------------------------------------
 // Voice
 
-/** All-caps words that are allowed in visible text. Roman numerals and ZIP are allowed on top of these, see copy.ts. */
-export const CAPS_ALLOWLIST: ReadonlySet<string> = new Set(['AI', 'MIT', 'API', 'APIs', 'LLM', 'HTML', 'CSS', 'CLI', 'V1', 'OS']);
+/** All-caps words that are allowed in visible text. Roman numerals are allowed on top of these, see copy.ts. */
+export const CAPS_ALLOWLIST: ReadonlySet<string> = new Set(['AI', 'MIT', 'API', 'APIs', 'LLM', 'HTML', 'CSS', 'CLI', 'V1', 'OS', 'ZIP']);
 
 export const BANNED_WORDS = ['unlock', 'empower', 'seamless', 'robust', 'revolutionary', 'game-changing', 'elevate'] as const;
 

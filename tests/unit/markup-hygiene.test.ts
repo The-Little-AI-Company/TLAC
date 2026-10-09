@@ -80,7 +80,7 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
     for (const btn of all(doc(), '.btn')) {
       const variant = classesOf(btn).find((c) => c.startsWith('btn--'));
       if (btn.rawTagName.toLowerCase() !== 'a') bad.push(`${show(btn)} is not an <a>`);
-      if (!variant || !['btn--primary', 'btn--secondary', 'btn--text'].includes(variant)) bad.push(`${show(btn)} has no btn--primary/secondary/text class`);
+      if (!variant || !['btn--primary', 'btn--secondary'].includes(variant)) bad.push(`${show(btn)} has no btn--primary/secondary class`);
       if (!btn.getAttribute('href')) bad.push(`${show(btn)} has no href`);
       if (visibleText(btn) === '') bad.push(`${show(btn)} has no label`);
     }
@@ -97,6 +97,11 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
 
   it('renders every Plate as <figure class="plate"> holding an <img>', () => {
     for (const plate of all(doc(), 'figure.plate')) expect(plate.querySelectorAll('img'), show(plate)).toHaveLength(1);
+  });
+
+  it('puts every figcaption straight inside a figure, and never leaves one empty', () => {
+    const bad = all(doc(), 'figcaption').filter((caption) => caption.parentNode?.rawTagName?.toLowerCase() !== 'figure' || visibleText(caption) === '');
+    expect(bad.map(show)).toEqual([]);
   });
 
   it('renders every SpecPlate as a <div class="plate"> of facts, with the quote in a figure of its own', () => {

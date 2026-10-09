@@ -486,16 +486,15 @@ describe('copy rules', () => {
   });
 
   it('finds all-caps words outside the allowlist', () => {
-    expect(allCapsWords('FREE stuff, NOW. AI and MIT and APIs and API, OS, CLI, CSS, HTML, LLM, V1')).toEqual(['FREE', 'NOW']);
+    expect(allCapsWords('FREE stuff, NOW. AI and MIT and APIs and API, OS, CLI, CSS, HTML, LLM, V1, ZIP')).toEqual(['FREE', 'NOW']);
   });
 
   it('allows single capitals, mixed case, digits and version strings', () => {
     expect(allCapsWords("I'm A B C. GitHub, SmartScreen, JeffKazzee.dev, PyPI, v0.2.0, 262, Windows 10 and 11, X")).toEqual([]);
   });
 
-  it('allows Roman numerals up to ten and ZIP, which the copy needs', () => {
+  it('allows Roman numerals up to ten, which the feature numerals need, and nothing that merely looks like one', () => {
     expect(allCapsWords('I. The main project. II. Released. III IV V VI VII VIII IX X')).toEqual([]);
-    expect(allCapsWords('an unsigned portable ZIP')).toEqual([]);
     expect(allCapsWords('MIX CIVIL')).toEqual(['MIX', 'CIVIL']);
   });
 

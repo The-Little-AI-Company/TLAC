@@ -28,13 +28,6 @@ export function one(root: El, selector: string, where = 'the page'): El {
   return found[0]!;
 }
 
-/** The first element matching `selector`. Throws when there is none. */
-export function first(root: El, selector: string, where = 'the page'): El {
-  const found = root.querySelector(selector);
-  if (!found) throw new Error(`Expected an element matching \`${selector}\` in ${where}, found none.`);
-  return found;
-}
-
 export const attr = (el: El, name: string): string | undefined => el.getAttribute(name) ?? undefined;
 
 /** Position of each element in document order. */
@@ -69,6 +62,3 @@ export const headingLevel = (el: El): number => Number(el.rawTagName.slice(1));
 
 /** The classes on an element. */
 export const classesOf = (el: El): string[] => (el.getAttribute('class') ?? '').split(/\s+/).filter(Boolean);
-
-/** Compares an element's visible text with an exact string, whitespace collapsed. */
-export const same = (el: El, expected: string): boolean => textOf(el) === expected;

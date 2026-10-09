@@ -41,7 +41,6 @@
   --radius-xs: 2px;
   --radius-sm: 4px;
 
-  /* The one breakpoint is 860px. A media query cannot read a custom property, so the literal is repeated there. */
   --measure: 62ch;
   --content-max: 1072px;
 

@@ -7,7 +7,7 @@ interface Props {
   lede: string;
   // The lede is a tagline, so it is set in ink and the text under it reads as secondary. Each of its sentences stays on one line.
   tagline?: boolean;
-  // Center the block, and the page around it, as the 404 page does. The rules live in global.css with the rest of the layout.
+  // Center the block, and the page around it, as the 404 page does.
   center?: boolean;
 }
 const { title, lede, tagline = false, center = false } = Astro.props;
@@ -29,6 +29,10 @@ const sentences = lede.split(/(?<=[.!?])\s+/);
 </section>
 
 <style>
+  .page-head {
+    padding-block: var(--space-8) var(--space-7);
+  }
+
   /* A page head's lede is two or three lines, so they are balanced and the last is never left holding "of it." */
   .lede {
     text-wrap: balance;
@@ -58,5 +62,33 @@ const sentences = lede.split(/(?<=[.!?])\s+/);
   .with-media > .media {
     flex: 1.2 1 28rem;
     min-width: 0;
+  }
+
+  /*
+   * A page that is one centered block (the 404 page) sits in the middle of the space between the header and the footer.
+   * The buttons are the caller's, in the default slot, so their rule reaches them with :global(). So does main's.
+   */
+  .page-head--center {
+    text-align: center;
+  }
+
+  .page-head--center .lede,
+  .page-head--center :global(.actions) {
+    margin-inline: auto;
+  }
+
+  .page-head--center :global(.actions) {
+    justify-content: center;
+  }
+
+  :global(main:has(> .page-head--center)) {
+    display: grid;
+    align-content: center;
+  }
+
+  @media (max-width: 860px) {
+    .page-head {
+      padding-block: var(--space-6) var(--space-7);
+    }
   }
 </style>

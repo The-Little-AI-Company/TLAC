@@ -1,5 +1,5 @@
 ---
-import { markPath, markViewBox } from './mark-path.mjs';
+import { markFillRule, markPath, markViewBox } from './mark-path.mjs';
 
 interface Props {
   size?: number;
@@ -18,7 +18,7 @@ const { size = 32, class: className } = Astro.props;
 >
   <path
     fill="currentColor"
-    fill-rule="evenodd"
+    fill-rule={markFillRule}
     d={markPath}
   ></path>
 </svg>

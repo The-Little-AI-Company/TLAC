@@ -133,7 +133,7 @@ describe('scripts/', () => {
 describe('README.md', () => {
   const readme = () => readFileSync(join(ROOT, 'README.md'), 'utf-8');
 
-  it('describes the new fonts, the tokens, and both test suites', () => {
+  it('describes the fonts, the tokens, and both test suites', () => {
     const text = readme();
     expect(text).toMatch(/Instrument Serif/);
     expect(text).toMatch(/Instrument Sans/);
@@ -191,13 +191,13 @@ describe('project files', () => {
   it('has the scripts the team runs', () => {
     const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf-8')) as { scripts: Record<string, string> };
     expect(pkg.scripts['test']).toBe('vitest run');
-    expect(pkg.scripts['test:e2e']).toBe('playwright test');
+    expect(pkg.scripts['test:e2e']).toBe('playwright test --project=chromium');
     expect(pkg.scripts['verify']).toBe('pnpm check && pnpm build && pnpm test && pnpm test:e2e');
     expect(pkg.scripts['check']).toBe('astro check --minimumFailingSeverity hint');
     expect(pkg.scripts['og']).toBe('node scripts/og.mjs');
     expect(pkg.scripts['icons']).toBe('node scripts/icons.mjs');
     expect(pkg.scripts['images']).toBe('node scripts/images.mjs');
-    expect(pkg.scripts['screenshots']).toBe('SCREENSHOTS=1 playwright test tests/e2e/screenshots.spec.ts');
+    expect(pkg.scripts['screenshots']).toBe('playwright test --project=screenshots');
     for (const name of ['dev', 'build', 'preview']) expect(pkg.scripts[name], name).toBeDefined();
   });
 
@@ -207,18 +207,42 @@ describe('project files', () => {
       vi.resetModules();
     });
 
-    const configWith = async (screenshots: string): Promise<{ testIgnore?: string | string[] }> => {
+    interface E2eConfig {
+      forbidOnly?: boolean;
+      reporter?: unknown;
+      use?: { trace?: string };
+      projects?: { name: string; testMatch?: string; testIgnore?: string }[];
+    }
+    const configWith = async (ci: string): Promise<E2eConfig> => {
       vi.resetModules();
-      vi.stubEnv('SCREENSHOTS', screenshots);
-      return ((await import('../../playwright.config')) as { default: { testIgnore?: string | string[] } }).default;
+      vi.stubEnv('CI', ci);
+      return ((await import('../../playwright.config')) as { default: E2eConfig }).default;
     };
+    const scripts = (): Record<string, string> => (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf-8')) as { scripts: Record<string, string> }).scripts;
 
-    it('leaves the screenshots out, since they check nothing and take a while', async () => {
-      expect((await configWith('')).testIgnore).toEqual(['**/screenshots.spec.ts']);
+    it('keeps the screenshots out of the checks and in a project of their own, since they check nothing and take a while', async () => {
+      const projects = (await configWith('')).projects ?? [];
+      expect(projects.map((p) => p.name)).toEqual(['chromium', 'screenshots']);
+      expect(projects[0]?.testIgnore).toBe('**/screenshots.spec.ts');
+      expect(projects[1]?.testMatch).toBe('**/screenshots.spec.ts');
+      expect(existsSync(join(ROOT, 'tests/e2e/screenshots.spec.ts'))).toBe(true);
     });
 
-    it('runs the screenshots for pnpm screenshots, which sets SCREENSHOTS=1', async () => {
-      expect((await configWith('1')).testIgnore).toEqual([]);
+    it('selects the project by name, so no script depends on a POSIX environment variable', () => {
+      expect(scripts()['test:e2e']).toContain('--project=chromium');
+      expect(scripts()['screenshots']).toContain('--project=screenshots');
+      for (const name of ['test:e2e', 'screenshots']) expect(scripts()[name], name).not.toMatch(/^\w+=/);
+    });
+
+    it('keeps an HTML report and a trace of each failure on CI, and a plain list on a laptop', async () => {
+      const ci = await configWith('true');
+      expect(ci.reporter).toEqual([['list'], ['html', { open: 'never' }]]);
+      expect(ci.use?.trace).toBe('retain-on-failure');
+      expect(ci.forbidOnly).toBe(true);
+      const laptop = await configWith('');
+      expect(laptop.reporter).toBe('list');
+      expect(laptop.use?.trace).toBe('off');
+      expect(laptop.forbidOnly).toBe(false);
     });
   });
 });

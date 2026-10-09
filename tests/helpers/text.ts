@@ -9,11 +9,11 @@ const INLINE = new Set([
   'mark', 'picture', 'q', 's', 'samp', 'small', 'source', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr',
 ]);
 
-/** Collapses every run of whitespace (including non-breaking spaces) to one space and drops soft hyphens. */
+/** Collapses every run of whitespace (including non-breaking spaces) to one space and drops soft hyphens and zero-width spaces. */
 export function collapse(text: string): string {
   return text
-    .replace(/[­​]/g, '')
-    .replace(/[\s ]+/g, ' ')
+    .replace(/[\u00ad\u200b]/g, '')
+    .replace(/[\s\u00a0]+/g, ' ')
     .trim();
 }
 

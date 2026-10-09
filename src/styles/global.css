@@ -97,9 +97,14 @@ a:hover {
 
 /*
  * Type. Sizes are in rem so a larger default text size in the browser scales the page, and they
- * are fluid between the phone values at 360px and the desktop values at 860px, which is where
- * the one breakpoint sits (a media query cannot read a custom property, so each repeats it).
- * At or below 360px they are the phone values, at or above 860px the desktop ones.
+ * are fluid between the phone values at 360px and the desktop values at 860px. At or below 360px
+ * they are the phone values, at or above 860px the desktop ones.
+ *
+ * Every fluid value on the site is one line through the two design system values, `phone` at 360px
+ * and `desktop` at 860px, written as clamp(phone, a + b vw, desktop). The slope is
+ * (desktop - phone) / 500 per pixel, so b = (desktop - phone) / 5 and a = phone - 3.6 * b.
+ * Display XL, 42px to 92px: b = 10, a = 6px = .375rem, and that is `.375rem + 10vw`. The page
+ * margin (.wrap here), the hero padding and the mascot (index.astro) are written the same way.
  */
 
 .display-xl,
@@ -174,13 +179,6 @@ dd {
   margin-top: 14px;
 }
 
-.label {
-  font-size: .8125rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--ink-faint);
-}
-
 dt,
 .now {
   text-wrap: balance;
@@ -228,10 +226,6 @@ dt,
   border-top: 1px solid var(--rule);
 }
 
-.page-head {
-  padding-block: var(--space-8) var(--space-7);
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -241,32 +235,6 @@ dt,
 
 .lede + .actions {
   margin-top: var(--space-6);
-}
-
-/* The list ProjectEntry rows sit in. */
-.contents {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* A page that is one centered block (the 404 page) sits in the middle of the space between the header and the footer. */
-.page-head--center {
-  text-align: center;
-}
-
-.page-head--center .lede,
-.page-head--center .actions {
-  margin-inline: auto;
-}
-
-.page-head--center .actions {
-  justify-content: center;
-}
-
-main:has(> .page-head--center) {
-  display: grid;
-  align-content: center;
 }
 
 .skip {
@@ -296,7 +264,10 @@ main:has(> .page-head--center) {
   white-space: nowrap;
 }
 
-/* Everything at or below the one breakpoint, 860px, is the phone layout. */
+/*
+ * The one breakpoint is 860px: at or below it is the phone layout. A media query cannot read a
+ * custom property, so every component with a phone layout repeats the literal.
+ */
 @media (max-width: 860px) {
   .display-xl {
     line-height: 1.04;
@@ -316,10 +287,6 @@ main:has(> .page-head--center) {
 
   .section {
     padding-block: var(--space-7);
-  }
-
-  .page-head {
-    padding-block: var(--space-6) var(--space-7);
   }
 
   /* Stacked buttons fill the row, up to a width that still looks like a button. */

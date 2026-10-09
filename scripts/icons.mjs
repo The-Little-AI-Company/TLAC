@@ -2,27 +2,19 @@
 // Renders the app icons from the shared mark: public/apple-touch-icon.png (180px), public/icon-192.png
 // and public/icon-512.png. Each is an opaque square of --ground with the mark in --ink, centered, its
 // longer side 62% of the square, so the clear space is wider than an ear and the 512px mark stays
-// inside the central 80% that maskable cropping keeps. Run it from the repository root:
-//
-//   node scripts/icons.mjs
-//
-import { readFileSync, writeFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
-import { markPath, markViewBox } from '../src/components/mark-path.mjs';
+// inside the central 80% that maskable cropping keeps. Run it with `pnpm icons`.
 
-const root = new URL('../', import.meta.url);
-const path = (/** @type {string} */ p) => fileURLToPath(new URL(p, root));
+import { writeFileSync } from 'node:fs';
+import sharp from 'sharp';
+import { fromRoot, markPathTag, markViewBox, tokens } from './lib.mjs';
+
 const SHARE = 0.62; // the mark's longer side as a share of the square
 const SAMPLE = 1024; // the path is rasterized at this size to find its ink box
 
-// The light tokens: the first :root block, read as scripts/og.mjs reads them.
-const tokensCss = readFileSync(path('src/styles/tokens.css'), 'utf-8');
-const rootBlock = tokensCss.match(/:root\s*\{([^}]*)\}/)?.[1];
-if (!rootBlock) throw new Error('no :root block in src/styles/tokens.css');
+const light = tokens();
 /** @param {string} name */
 const token = (name) => {
-  const value = rootBlock.match(new RegExp(`${name}\\s*:\\s*([^;]+);`))?.[1]?.trim() ?? '';
+  const value = light.get(name) ?? '';
   if (!/^#[0-9a-f]{6}$/i.test(value)) throw new Error(`${name} is not a hex colour in tokens.css`);
   return value;
 };
@@ -35,7 +27,7 @@ const ink = token('--ink');
  */
 async function markBox() {
   const [vx = 0, vy = 0, vw = 0] = markViewBox.split(/\s+/).map(Number);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SAMPLE}" height="${SAMPLE}" viewBox="${markViewBox}"><path fill="#000" fill-rule="evenodd" d="${markPath}"/></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SAMPLE}" height="${SAMPLE}" viewBox="${markViewBox}">${markPathTag({ fill: '#000' })}</svg>`;
   const { data, info } = await sharp(Buffer.from(svg)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   let minX = Infinity;
   let minY = Infinity;
@@ -67,7 +59,7 @@ function iconSvg(size, box) {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
     `<rect width="${size}" height="${size}" fill="${ground}"/>` +
-    `<path transform="translate(${dx.toFixed(3)} ${dy.toFixed(3)}) scale(${scale.toFixed(5)})" fill="${ink}" fill-rule="evenodd" d="${markPath}"/>` +
+    markPathTag({ transform: `translate(${dx.toFixed(3)} ${dy.toFixed(3)}) scale(${scale.toFixed(5)})`, fill: ink }) +
     '</svg>'
   );
 }
@@ -90,6 +82,6 @@ for (const [file, size] of icons) {
   if (meta.hasAlpha || meta.width !== size || meta.height !== size) {
     throw new Error(`${file} must be an opaque ${size}px square`);
   }
-  writeFileSync(path(file), png);
+  writeFileSync(fromRoot(file), png);
   console.log(`wrote ${file} (${size}x${size}, ${png.length} bytes, opaque)`);
 }
