@@ -4,6 +4,8 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { inflateSync } from 'node:zlib';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { colorLiteralsInCss, colorLiteralsInSource, colorLiteralsInValue, contrast, luminance, parseHex, toRgbString } from '../helpers/color';
 import {
@@ -35,7 +37,7 @@ import {
   stripComments,
 } from '../helpers/css';
 import { documentOrder, focusables, inOrder, one, all } from '../helpers/dom';
-import { PAGES, ROOT, fragmentsIn, parseHtml, resolveSitePath, splitHref, srcsetUrls } from '../helpers/dist';
+import { PAGES, PUBLIC, fragmentsIn, listFiles, parseHtml, resolveSitePath, splitHref, srcsetUrls } from '../helpers/dist';
 import { decodePng, encodePng, pixelAt, readPngSize, readWebp } from '../helpers/image';
 import { altTexts, collapse, textBlocks, textOf, visibleText } from '../helpers/text';
 import { COLOR_NAMES, loadTokens, themeColor } from '../helpers/tokens';
@@ -608,20 +610,82 @@ describe('image readers', () => {
     expect(pixelAt(decoded, 1, 1)).toEqual([10, 20, 30, 255]);
   });
 
-  it('decodes a real PNG (the 512px icon) to the same pixels an independent decoder gave', () => {
-    // Checked with Pillow: (0,0) transparent, (256,256) and (100,300) ink #111.
-    const png = decodePng(readFileSync(join(ROOT, 'public/icon-512.png')));
-    expect([png.width, png.height]).toEqual([512, 512]);
-    expect(pixelAt(png, 0, 0)[3]).toBe(0);
-    expect(pixelAt(png, 256, 256)).toEqual([17, 17, 17, 255]);
-    expect(pixelAt(png, 100, 300)).toEqual([17, 17, 17, 255]);
-  });
+  describe('against an independent decoder (sharp, which reads PNGs with libpng)', () => {
+    /** The pixels sharp reads from a PNG, as RGBA: gray and palette files are expanded the way decodePng expands them. */
+    const sharpPixels = async (file: Buffer): Promise<{ width: number; height: number; rgba: Buffer }> => {
+      const { data, info } = await sharp(file).toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      return { width: info.width, height: info.height, rgba: data };
+    };
 
-  it('decodes a real gray+alpha PNG (the 192px icon)', () => {
-    const png = decodePng(readFileSync(join(ROOT, 'public/icon-192.png')));
-    expect([png.width, png.height]).toEqual([192, 192]);
-    expect(pixelAt(png, 96, 96)).toEqual([17, 17, 17, 255]);
-    expect(pixelAt(png, 0, 0)[3]).toBe(0);
+    /** The colour type from the header chunk, and the set of row filters the file uses (the first byte of every row, once inflated). */
+    const pngFacts = (file: Buffer): { colorType: number; filters: Set<number> } => {
+      const channels: Record<number, number> = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
+      let colorType = 0;
+      let width = 0;
+      const idat: Buffer[] = [];
+      for (let pos = 8; pos < file.length; ) {
+        const length = file.readUInt32BE(pos);
+        const type = file.toString('ascii', pos + 4, pos + 8);
+        if (type === 'IHDR') {
+          width = file.readUInt32BE(pos + 8);
+          colorType = file[pos + 17] ?? 0;
+        } else if (type === 'IDAT') idat.push(file.subarray(pos + 8, pos + 8 + length));
+        pos += 12 + length;
+      }
+      const raw = inflateSync(Buffer.concat(idat));
+      const stride = width * (channels[colorType] ?? 1) + 1;
+      const filters = new Set<number>();
+      for (let row = 0; row * stride < raw.length; row++) filters.add(raw[row * stride] ?? -1);
+      return { colorType, filters };
+    };
+
+    /** A fixed pseudo-random image: noise makes the encoder use every row filter, which smooth artwork would not. */
+    const noise = (width: number, height: number, channels: number): Buffer => {
+      const bytes = Buffer.alloc(width * height * channels);
+      let seed = 12345;
+      for (let i = 0; i < bytes.length; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        bytes[i] = seed >>> 24;
+      }
+      return bytes;
+    };
+
+    const KINDS = [
+      { name: 'gray', colorType: 0, channels: 1, gray: true, palette: false },
+      { name: 'gray with alpha', colorType: 4, channels: 2, gray: true, palette: false },
+      { name: 'RGB', colorType: 2, channels: 3, gray: false, palette: false },
+      { name: 'RGBA', colorType: 6, channels: 4, gray: false, palette: false },
+      { name: 'palette', colorType: 3, channels: 3, gray: false, palette: true },
+    ] as const;
+
+    const encode = async (kind: (typeof KINDS)[number]): Promise<Buffer> => {
+      let image = sharp(noise(61, 47, kind.channels), { raw: { width: 61, height: 47, channels: kind.channels } });
+      if (kind.gray) image = image.toColourspace('b-w');
+      return image.png({ adaptiveFiltering: true, palette: kind.palette, colours: 256, dither: 0 }).toBuffer();
+    };
+
+    it.each(KINDS.map((kind) => [kind.name, kind] as const))('decodes a %s PNG to the pixels sharp reads', async (_name, kind) => {
+      const file = await encode(kind);
+      expect(pngFacts(file).colorType, 'the sample is the kind of file the test is named for').toBe(kind.colorType);
+      const ours = decodePng(file);
+      const theirs = await sharpPixels(file);
+      expect([ours.width, ours.height]).toEqual([theirs.width, theirs.height]);
+      expect(Buffer.from(ours.pixels).equals(theirs.rgba)).toBe(true);
+    });
+
+    it('is checked against files that use all five row filters (none, sub, up, average, paeth)', async () => {
+      const used = new Set<number>();
+      for (const kind of KINDS) for (const filter of pngFacts(await encode(kind)).filters) used.add(filter);
+      expect([...used].sort()).toEqual([0, 1, 2, 3, 4]);
+    });
+
+    it.each(listFiles(PUBLIC).filter((file) => file.endsWith('.png')))('decodes public/%s to the pixels sharp reads', async (file) => {
+      const bytes = readFileSync(join(PUBLIC, file));
+      const ours = decodePng(bytes);
+      const theirs = await sharpPixels(bytes);
+      expect([ours.width, ours.height]).toEqual([theirs.width, theirs.height]);
+      expect(Buffer.from(ours.pixels).equals(theirs.rgba), `${file} decodes differently`).toBe(true);
+    });
   });
 
   it('rejects non-PNG data', () => {
