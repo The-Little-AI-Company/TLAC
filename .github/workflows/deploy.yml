@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 
-# Builds the static Astro site and publishes it to GitHub Pages on every push to dev.
+# Publishes the static site in site/ to GitHub Pages on every push to dev.
 on:
   push:
     branches: [dev]
@@ -23,9 +23,39 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Install, build, and upload the site
-        uses: withastro/action@v6
-        # package manager (pnpm) is auto-detected from pnpm-lock.yaml
+
+      # Old addresses keep working. The first four are the previous site's pages.
+      # The rest are the education-era redirects the Astro site carried.
+      - name: Add redirects for old addresses
+        run: |
+          set -eu
+          redirect() {
+            mkdir -p "site/$1"
+            case "$2" in http*) canon="$2" ;; *) canon="https://littleaicompany.com$2" ;; esac
+            printf '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>This page moved</title><meta name="robots" content="noindex"><link rel="canonical" href="%s"><meta http-equiv="refresh" content="0; url=%s"></head><body><p>This page moved to <a href="%s">%s</a>.</p></body></html>\n' "$canon" "$2" "$2" "$2" > "site/$1/index.html"
+          }
+          redirect callout /callout.html
+          redirect vivary /vivary.html
+          redirect about /about.html
+          redirect contact /start.html
+          redirect club /
+          redirect start-here /
+          redirect projects /work.html
+          redirect brand /
+          redirect pages /
+          jeff=https://github.com/Jeff-Kazzee
+          redirect guides "$jeff"
+          for slug in first-useful-thing is-ai-wrong prompt-anatomy use-case-menu make-it-better what-not-to-paste ai-good-and-bad; do
+            redirect "guides/$slug" "$jeff"
+          done
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
 
   deploy:
     needs: build
