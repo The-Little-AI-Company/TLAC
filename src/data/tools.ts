@@ -1,8 +1,13 @@
+import type { Term } from '../components/types';
 import type { Tone } from './status';
 
-export type VersionSource =
-  | { kind: 'github-release'; repo: string }
-  | { kind: 'npm'; pkg: string };
+/** Where a tool's latest release is published. */
+export interface VersionSpec {
+  /** The GitHub repository, as `owner/name`. */
+  repo: string;
+  /** Stamped when the lookup fails, so bump it when a release is cut. */
+  fallback: string;
+}
 
 export interface Link {
   label: string;
@@ -14,78 +19,99 @@ export interface Tool {
   name: string;
   tagline: string;
   summary: string;
-  platform: string;
   // The recorded state: the word on its badge and the dot beside it.
   status: string;
   tone: Tone;
   // Absent when the tool has no public release to stamp.
-  version?: { fallback: string; source: VersionSource };
-  // Short facts for the line under the hero buttons. Absent when the page has nothing to add.
-  facts?: string[];
+  version?: VersionSpec;
   primary: Link;
   repo: string;
   // Where the work still needed for the next release is listed in the open, when it is.
   queue?: string;
 }
 
-const calloutPlatform = 'Windows 10 and 11';
+export const callout = {
+  slug: 'callout',
+  name: 'Callout',
+  tagline: 'Press a key. Get the receipts.',
+  summary:
+    'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
+  status: 'Released',
+  tone: 'shipped',
+  version: { repo: 'The-Little-AI-Company/callout', fallback: 'v0.2.0' },
+  primary: { label: 'Download for Windows', href: 'https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe' },
+  repo: 'https://github.com/The-Little-AI-Company/callout',
+} satisfies Tool;
 
-export const tools: Tool[] = [
-  {
-    slug: 'callout',
-    name: 'Callout',
-    tagline: 'Press a key. Get the receipts.',
-    summary:
-      'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
-    platform: calloutPlatform,
-    status: 'Released',
-    tone: 'shipped',
-    facts: [calloutPlatform, 'MIT', 'No account'],
-    version: {
-      fallback: 'v0.2.0',
-      source: { kind: 'github-release', repo: 'The-Little-AI-Company/callout' },
-    },
-    primary: { label: 'Download for Windows', href: 'https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe' },
-    repo: 'https://github.com/The-Little-AI-Company/callout',
-  },
-  {
-    slug: 'vivary',
-    name: 'Vivary',
-    tagline: 'Your projects. Your agents. Your machine.',
-    summary:
-      'A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app, with your agents, credentials, files, and history kept on the host.',
-    platform: 'Windows first. Web client for a self-hosted instance.',
-    status: 'Unsigned Windows preview · Sept 22, 2026',
-    tone: 'wip',
-    primary: { label: 'Visit vivaryagent.xyz', href: 'https://vivaryagent.xyz' },
-    repo: 'https://github.com/vivary-dev/vivary',
-    queue: 'https://github.com/vivary-dev/vivary/milestone/1',
-  },
-];
+export const vivary = {
+  slug: 'vivary',
+  name: 'Vivary',
+  tagline: 'Your projects. Your agents. Your machine.',
+  summary:
+    'A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app, with your agents, credentials, files, and history kept on the machine that runs it.',
+  status: 'Unsigned Windows preview · Sept 22, 2026',
+  tone: 'wip',
+  primary: { label: 'Visit vivaryagent.xyz', href: 'https://vivaryagent.xyz' },
+  repo: 'https://github.com/vivary-dev/vivary',
+  queue: 'https://github.com/vivary-dev/vivary/milestone/1',
+} satisfies Tool;
 
-export function tool(slug: Tool['slug']): Tool {
-  const found = tools.find((t) => t.slug === slug);
-  if (!found) throw new Error(`no tool registered for ${slug}`);
-  return found;
+export const tools: readonly Tool[] = [callout, vivary];
+
+/**
+ * The facts plate for Callout. The home page and the Callout page both show it, so they cannot
+ * disagree about what Callout runs on, what it is licensed under, or which version is out.
+ */
+export function calloutPlate(version: string): { rows: Term[]; quote: string; caption: string } {
+  return {
+    rows: [
+      { term: 'Runs on', detail: 'Windows 10 and 11' },
+      { term: 'Version', detail: version },
+      { term: 'License', detail: 'MIT' },
+      { term: 'API keys', detail: 'Yours, kept in Windows Credential Manager' },
+    ],
+    quote: 'Signals in the text itself. Not a truth check.',
+    caption: 'The header on every Callout result.',
+  };
 }
 
-// Resolved at build time so a plate shows the shipped version without a
-// hand edit per release. Any failure falls back to the registered value.
-export async function latestVersion(version: Tool['version']): Promise<string | undefined> {
-  if (!version) return undefined;
-  const { fallback, source } = version;
-  const url =
-    source.kind === 'npm'
-      ? `https://registry.npmjs.org/${source.pkg}/latest`
-      : `https://api.github.com/repos/${source.repo}/releases/latest`;
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return fallback;
-    const body = (await res.json()) as { version?: string; tag_name?: string };
-    const raw = source.kind === 'npm' ? body.version : body.tag_name;
-    if (!raw) return fallback;
-    return raw.startsWith('v') ? raw : `v${raw}`;
-  } catch {
-    return fallback;
+// One lookup per tool for the whole build (and dev session), so every page stamps the same version.
+const lookups = new Map<string, Promise<string>>();
+
+/**
+ * The latest release of a tool, read from GitHub at build time so a release needs no edit here.
+ * Any failure falls back to the registered version, and says so once.
+ */
+export function latestVersion(spec: VersionSpec): Promise<string> {
+  let lookup = lookups.get(spec.repo);
+  if (!lookup) {
+    lookup = fetchLatestVersion(spec);
+    lookups.set(spec.repo, lookup);
   }
+  return lookup;
+}
+
+async function fetchLatestVersion({ repo, fallback }: VersionSpec): Promise<string> {
+  const fallBack = (why: string): string => {
+    console.warn(`[tools] ${repo}: ${why}, stamping the fallback ${fallback}`);
+    return fallback;
+  };
+  const token = process.env['GITHUB_TOKEN'];
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return fallBack(`the release lookup answered HTTP ${res.status}`);
+    const { tag_name: tag } = (await res.json()) as { tag_name?: unknown };
+    if (typeof tag !== 'string' || !/^v?\d+\.\d+\.\d+$/.test(tag)) return fallBack(`the latest release tag is ${JSON.stringify(tag)}, not a version`);
+    return tag.startsWith('v') ? tag : `v${tag}`;
+  } catch (error) {
+    return fallBack(`the release lookup failed (${error instanceof Error ? error.message : String(error)})`);
+  }
+}
+
+/** The text of a tool's status badge: its recorded status, with the latest release when it has one. */
+export async function stampedStatus(tool: Tool): Promise<string> {
+  return tool.version ? `${tool.status} · ${await latestVersion(tool.version)}` : tool.status;
 }
