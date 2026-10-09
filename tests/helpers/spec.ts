@@ -137,7 +137,7 @@ export const HOME = {
     phoneMedia: '(max-width: 860px)',
     phone: IMAGES.mascot640,
     desktop: IMAGES.mascot760,
-    alt: 'The Vivary mascot, a felt creature with antlers, riding a skateboard with a paintbrush, a potted flower and a notebook.',
+    alt: 'The Vivary mascot, a felt creature with antlers, riding a skateboard with a paintbrush, a potted flower, and a notebook.',
   },
   vivary: {
     numeral: 'I. The main project',
@@ -149,7 +149,7 @@ export const HOME = {
       small: IMAGE_VARIANTS.workspace,
     },
     body:
-      'A desktop workspace for working with AI agents on your own projects. Conversations sit beside your notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay where you run them.',
+      'A desktop workspace for working with AI agents on your own projects. Conversations sit beside your notes, research, drafts, and code. You bring your own Claude Code or Codex account, and the files stay where you run them.',
     tone: 'wip',
     status: 'Unsigned Windows preview · Sept 22, 2026',
     button: { label: 'More about Vivary', href: '/vivary/' },
@@ -170,7 +170,7 @@ export const HOME = {
     text: 'Memory in files you can open. Claims with the sources behind them. Nothing runs that you can’t see, stop, or undo.',
     lanes: [
       { term: 'You decide', detail: 'The tool proposes and you approve. A human gate is a feature, not a speed bump.' },
-      { term: 'You can read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
+      { term: 'You can read everything', detail: 'State is plain files on a machine you control, not a hosted store you cannot open.' },
       { term: 'You keep learning', detail: 'A tool that thinks for you leaves you weaker. My tools show their work so you get sharper.' },
       { term: 'Sources or silence', detail: 'Every claim carries where it came from. Unsure is a real answer.' },
     ],
