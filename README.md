@@ -29,17 +29,19 @@ The dev server runs at `http://127.0.0.1:4399`.
 | `pnpm build` | Builds the static site into `dist/`. |
 | `pnpm preview` | Serves the built `dist/`. |
 | `pnpm check` | Runs `astro check`. Hints count as failures. |
-| `pnpm test` | Runs the unit tests. They read `dist/`, so run `pnpm build` first. |
-| `pnpm test:e2e` | Runs Playwright against `astro preview` on port `E2E_PORT` (default 4400). It needs a build too. |
+| `pnpm test` | Runs the unit tests. They read `dist/`, so run `pnpm build` first, and again after any change to `src/` or `public/`. A stale build stops the run and says so. |
+| `pnpm test:e2e` | Runs the Playwright checks (the `chromium` project) against `astro preview` on port `E2E_PORT` (default 4400). It needs a build too. |
 | `pnpm verify` | Runs `check`, `build`, `test` and `test:e2e`, in that order. |
-| `pnpm screenshots` | Writes full-page screenshots of every page, at 360 and 1280 pixels in both color schemes, to `test-results/screenshots/`. They are for review, not baselines. |
+| `pnpm screenshots` | Runs the `screenshots` Playwright project, which writes full-page screenshots of every page, at 360 and 1280 pixels in both color schemes, to `test-results/screenshots/`. They are for review, not baselines. |
 | `pnpm images` | Writes the smaller WebP copies in `public/images/` that `srcset` serves to narrow screens. Run it after replacing a source image. |
 | `pnpm og` | Renders the social card, `public/og.png`. |
 | `pnpm icons` | Renders the app icons under `public/`. |
 
 The end-to-end tests check every page at several widths from 320 to 1440 pixels,
 in both color schemes. The same checks run in GitHub Actions on every pull
-request (`.github/workflows/ci.yml`).
+request (`.github/workflows/ci.yml`). When they fail there, the workflow keeps
+the Playwright report and the traces of the failed tests for a week, as the
+`playwright-results` artifact of the run.
 
 ### Browsers
 
@@ -111,8 +113,8 @@ cut a release. A tool without a `version` entry shows its `status` instead
 
 Every push to `dev` runs `.github/workflows/deploy.yml` and publishes to
 GitHub Pages. Merging a pull request into `dev` is the deploy step. Pull
-requests, and pushes to any other branch, run `.github/workflows/ci.yml`, which
-does what `pnpm verify` does.
+requests, and pushes to `dev`, also run `.github/workflows/ci.yml`, which does
+what `pnpm verify` does. A branch is checked once, when its pull request is.
 
 ## Brand
 

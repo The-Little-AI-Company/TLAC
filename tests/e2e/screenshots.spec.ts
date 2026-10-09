@@ -2,7 +2,8 @@
  * Full-page screenshots for design review: every page x [360, 1280] x [light, dark], written to
  * test-results/screenshots/<page>-<width>-<scheme>.png. They are not baselines and nothing
  * compares them, so this spec passes whatever the page looks like. It is a generator, not a check:
- * playwright.config.ts leaves it out of the default run, and `pnpm screenshots` runs it.
+ * it is the `screenshots` project of playwright.config.ts, which the `chromium` project (`pnpm test:e2e`)
+ * ignores, and `pnpm screenshots` runs only this one.
  */
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
