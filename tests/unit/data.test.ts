@@ -166,6 +166,28 @@ describe('tools.ts', () => {
       expect(headers[1]).toEqual({});
     });
 
+    it('asks again without credentials when GitHub rejects the token, since the repository is public', async () => {
+      const fetcher = vi
+        .fn()
+        .mockResolvedValueOnce(new Response('{}', { status: 401 }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ tag_name: 'v1.4.0' })));
+      vi.stubGlobal('fetch', fetcher);
+      vi.stubEnv('GITHUB_TOKEN', 'stale-token');
+      expect(await latestVersion(spec())).toBe('v1.4.0');
+      const headers = fetcher.mock.calls.map((call) => (call as [string, RequestInit])[1].headers);
+      expect(headers).toEqual([{ Authorization: 'Bearer stale-token' }, {}]);
+    });
+
+    it('does not ask twice when a request without credentials is rejected', async () => {
+      const logged = warn();
+      const fetcher = answer({}, { status: 401 });
+      vi.stubGlobal('fetch', fetcher);
+      vi.stubEnv('GITHUB_TOKEN', '');
+      expect(await latestVersion(spec())).toBe('v1.0.0');
+      expect(fetcher).toHaveBeenCalledTimes(1);
+      expect(String(logged.mock.calls[0]?.[0])).toMatch(/HTTP 401/);
+    });
+
     it('reads the latest release of the repository it is given', async () => {
       const fetcher = answer({ tag_name: 'v1.1.1' });
       vi.stubGlobal('fetch', fetcher);

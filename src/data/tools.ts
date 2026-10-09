@@ -97,11 +97,15 @@ async function fetchLatestVersion({ repo, fallback }: VersionSpec): Promise<stri
     return fallback;
   };
   const token = process.env['GITHUB_TOKEN'];
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+  const ask = (credentials?: string) =>
+    fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
+      headers: credentials ? { Authorization: `Bearer ${credentials}` } : {},
       signal: AbortSignal.timeout(5000),
     });
+  try {
+    let res = await ask(token);
+    // A stale or placeholder token gets a 401 even though the repository is public.
+    if (res.status === 401 && token) res = await ask();
     if (!res.ok) return fallBack(`the release lookup answered HTTP ${res.status}`);
     const { tag_name: tag } = (await res.json()) as { tag_name?: unknown };
     if (typeof tag !== 'string' || !/^v?\d+\.\d+\.\d+$/.test(tag)) return fallBack(`the latest release tag is ${JSON.stringify(tag)}, not a version`);
