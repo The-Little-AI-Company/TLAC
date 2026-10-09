@@ -6,7 +6,8 @@
 import { expect, test as base, type Locator, type Page } from '@playwright/test';
 import { PAGES, type PageInfo } from '../helpers/dist';
 import { toRgbString } from '../helpers/color';
-import { themeColor, type ColorName, type Theme } from '../helpers/tokens';
+import { fontFamilies } from '../helpers/css';
+import { themeColor, tokenPx, type ColorName, type Theme } from '../helpers/tokens';
 
 export { expect, PAGES };
 export type { PageInfo };
@@ -26,9 +27,12 @@ export const VIEWPORT_HEIGHT = 900;
  */
 export const ramp = (width: number, phone: number, desktop: number): number =>
   phone + (desktop - phone) * Math.min(1, Math.max(0, (width - 360) / 500));
+/** A step of the spacing scale in pixels, from design/tokens.json: `space(7)` is 56. */
+export const space = (step: number): number => tokenPx(`space-${step}`);
 /** Side padding of the page: --space-4 at 360px and below, --space-8 at 860px and above. */
-export const sidePadding = (width: number): number => ramp(width, 16, 64);
-export const CONTENT_MAX = 1072;
+export const sidePadding = (width: number): number => ramp(width, space(4), space(8));
+/** The widest the content gets, between the page margins. */
+export const CONTENT_MAX = tokenPx('content-max');
 
 export const theme = (scheme: Scheme): Theme => (scheme === 'light' ? 'company-light' : 'company-dark');
 /** A token as the browser reports it: `rgb(246, 243, 236)`. */
@@ -82,6 +86,13 @@ export async function fontsReady(page: Page): Promise<void> {
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
+}
+
+/** Waits for the browser to paint `count` more frames, so a style change that was just made has been applied. */
+export async function nextFrames(page: Page, count = 2): Promise<void> {
+  await page.evaluate(async (frames) => {
+    for (let i = 0; i < frames; i++) await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
+  }, count);
 }
 
 /** Scrolls to the bottom and back so lazy images load, then waits for them. */
@@ -159,8 +170,8 @@ export async function style(target: Locator, props: readonly string[], pseudo?: 
   );
 }
 
-/** The first family in a computed `font-family`, without quotes. */
-export const firstFamily = (fontFamily: string): string => (fontFamily.split(',')[0] ?? '').trim().replace(/^["']|["']$/g, '');
+/** The first family in a computed `font-family`, without quotes: `"Instrument Sans", system-ui` is `Instrument Sans`. */
+export const firstFamily = (fontFamily: string | undefined): string => fontFamilies(fontFamily ?? '')[0] ?? '';
 
 /** Seconds from a computed duration list: `0.18s, 0.18s` -> [0.18, 0.18]. */
 export const secondsOf = (value: string): number[] => value.split(',').map((v) => (v.trim().endsWith('ms') ? parseFloat(v) / 1000 : parseFloat(v)));
@@ -178,6 +189,68 @@ export async function chInPixels(target: Locator, count: number): Promise<number
     return width;
   }, count);
 }
+
+/**
+ * How many of a list's rows are ruled by a 1px hairline in `ruleColor`: the list itself, and its rows and
+ * their terms and details, counting a top or a bottom rule. Pass a locator that matches one element.
+ */
+export async function countHairlines(list: Locator, ruleColor: string): Promise<number> {
+  return list.evaluate((root, rule) => {
+    const els = [root, ...Array.from(root.querySelectorAll('div, dt, dd'))];
+    return els.filter((el) => {
+      const s = getComputedStyle(el);
+      return (s.borderTopWidth === '1px' && s.borderTopColor === rule) || (s.borderBottomWidth === '1px' && s.borderBottomColor === rule);
+    }).length;
+  }, ruleColor);
+}
+
+/** What a test needs to know about a link, button or other element in the Tab order. */
+export interface ElementState {
+  tag: string;
+  href: string | null;
+  /** Its text with the whitespace collapsed. */
+  text: string;
+  /** A Tab stop: not disabled, not `tabindex="-1"`, and drawn (the skip link is off-screen but still counts). */
+  tabbable: boolean;
+  focusVisible: boolean;
+  /** Whether it is inside the viewport. */
+  inView: boolean;
+  outline: { style: string; width: string; color: string; offset: string };
+}
+
+/** Elements that can take a Tab stop, before `ElementState.tabbable` rules out the ones that do not. */
+const TAB_CANDIDATES = 'a[href], button, input, select, textarea, summary, [tabindex]';
+
+/** Runs in the page, once for every element, so that the Tab order and the focused element are described in the same way. */
+const describeElements = (els: Element[]): ElementState[] =>
+  els.map((el) => {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    return {
+      tag: el.tagName.toLowerCase(),
+      href: el.getAttribute('href'),
+      text: (el.textContent ?? '').replace(/\s+/g, ' ').trim(),
+      tabbable: !el.matches('[tabindex^="-"]') && !el.hasAttribute('disabled') && cs.display !== 'none' && cs.visibility !== 'hidden',
+      focusVisible: el.matches(':focus-visible'),
+      inView: r.width > 0 && r.height > 0 && r.left >= 0 && r.top >= 0 && r.right <= window.innerWidth && r.bottom <= window.innerHeight,
+      outline: { style: cs.outlineStyle, width: cs.outlineWidth, color: cs.outlineColor, offset: cs.outlineOffset },
+    };
+  });
+
+/** The elements a keyboard reaches by Tab, in DOM order. */
+export async function tabbables(page: Page): Promise<ElementState[]> {
+  return (await page.locator(TAB_CANDIDATES).evaluateAll(describeElements)).filter((el) => el.tabbable);
+}
+
+/** The element that has focus now. */
+export async function focused(page: Page): Promise<ElementState> {
+  const [el] = await page.locator(':focus').evaluateAll(describeElements);
+  if (!el) throw new Error('nothing has focus');
+  return el;
+}
+
+/** One line that tells one Tab stop from another: `a|/callout/|Callout`. */
+export const signature = ({ tag, href, text }: ElementState): string => `${tag}|${href ?? ''}|${text}`;
 
 /** Readable text for an axe violation list. */
 export function formatViolations(
@@ -207,6 +280,12 @@ export async function pageBackground(page: Page): Promise<string> {
     return opaque(body) ? body : html;
   });
 }
+
+/**
+ * A pattern for text written with " · " separators, such as the footer line. The dots are spans with their own
+ * margin and no spaces around them in the page, so the pattern allows spaces or none on either side.
+ */
+export const dotted = (text: string): RegExp => new RegExp(text.split(' · ').map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*·\\s*'));
 
 /** Name of the screenshot file for a page, width and scheme. */
 export const screenshotName = (info: PageInfo, width: number, scheme: Scheme): string => `${info.label}-${width}-${scheme}.png`;

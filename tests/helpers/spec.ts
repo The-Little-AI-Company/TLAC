@@ -182,7 +182,7 @@ export interface ProjectExpectation {
 }
 
 /** The four "other things I have made", in the order they appear. */
-export const PROJECTS: readonly ProjectExpectation[] = [
+export const PROJECTS = [
   {
     title: 'Open World Factbook',
     line: 'An open-source database of 262 countries and territories.',
@@ -223,7 +223,7 @@ export const PROJECTS: readonly ProjectExpectation[] = [
     image: IMAGES.neonNoir,
     thumb: IMAGE_VARIANTS.neonNoir,
   },
-] as const;
+] as const satisfies readonly ProjectExpectation[];
 
 // ---------------------------------------------------------------------------
 // Callout page
@@ -305,7 +305,7 @@ export const CALLOUT_PAGE = {
         { term: 'Your history', detail: 'Off by default. Usage counters stay local.' },
       ],
     },
-  ] satisfies readonly SectionExpectation[],
+  ] as const satisfies readonly SectionExpectation[],
   get: {
     heading: 'Get it',
     id: 'get-it',
@@ -364,7 +364,7 @@ export const VIVARY_PAGE = {
         { term: 'Windows first', detail: 'The desktop app targets Windows. A Mac build is possible later work, not a promise.' },
       ],
     },
-  ] satisfies readonly SectionExpectation[],
+  ] as const satisfies readonly SectionExpectation[],
   statusSection: {
     heading: 'Status',
     lede:

@@ -1,6 +1,6 @@
 /**
- * SPEC section 10 "All images load": every <img> on every page decodes to real pixels once it has
- * been scrolled into view, at a phone and a desktop width.
+ * All images load: every <img> on every page decodes to real pixels once it has been scrolled into
+ * view, at a phone and a desktop width, and each screen downloads the smallest file that is sharp.
  */
 import type { Page } from '@playwright/test';
 import { KEY_WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, loadEverything, open, test } from './support';
@@ -27,7 +27,7 @@ for (const width of KEY_WIDTHS) {
       test(`${info.label}: every image has pixels after it is scrolled into view`, async ({ page, probe }) => {
         await open(page, info);
         const count = await page.locator('img').count();
-        expect(count, `the spec gives ${info.label} ${IMAGE_COUNT[info.id]} image(s)`).toBe(IMAGE_COUNT[info.id]);
+        expect(count, `${info.label} should have ${IMAGE_COUNT[info.id]} image(s)`).toBe(IMAGE_COUNT[info.id]);
         for (let i = 0; i < count; i++) {
           const img = page.locator('img').nth(i);
           await img.scrollIntoViewIfNeeded();

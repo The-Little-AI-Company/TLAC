@@ -1,10 +1,14 @@
 /**
- * SPEC section 5 and 6 as the browser renders them: buttons, status badges, the now line, plates,
- * links, lanes and the nav, with the token colors of each scheme. Run at a desktop and a phone width.
+ * The components as the browser renders them: buttons, status badges, the now line, plates, links,
+ * lanes and the nav, with the token colors of each scheme. Run at a desktop and a phone width.
  */
-import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, expect, firstFamily, isPhone, open, rgb, style, test } from './support';
+import { CALLOUT_PLATE, FOOTER, HOME, SKIP_LINK, VIVARY_PAGE } from '../helpers/spec';
+import { NAV_LINKS } from '../helpers/dist';
+import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, countHairlines, expect, firstFamily, isPhone, open, rgb, style, test } from './support';
 
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+const [getCallout, seeVivary] = HOME.buttons;
+const [vivaryNav, aboutNav] = [NAV_LINKS[1], NAV_LINKS[2]];
 
 for (const scheme of SCHEMES) {
   for (const width of KEY_WIDTHS) {
@@ -15,7 +19,7 @@ for (const scheme of SCHEMES) {
       test.describe('buttons', () => {
         test('primary: accent-fill ground, on-accent label, 2px radius, 15px semibold', async ({ page }) => {
           await open(page, '/');
-          const s = await style(page.getByRole('link', { name: 'Get Callout' }), [
+          const s = await style(page.getByRole('link', { name: getCallout.label }), [
             'background-color', 'color', 'border-top-left-radius', 'border-top-width', 'border-top-color', 'font-size', 'font-weight', 'text-decoration-line', 'font-family', 'box-shadow',
           ]);
           expect(s['background-color']).toBe(rgb(scheme, 'accent-fill'));
@@ -24,13 +28,13 @@ for (const scheme of SCHEMES) {
           expect(s['font-size']).toBe('15px');
           expect(s['font-weight']).toBe('600');
           expect(s['text-decoration-line']).toBe('none');
-          expect(s['font-family']).toMatch(/^"?Instrument Sans"?,/);
+          expect(firstFamily(s['font-family'])).toBe('Instrument Sans');
           expect(s['box-shadow']).toBe('none');
         });
 
         test('secondary: clear ground, 1px field border, ink label, 2px radius', async ({ page }) => {
           await open(page, '/');
-          const s = await style(page.getByRole('link', { name: 'See Vivary' }), [
+          const s = await style(page.getByRole('link', { name: seeVivary.label }), [
             'background-color', 'color', 'border-top-left-radius', 'border-top-width', 'border-top-style', 'border-top-color', 'font-size', 'font-weight',
           ]);
           expect(s['background-color']).toBe(TRANSPARENT);
@@ -45,18 +49,18 @@ for (const scheme of SCHEMES) {
 
         test('md buttons are at least 46px tall and sm buttons at least 40px', async ({ page }) => {
           await open(page, '/');
-          expect((await box(page.getByRole('link', { name: 'Get Callout' }))).height).toBeGreaterThanOrEqual(phone ? 48 : 46);
-          expect((await box(page.getByRole('link', { name: 'More about Vivary' }))).height).toBeGreaterThanOrEqual(40);
-          expect((await box(page.getByRole('link', { name: 'More about Callout' }))).height).toBeGreaterThanOrEqual(40);
+          expect((await box(page.getByRole('link', { name: getCallout.label }))).height).toBeGreaterThanOrEqual(phone ? 48 : 46);
+          expect((await box(page.getByRole('link', { name: HOME.vivary.button.label }))).height).toBeGreaterThanOrEqual(40);
+          expect((await box(page.getByRole('link', { name: HOME.callout.button.label }))).height).toBeGreaterThanOrEqual(40);
         });
 
         test('primary turns accent-hover on hover, secondary draws an ink border', async ({ page }) => {
           test.skip(phone, 'hover is a desktop pointer interaction');
           await open(page, '/');
-          const primary = page.getByRole('link', { name: 'Get Callout' });
+          const primary = page.getByRole('link', { name: getCallout.label });
           await primary.hover();
           await expect.poll(async () => (await style(primary, ['background-color']))['background-color']).toBe(rgb(scheme, 'accent-hover'));
-          const secondary = page.getByRole('link', { name: 'See Vivary' });
+          const secondary = page.getByRole('link', { name: seeVivary.label });
           await secondary.hover();
           await expect.poll(async () => (await style(secondary, ['border-top-color']))['border-top-color']).toBe(rgb(scheme, 'ink'));
         });
@@ -64,12 +68,13 @@ for (const scheme of SCHEMES) {
         test('hover changes color only: nothing moves or resizes', async ({ page }) => {
           test.skip(phone, 'hover is a desktop pointer interaction');
           await open(page, '/');
-          const primary = page.getByRole('link', { name: 'Get Callout' });
+          const primary = page.getByRole('link', { name: getCallout.label });
           const before = await box(primary);
           await primary.hover();
-          await page.waitForTimeout(350);
-          const after = await box(primary);
-          expect(after).toEqual(before);
+          // The color change has finished once the hover color is the computed one and no transition is left running.
+          await expect.poll(async () => (await style(primary, ['background-color']))['background-color']).toBe(rgb(scheme, 'accent-hover'));
+          await expect.poll(() => primary.evaluate((el) => el.getAnimations().length), { message: 'transitions still running' }).toBe(0);
+          expect(await box(primary)).toEqual(before);
         });
       });
 
@@ -86,7 +91,7 @@ for (const scheme of SCHEMES) {
           const text = await style(now, ['color', 'font-size', 'font-family']);
           expect(text['color']).toBe(rgb(scheme, 'ink-soft'));
           expect(text['font-size']).toBe('15px');
-          expect(text['font-family']).toMatch(/^"?Instrument Sans"?,/);
+          expect(firstFamily(text['font-family'])).toBe('Instrument Sans');
         });
 
         test('badge label: 13px semibold ink-soft; the dot is 7px', async ({ page }) => {
@@ -96,7 +101,7 @@ for (const scheme of SCHEMES) {
           expect(s['color']).toBe(rgb(scheme, 'ink-soft'));
           expect(s['font-size']).toBe('13px');
           expect(s['font-weight']).toBe('600');
-          expect(s['font-family']).toMatch(/^"?Instrument Sans"?,/);
+          expect(firstFamily(s['font-family'])).toBe('Instrument Sans');
           const dot = await style(badge.locator('i'), ['width', 'height', 'border-top-left-radius']);
           expect(dot['width']).toBe('7px');
           expect(dot['height']).toBe('7px');
@@ -164,15 +169,15 @@ for (const scheme of SCHEMES) {
           const caption = await style(plate.locator('figcaption'), ['color', 'font-size', 'font-family', 'font-style', 'font-weight']);
           expect(caption['color']).toBe(rgb(scheme, 'ink-faint'));
           expect(caption['font-size']).toBe(phone ? '15px' : '17px');
-          expect(caption['font-family']).toMatch(/^"?Instrument Serif Italic"?,/);
+          expect(firstFamily(caption['font-family'])).toBe('Instrument Serif Italic');
           expect(caption['font-style'], 'the italic is its own family, so the style stays normal').toBe('normal');
           expect(caption['font-weight']).toBe('400');
           expect((await box(plate.locator('figcaption'))).y).toBeGreaterThanOrEqual(img.bottom);
         });
 
-        test('the spec plate wears the same frame', async ({ page }) => {
+        test('the facts plate wears the same frame', async ({ page }) => {
           await open(page, '/');
-          const plate = page.locator('section#work article.feature').nth(1).locator('dl').first().locator('xpath=ancestor::*[self::figure or contains(@class,"plate")][1]');
+          const plate = page.locator('section#work article.feature').nth(1).locator('.media .plate');
           const s = await style(plate, ['background-color', 'border-top-width', 'border-top-color', 'border-top-left-radius', 'padding-top']);
           expect(s['background-color']).toBe(rgb(scheme, 'raised'));
           expect(s['border-top-width']).toBe('1px');
@@ -181,27 +186,21 @@ for (const scheme of SCHEMES) {
           expect(s['padding-top']).toBe(phone ? '8px' : '14px');
         });
 
-        test('the spec plate rules its rows with hairlines, sets the label column at 6.5rem or less, and sets the quote upright in the display face with the italic caption under it', async ({ page }) => {
+        test('the facts plate rules its rows with hairlines, sets the label column at 6.5rem or less, and sets the quote upright in the display face with the italic caption under it', async ({ page }) => {
           await open(page, '/');
           const feature = page.locator('section#work article.feature').nth(1);
-          const hairlines = await feature.locator('dl').first().evaluate((dl, rule) => {
-            const els = [dl, ...Array.from(dl.querySelectorAll('div, dt, dd'))];
-            return els.filter((el) => {
-              const s = getComputedStyle(el);
-              return (s.borderTopWidth === '1px' && s.borderTopColor === rule) || (s.borderBottomWidth === '1px' && s.borderBottomColor === rule);
-            }).length;
-          }, rgb(scheme, 'rule'));
-          expect(hairlines, 'hairlines between the four rows').toBeGreaterThanOrEqual(3);
+          const hairlines = await countHairlines(feature.locator('dl').first(), rgb(scheme, 'rule'));
+          expect(hairlines, `hairlines between the ${CALLOUT_PLATE.rows.length} rows`).toBeGreaterThanOrEqual(CALLOUT_PLATE.rows.length - 1);
           const label = await box(feature.locator('dl dt').first());
           const value = await box(feature.locator('dl dd').first());
           expect(label.width, 'label column').toBeLessThanOrEqual(104.5);
           expect(value.x, 'value starts after the label column').toBeGreaterThan(label.right);
-          const quote = await style(feature.getByText('Signals in the text itself. Not a truth check.', { exact: true }), ['font-family', 'font-style', 'font-size', 'color']);
+          const quote = await style(feature.getByText(CALLOUT_PLATE.quote, { exact: true }), ['font-family', 'font-style', 'font-size', 'color']);
           expect(firstFamily(quote['font-family'] ?? '')).toBe('Instrument Serif');
           expect(quote['font-style']).toBe('normal');
           expect(quote['font-size']).toBe('24px');
           expect(quote['color']).toBe(rgb(scheme, 'ink'));
-          const credit = await style(feature.getByText('The header on every Callout result.', { exact: true }), ['font-family', 'color']);
+          const credit = await style(feature.getByText(CALLOUT_PLATE.quoteCaption, { exact: true }), ['font-family', 'color']);
           expect(firstFamily(credit['font-family'] ?? '')).toBe('Instrument Serif Italic');
           expect(credit['color']).toBe(rgb(scheme, 'ink-faint'));
         });
@@ -212,14 +211,14 @@ for (const scheme of SCHEMES) {
           await open(page, '/');
           const s = await style(page.locator('section#work p.numeral').first(), ['color', 'font-family', 'font-style', 'font-size', 'font-weight']);
           expect(s['color']).toBe(rgb(scheme, 'accent'));
-          expect(s['font-family']).toMatch(/^"?Instrument Serif Italic"?,/);
+          expect(firstFamily(s['font-family'])).toBe('Instrument Serif Italic');
           expect(s['font-style']).toBe('normal');
           expect(s['font-weight']).toBe('400');
           expect(parseFloat(s['font-size'] ?? '0')).toBeGreaterThanOrEqual(15);
           expect(parseFloat(s['font-size'] ?? '0')).toBeLessThanOrEqual(22);
         });
 
-        test('body text is ink-soft, headlines are ink, status words and captions are ink-faint or ink-soft', async ({ page }) => {
+        test('the lede and the lane details are ink-soft, headings and lane names are ink', async ({ page }) => {
           await open(page, '/');
           expect((await style(page.locator('section.hero .lede'), ['color']))['color']).toBe(rgb(scheme, 'ink-soft'));
           expect((await style(page.locator('section#how dd').first(), ['color']))['color']).toBe(rgb(scheme, 'ink-soft'));
@@ -239,7 +238,7 @@ for (const scheme of SCHEMES) {
 
         test('inline links in prose carry an accent underline too', async ({ page }) => {
           await open(page, '/vivary/');
-          const link = page.getByRole('link', { name: 'release queue', exact: true });
+          const link = page.getByRole('link', { name: VIVARY_PAGE.statusSection.links[1].label, exact: true });
           const s = await style(link, ['text-decoration-line', 'text-decoration-color']);
           expect(s['text-decoration-line']).toBe('underline');
           expect(s['text-decoration-color']).toBe(rgb(scheme, 'accent'));
@@ -261,12 +260,12 @@ for (const scheme of SCHEMES) {
         test('nav links: ink-soft, 15px; the current page is ink with an accent underline', async ({ page }) => {
           await open(page, '/about/');
           const nav = page.getByRole('navigation', { name: 'Main' });
-          const other = await style(nav.getByRole('link', { name: 'Vivary', exact: true }), ['color', 'font-size', 'font-family', 'text-decoration-line']);
+          const other = await style(nav.getByRole('link', { name: vivaryNav.label, exact: true }), ['color', 'font-size', 'font-family', 'text-decoration-line']);
           expect(other['color']).toBe(rgb(scheme, 'ink-soft'));
           expect(other['font-size']).toBe('15px');
-          expect(other['font-family']).toMatch(/^"?Instrument Sans"?,/);
+          expect(firstFamily(other['font-family'])).toBe('Instrument Sans');
           expect(other['text-decoration-line']).toBe('none');
-          const current = await style(nav.getByRole('link', { name: 'About', exact: true }), ['color', 'text-decoration-line', 'text-decoration-color']);
+          const current = await style(nav.getByRole('link', { name: aboutNav.label, exact: true }), ['color', 'text-decoration-line', 'text-decoration-color']);
           expect(current['color']).toBe(rgb(scheme, 'ink'));
           expect(current['text-decoration-line']).toBe('underline');
           expect(current['text-decoration-color']).toBe(rgb(scheme, 'accent'));
@@ -279,14 +278,14 @@ for (const scheme of SCHEMES) {
           expect(s['background-color']).toBe(rgb(scheme, 'ground-alt'));
           expect(s['color']).toBe(rgb(scheme, 'ink-faint'));
           expect(s['font-size']).toBe('13px');
-          for (const name of ['jeff@littleaicompany.com', 'GitHub', 'JeffKazzee.dev']) {
+          for (const { label: name } of FOOTER.links) {
             expect((await style(footer.getByRole('link', { name }), ['color']))['color'], name).toBe(rgb(scheme, 'ink-soft'));
           }
         });
 
-        test('the skip link is ink on the ground until focused and never covers the brand once hidden', async ({ page }) => {
+        test('the skip link is out of reach of a pointer until it has focus, then sits on screen', async ({ page }) => {
           await open(page, '/');
-          const skip = page.getByRole('link', { name: 'Skip to content' });
+          const skip = page.getByRole('link', { name: SKIP_LINK.label });
           // Clipped or off-screen, nothing at the link's own position belongs to it until it has focus.
           const reachable = await skip.evaluate((el) => {
             const r = el.getBoundingClientRect();
@@ -307,11 +306,11 @@ for (const scheme of SCHEMES) {
           await open(page, '/');
           const dt = await style(page.locator('section#how dt').first(), ['font-size', 'font-family', 'font-weight']);
           expect(dt['font-size']).toBe(phone ? '24px' : '28px');
-          expect(dt['font-family']).toMatch(/^"?Instrument Serif"?,/);
+          expect(firstFamily(dt['font-family'])).toBe('Instrument Serif');
           expect(dt['font-weight']).toBe('400');
           const dd = await style(page.locator('section#how dd').first(), ['font-size', 'font-family']);
           expect(dd['font-size']).toBe('16px');
-          expect(dd['font-family']).toMatch(/^"?Instrument Sans"?,/);
+          expect(firstFamily(dd['font-family'])).toBe('Instrument Sans');
         });
       });
     });
@@ -335,8 +334,8 @@ for (const scheme of SCHEMES) {
 
     test('the primary button has a 2px border and the secondary one a 1px border, so they differ', async ({ page }) => {
       await open(page, '/');
-      const primary = await style(page.getByRole('link', { name: 'Get Callout' }), ['border-top-width']);
-      const secondary = await style(page.getByRole('link', { name: 'See Vivary' }), ['border-top-width']);
+      const primary = await style(page.getByRole('link', { name: getCallout.label }), ['border-top-width']);
+      const secondary = await style(page.getByRole('link', { name: seeVivary.label }), ['border-top-width']);
       expect(primary['border-top-width']).toBe('2px');
       expect(secondary['border-top-width']).toBe('1px');
     });

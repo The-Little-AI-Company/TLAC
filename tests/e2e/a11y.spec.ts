@@ -1,6 +1,6 @@
 /**
- * SPEC section 0 and 10: WCAG 2.2 AA. axe-core reports zero violations on every page at 360px
- * and 1280px, in both color schemes, with the rule sets wcag2a, wcag2aa, wcag21a, wcag21aa and wcag22aa.
+ * WCAG 2.2 AA. axe-core reports zero violations on every page at 360px and 1280px, in both color
+ * schemes, with the rule sets wcag2a, wcag2aa, wcag21a, wcag21aa and wcag22aa.
  */
 import AxeBuilder from '@axe-core/playwright';
 import { KEY_WIDTHS, PAGES, SCHEMES, VIEWPORT_HEIGHT, expect, formatViolations, loadEverything, open, test } from './support';
