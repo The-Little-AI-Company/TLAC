@@ -6,13 +6,15 @@ import StatusBadge from './StatusBadge.astro';
 
 type Props = Project;
 const { image, thumb, imageAlt, width, height, title, line, tone, status, href, linkLabel } = Astro.props;
+// The width scripts/images.mjs writes the thumbnails at (`pnpm images`). Change the two together.
+const THUMB_WIDTH = 320;
 ---
 
 <li class="entry">
   <div class="frame thumb">
     <img
       src={image}
-      srcset={`${thumb} 320w, ${image} ${width}w`}
+      srcset={`${thumb} ${THUMB_WIDTH}w, ${image} ${width}w`}
       sizes="(max-width: 860px) 88px, 150px"
       alt={imageAlt}
       width={width}

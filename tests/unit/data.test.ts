@@ -80,6 +80,12 @@ describe('tools.ts', () => {
     it('has no version to stamp, so the status shows instead', () => {
       expect('version' in vivary).toBe(false);
     });
+
+    it('writes the day of its preview once: the status is built from it, and no page or component types it again', () => {
+      expect(vivary.status).toBe(`Unsigned Windows preview · ${vivary.previewDate}`);
+      const typedAgain = listFiles(SRC).filter((file) => file !== 'data/tools.ts' && readFileSync(join(SRC, file), 'utf-8').includes(vivary.previewDate));
+      expect(typedAgain.map((file) => `src/${file}`)).toEqual([]);
+    });
   });
 
   it('names the repository vivary-dev/vivary and never by its former name, Vivary-New, anywhere in src/', () => {

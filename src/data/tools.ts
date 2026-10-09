@@ -19,6 +19,8 @@ export interface Tool {
   tone: Tone;
   // Absent when the tool has no public release to stamp.
   version?: VersionSpec;
+  // The day its preview came out, for the sentences that name it. Present only for a tool whose status is a preview.
+  previewDate?: string;
   primary: { label: string; href: string };
   repo: string;
   // Where the work still needed for the next release is listed in the open, when it is.
@@ -38,14 +40,18 @@ export const callout = {
   repo: 'https://github.com/The-Little-AI-Company/callout',
 } satisfies Tool;
 
+// The one place the Windows preview's day is written. The status below, the home page's now line and the Status paragraph on the Vivary page all read it.
+const previewDate = 'Sept 22, 2026';
+
 export const vivary = {
   slug: 'vivary',
   name: 'Vivary',
   tagline: 'Your projects. Your agents. Your machine.',
   summary:
     'A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app, with your agents, credentials, files, and history kept on the machine that runs it.',
-  status: 'Unsigned Windows preview · Sept 22, 2026',
+  status: `Unsigned Windows preview · ${previewDate}`,
   tone: 'wip',
+  previewDate,
   primary: { label: 'Visit vivaryagent.xyz', href: 'https://vivaryagent.xyz' },
   repo: 'https://github.com/vivary-dev/vivary',
   queue: 'https://github.com/vivary-dev/vivary/milestone/1',
