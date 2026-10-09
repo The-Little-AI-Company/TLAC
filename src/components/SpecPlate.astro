@@ -1,0 +1,49 @@
+---
+// A plate of facts for a tool that has no screenshot worth showing, with an optional line the tool says.
+import PlateFrame from './PlateFrame.astro';
+import type { Fact } from './types';
+
+interface Props {
+  rows: Fact[];
+  quote?: string;
+  caption?: string;
+}
+const { rows, quote, caption } = Astro.props;
+---
+
+<PlateFrame caption={caption}>
+  <dl>
+    {rows.map(({ term, detail }) => (
+      <div class="row">
+        <dt class="label">{term}</dt>
+        <dd>{detail}</dd>
+      </div>
+    ))}
+  </dl>
+  {quote && <p class="quote caption">{quote}</p>}
+</PlateFrame>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-3) 2px;
+  }
+
+  .row + .row {
+    border-top: 1px solid var(--rule);
+  }
+
+  dd {
+    color: var(--ink);
+  }
+
+  .quote {
+    margin-top: var(--space-3);
+    padding: var(--space-4) 2px 0;
+    border-top: 1px solid var(--rule);
+    color: var(--ink);
+  }
+</style>

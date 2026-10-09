@@ -1,0 +1,35 @@
+---
+// One sentence about what is happening now, led by a status dot.
+import type { Tone } from '../data/status';
+
+interface Props {
+  tone?: Extract<Tone, 'live' | 'wip'>;
+}
+const { tone = 'live' } = Astro.props;
+---
+
+<p class={`now now--${tone}`}><slot /></p>
+
+<style>
+  .now {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  .now::before {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-top: calc((1lh - 8px) / 2);
+    border-radius: 50%;
+    background: var(--status-live);
+  }
+
+  .now--wip::before {
+    background: var(--status-wip);
+  }
+</style>

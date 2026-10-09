@@ -1,6 +1,9 @@
 ---
+// Header of a tool page: status, name, tagline and the two ways in.
 import type { Tool } from '../data/tools';
 import { latestVersion } from '../data/tools';
+import Button from './Button.astro';
+import StatusBadge from './StatusBadge.astro';
 
 interface Props {
   tool: Tool;
@@ -9,42 +12,20 @@ const { tool } = Astro.props;
 const version = await latestVersion(tool.version);
 ---
 
-<section class="tool-hero">
+<section class="page-head">
   <div class="wrap">
-    <p class="tool-kicker">
-      {version && <span class="stamp">{version}</span>}
-      <span class="stamp">{tool.status}</span>
-      <span class="stamp">{tool.platform}</span>
-    </p>
-    <h1>{tool.name}</h1>
+    <p class="badge"><StatusBadge tone={version ? 'shipped' : 'wip'} label={version ?? tool.status} /></p>
+    <h1 class="display-l">{tool.name}</h1>
     <p class="lede">{tool.tagline}</p>
-    <p class="tool-actions">
-      <a class="action" href={tool.primary.href}>{tool.primary.label}</a>
-      <a class="action action-quiet" href={tool.repo}>Source on GitHub</a>
-    </p>
+    <div class="actions">
+      <Button href={tool.primary.href} variant="primary">{tool.primary.label}</Button>
+      <Button href={tool.repo}>Source on GitHub</Button>
+    </div>
   </div>
 </section>
 
 <style>
-  .tool-hero {
-    padding: 48px 0 56px;
-  }
-
-  .tool-hero .wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-  }
-
-  .tool-kicker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .tool-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
+  .badge {
+    margin-bottom: var(--space-4);
   }
 </style>

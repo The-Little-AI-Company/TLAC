@@ -1,0 +1,32 @@
+---
+// The frame shared by Plate and SpecPlate: a raised surface, a hairline, and an optional italic caption underneath.
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="plate">
+  <slot />
+  {caption && <figcaption class="caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .plate {
+    padding: 14px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-none);
+    background: var(--raised);
+  }
+
+  figcaption {
+    padding: 12px 2px 0;
+  }
+
+  /* The single breakpoint is 860px, as in global.css. */
+  @media (max-width: 860px) {
+    .plate {
+      padding: var(--space-2);
+    }
+  }
+</style>

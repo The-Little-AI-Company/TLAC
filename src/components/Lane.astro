@@ -1,0 +1,36 @@
+---
+// One ruled row of a Lanes list: a name in the display face, and what it means in the default slot.
+interface Props {
+  term: string;
+}
+const { term } = Astro.props;
+---
+
+<div class="lane">
+  <dt class="title">{term}</dt>
+  <dd class="text"><slot /></dd>
+</div>
+
+<style>
+  .lane {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: var(--space-5);
+    align-items: baseline;
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* The single breakpoint is 860px, as in global.css. */
+  @media (max-width: 860px) {
+    .lane {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2);
+      padding: 20px 0;
+    }
+
+    .title {
+      font-size: 24px;
+    }
+  }
+</style>
