@@ -5,10 +5,10 @@
 // A copy keeps the proportions of its source to the pixel, because a browser that
 // swaps in the natural proportions of the file it loaded would move the page by a
 // fraction of a pixel. 1200x844 is 300:211, so its copy is 600 wide, not 640.
-import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { fromRoot } from './lib.mjs';
 
-const dir = fileURLToPath(new URL('../public/images/', import.meta.url));
+const dir = fromRoot('public/images/');
 
 /** @type {[source: string, width: number][]} */
 const variants = [

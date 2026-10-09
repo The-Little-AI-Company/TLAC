@@ -1,39 +1,29 @@
 // @ts-check
 // Renders public/og.png, the 1200x630 social card, with Playwright.
 //
-// Run it from the repository root after `pnpm install`:
-//
-//   node scripts/og.mjs
+// Run it with `pnpm og`, after `pnpm install`.
 //
 // The card is built as an HTML string and screenshotted in Chromium. Colors come from the
-// :root block of src/styles/tokens.css, the mark from src/components/mark-path.mjs (the module
-// Mark.astro draws too), and the fonts from public/fonts/ (embedded as base64, so nothing is
-// fetched). Chromium is the one Playwright already has installed; this script never runs
-// `playwright install`.
+// :root block of src/styles/tokens.css and the mark from src/components/mark-path.mjs (the module
+// Mark.astro draws too), both read through scripts/lib.mjs, and the fonts from public/fonts/
+// (embedded as base64, so nothing is fetched). Chromium is the one Playwright already has
+// installed; this script never runs `playwright install`.
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
-import { markPath, markViewBox } from '../src/components/mark-path.mjs';
+import { fromRoot, markPathTag, markViewBox, tokens } from './lib.mjs';
 
-const root = new URL('../', import.meta.url);
-const path = (/** @type {string} */ p) => fileURLToPath(new URL(p, root));
 const WIDTH = 1200;
 const HEIGHT = 630;
 const PAD = 80; // the card's padding: the mark, the wordmark, the rule and the line all start at this x
 const MARK = 72; // the mark's rendered size in px
-const OUT = path('public/og.png');
+const OUT = fromRoot('public/og.png');
 
-// The light tokens. Only the first :root block is read: the dark values sit inside a media query.
-const tokensCss = readFileSync(path('src/styles/tokens.css'), 'utf-8');
-const rootBlock = tokensCss.match(/:root\s*\{([^}]*)\}/)?.[1];
-if (!rootBlock) throw new Error('no :root block in src/styles/tokens.css');
-const tokens = [...rootBlock.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map(
-  ([, name = '', value = '']) => `${name}: ${value.trim()};`,
-);
+const light = tokens();
 for (const name of ['--ground', '--ink', '--ink-soft', '--ink-faint', '--rule', '--font-display', '--font-text']) {
-  if (!tokens.some((t) => t.startsWith(`${name}:`))) throw new Error(`${name} is missing from tokens.css`);
+  if (!light.has(name)) throw new Error(`${name} is missing from tokens.css`);
 }
+const declarations = [...light].map(([name, value]) => `${name}: ${value};`).join(' ');
 
 /**
  * @param {string} family
@@ -41,7 +31,7 @@ for (const name of ['--ground', '--ink', '--ink-soft', '--ink-faint', '--rule', 
  * @param {string} weight
  */
 const fontFace = (family, file, weight) => {
-  const data = readFileSync(path(`public/fonts/${file}`)).toString('base64');
+  const data = readFileSync(fromRoot(`public/fonts/${file}`)).toString('base64');
   return `@font-face { font-family: "${family}"; src: url(data:font/woff2;base64,${data}) format("woff2"); font-weight: ${weight}; font-style: normal; font-display: block; }`;
 };
 
@@ -50,7 +40,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <style>
-:root { color-scheme: light; ${tokens.join(' ')} }
+:root { color-scheme: light; ${declarations} }
 ${fontFace('Instrument Serif', 'instrument-serif-latin.woff2', '400')}
 ${fontFace('Instrument Sans', 'instrument-sans-latin.woff2', '400 700')}
 html, body { margin: 0; width: ${WIDTH}px; height: ${HEIGHT}px; overflow: hidden; }
@@ -68,7 +58,7 @@ body { background: var(--ground); color: var(--ink); font-family: var(--font-tex
 </head>
 <body>
 <div class="card">
-  <div class="mark"><svg viewBox="${markViewBox}" aria-hidden="true"><path id="mark" fill="currentColor" fill-rule="evenodd" d="${markPath}"></path></svg></div>
+  <div class="mark"><svg viewBox="${markViewBox}" aria-hidden="true">${markPathTag({ id: 'mark', fill: 'currentColor' })}</svg></div>
   <div class="lockup">
     <p class="name">The Little AI Company</p>
     <div class="rule"></div>
