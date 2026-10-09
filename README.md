@@ -49,8 +49,18 @@ Locally, the Playwright tests do not download a browser. They use the Chromium
 that `PLAYWRIGHT_BROWSERS_PATH` points at. On a machine without one, run
 `pnpm exec playwright install chromium` once. CI installs its own.
 
-`@playwright/test` is the one dependency pinned to an exact version. That version
-is the one whose Chromium build is installed here, so bump the two together.
+Two dependencies are pinned to an exact version, each for a reason:
+
+- `@playwright/test` is `1.56.1`, the release that matches the Chromium build
+  pre-installed here. A Playwright release is tested against one Chromium build,
+  so bump the two together. CI installs the matching one with
+  `playwright install chromium`.
+- `sharp` is `0.34.5`, the version Astro already installs for its image service,
+  so pnpm keeps a single copy. `pnpm images` and `pnpm icons` write files that
+  are committed, and the PNG decoder in the tests is checked against sharp. A
+  different libvips can encode different bytes, so a bump changes those files
+  without anyone editing their source. Move it together with Astro, then run
+  `pnpm images` and `pnpm icons` and commit what changes.
 
 ### The social card and the icons
 
