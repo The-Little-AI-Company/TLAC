@@ -1,110 +1,97 @@
 ---
 import Base from '../layouts/Base.astro';
+import Lane from '../components/Lane.astro';
+import Lanes from '../components/Lanes.astro';
+import Plate from '../components/Plate.astro';
+import SplitSection from '../components/SplitSection.astro';
 import ToolHero from '../components/ToolHero.astro';
 import { tool } from '../data/tools';
 
 const vivary = tool('vivary');
+const releases = `${vivary.repo}/releases`;
+const queue = vivary.queue;
+if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, and the Status section links to it.');
 ---
 
 <Base
   title="Vivary"
   description="A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first, self-hostable, and everything stays on your machine."
 >
-  <ToolHero tool={vivary} />
+  <ToolHero tool={vivary}>
+    <Plate
+      src="/images/vivary-site-2026-10-08.webp"
+      alt="The vivaryagent.xyz home page, Oct 8, 2026."
+      width={1200}
+      height={750}
+      caption="vivaryagent.xyz, Oct 8, 2026."
+      eager
+    />
+  </ToolHero>
 
-  <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="heading">What it is</h2>
-        <p>
-          One app where you open a project, talk to an agent about it, and watch what
-          the agent does to your files. The agents, your credentials, your files, and
-          the conversation history stay on the machine that runs Vivary.
-        </p>
-      </div>
-      <dl class="lanes">
-        <div class="lane">
-          <dt>Work on a project</dt>
-          <dd>
-            Open a project and work with an agent that can read files, edit them, and run
-            tools. Every change lands in your own folder.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Come back to it</dt>
-          <dd>
-            Return to a project's conversations, search past sessions, and keep the
-            memory worth keeping in files you can open.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Use the harnesses you have</dt>
-          <dd>
-            Supported coding harnesses you already installed, such as Claude Code, run
-            inside the workspace with their own tools. Guidance for them lives in files
-            in the project.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>See what you're building</dt>
-          <dd>
-            Preview the site or dashboard the agent is working on, and let the agent
-            inspect and debug it.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Reach it from your phone</dt>
-          <dd>
-            Run the instance on your computer or a server of your own, and connect a
-            phone browser to it when you choose to turn on remote access.
-          </dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+  <SplitSection heading="What it is">
+    <p slot="intro" class="text">
+      One app where you open a project, talk to an agent about it, and watch what
+      the agent does to your files. The agents, your credentials, your files, and
+      the conversation history stay on the machine that runs Vivary.
+    </p>
+    <Lanes>
+      <Lane term="Work on a project">
+        Open a project and work with an agent that can read files, edit them, and run
+        tools. Every change lands in your own folder.
+      </Lane>
+      <Lane term="Come back to it">
+        Return to a project's conversations, search past sessions, and keep the
+        memory worth keeping in files you can open.
+      </Lane>
+      <Lane term="Use the harnesses you have">
+        Supported coding harnesses you already installed, such as Claude Code, run
+        inside the workspace with their own tools. Guidance for them lives in files
+        in the project.
+      </Lane>
+      <Lane term="See what you're building">
+        Preview the site or dashboard the agent is working on, and let the agent
+        inspect and debug it.
+      </Lane>
+      <Lane term="Reach it from your phone">
+        Run the instance on your computer or a server of your own, and connect a
+        phone browser to it when you choose to turn on remote access.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="heading">What it asks of you</h2>
-      </div>
-      <dl class="lanes">
-        <div class="lane">
-          <dt>No Vivary account</dt>
-          <dd>Local desktop use needs none. Your provider accounts are yours and separate.</dd>
-        </div>
-        <div class="lane">
-          <dt>Remote access is opt-in</dt>
-          <dd>Off until you set it up, and authenticated when it's on.</dd>
-        </div>
-        <div class="lane">
-          <dt>Windows first</dt>
-          <dd>The desktop app targets Windows. A Mac build is possible later work, not a promise.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+  <SplitSection heading="What it asks of you">
+    <Lanes>
+      <Lane term="No Vivary account">
+        Local desktop use needs none. Your provider accounts are yours and separate.
+      </Lane>
+      <Lane term="Remote access is opt-in">Off until you set it up, and authenticated when it's on.</Lane>
+      <Lane term="Windows first">
+        The desktop app targets Windows. A Mac build is possible later work, not a promise.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap">
-      <h2 class="heading">Status</h2>
-      <p class="lede">
-        In development. A Windows candidate has been tested privately and is not a public
-        release. The <a href={vivary.primary.href}>release queue</a> lists what is verified
-        and what is still required, in the open. MIT.
-      </p>
-      <p class="original">
-        The original Vivary command-line tools, which scaffold typed memory for agent
-        workspaces, are preserved as <a href="https://www.npmjs.com/package/@vivary/create">@vivary/create</a> on npm and <a href="https://pypi.org/project/create-vivary/">create-vivary</a> on PyPI. They are not the desktop app.
-      </p>
-    </div>
-  </section>
+  <SplitSection heading="Status">
+    <p class="lede">
+      In development. A Windows preview came out on Sept 22, 2026 as a <a class="keep" href={releases}>pre-release</a>:
+      an unsigned portable ZIP, not a stable release. The <a class="keep" href={queue}>release queue</a> lists
+      what is verified and what is still required, in the open. MIT.
+    </p>
+    <p class="text-sm original">
+      The original Vivary command-line tools, which scaffold typed memory for agent
+      workspaces, are preserved as <a href="https://www.npmjs.com/package/@vivary/create">@vivary/create</a> on npm and <a href="https://pypi.org/project/create-vivary/">create-vivary</a> on PyPI. They are not the desktop app.
+    </p>
+  </SplitSection>
 </Base>
 
 <style>
+  /* Keeps the two short links in the status line from breaking across rows. */
+  .keep {
+    white-space: nowrap;
+  }
+
   .original {
-    margin-top: 28px;
+    margin-top: var(--space-5);
     color: var(--ink-faint);
-    font-size: 0.95rem;
   }
 </style>
