@@ -1,5 +1,5 @@
-import type { Term } from '../components/types';
 import type { Tone } from './status';
+import type { Term } from './types';
 
 /** Where a tool's latest release is published. */
 export interface VersionSpec {
@@ -7,11 +7,6 @@ export interface VersionSpec {
   repo: string;
   /** Stamped when the lookup fails, so bump it when a release is cut. */
   fallback: string;
-}
-
-export interface Link {
-  label: string;
-  href: string;
 }
 
 export interface Tool {
@@ -24,7 +19,7 @@ export interface Tool {
   tone: Tone;
   // Absent when the tool has no public release to stamp.
   version?: VersionSpec;
-  primary: Link;
+  primary: { label: string; href: string };
   repo: string;
   // Where the work still needed for the next release is listed in the open, when it is.
   queue?: string;

@@ -9,9 +9,9 @@ import ProjectEntry from '../components/ProjectEntry.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
 import SpecPlate from '../components/SpecPlate.astro';
 import SplitSection from '../components/SplitSection.astro';
-import type { Term } from '../components/types';
 import { projects } from '../data/projects';
 import { callout, calloutPlate, latestVersion, stampedStatus, vivary } from '../data/tools';
+import type { Term } from '../data/types';
 
 const version = await latestVersion(callout.version);
 const calloutStatus = await stampedStatus(callout);

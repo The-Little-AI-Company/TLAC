@@ -68,6 +68,7 @@ exports of the same mark. Run `pnpm icons` after changing the mark.
 | `src/data/tools.ts` | The two tools, Callout and Vivary: copy, status, links, and where the version comes from. Edit here first. |
 | `src/data/projects.ts` | The other projects on the home page, as the design system recorded them. |
 | `src/data/status.ts` | The status tones that `StatusBadge` and `NowLine` turn into dot colors. |
+| `src/data/types.ts` | `Term`, a name and what it means: a spec row of `SpecPlate`, or a lane. |
 | `src/pages/` | One file per page: home, Callout, Vivary, about, contact, and the 404 page. `sitemap.xml.ts` writes the sitemap from the pages in this folder. |
 | `src/components/` | The shared pieces, listed below. |
 | `src/layouts/Base.astro` | The page frame: the head (title, description, Open Graph, theme colors, font preloads), the skip link, the header, `main`, and the footer. |
@@ -100,7 +101,6 @@ The components in `src/components/`:
 - `SplitSection`: a section with its heading and introduction in a narrow column and the content beside it. The heading's baseline sits on the first baseline of the content.
 - `StatusBadge`: a project's status, a dot and a word. The word is always shown.
 - `ToolHero`: the header of a tool page, a `PageHead` with the tool's status, summary and buttons.
-- `types.ts`: the shared `Term` type, a name and what it means.
 
 A tool with a `version` entry in `tools.ts` gets its stamp at build time
 from that source (Callout reads the latest GitHub release). The lookup is made
