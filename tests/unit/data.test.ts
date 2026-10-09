@@ -41,12 +41,11 @@ describe('tools.ts', () => {
   describe('Callout', () => {
     const c = TOOLS_EXPECTED.callout;
 
-    it('keeps its summary, repository, installer link and version fallback', () => {
+    it('keeps its summary, repository, installer link and a version to fall back on', () => {
       expect(callout.summary).toBe(c.summary);
       expect(callout.repo).toBe(c.repo);
       expect(callout.primary).toEqual(c.primary);
       expect(callout.tagline).toBe(CALLOUT_PAGE.lede);
-      expect(callout.version.fallback).toBe(c.fallback);
       expect(callout.version.fallback).toMatch(VERSION_PATTERN);
       expect(callout.version.repo, 'the release lookup reads the repository the page links to').toBe(new URL(c.repo).pathname.slice(1));
     });

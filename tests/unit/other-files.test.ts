@@ -4,12 +4,12 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { contrast, parseHex } from '../helpers/color';
 import { DIST, PAGES, PUBLIC, ROOT, SITE, SITE_NAME, listFiles } from '../helpers/dist';
 import { decodePng, pixelAt, readPngSize } from '../helpers/image';
-import { themeColor } from '../helpers/tokens';
 import { HEAD, RETIRED_PAGES } from '../helpers/spec';
-import { contrast, parseHex } from '../helpers/color';
+import { themeColor } from '../helpers/tokens';
 
 interface Manifest {
   name?: string;
@@ -199,5 +199,26 @@ describe('project files', () => {
     expect(pkg.scripts['images']).toBe('node scripts/images.mjs');
     expect(pkg.scripts['screenshots']).toBe('SCREENSHOTS=1 playwright test tests/e2e/screenshots.spec.ts');
     for (const name of ['dev', 'build', 'preview']) expect(pkg.scripts[name], name).toBeDefined();
+  });
+
+  describe('the end-to-end run', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    });
+
+    const configWith = async (screenshots: string): Promise<{ testIgnore?: string | string[] }> => {
+      vi.resetModules();
+      vi.stubEnv('SCREENSHOTS', screenshots);
+      return ((await import('../../playwright.config')) as { default: { testIgnore?: string | string[] } }).default;
+    };
+
+    it('leaves the screenshots out, since they check nothing and take a while', async () => {
+      expect((await configWith('')).testIgnore).toEqual(['**/screenshots.spec.ts']);
+    });
+
+    it('runs the screenshots for pnpm screenshots, which sets SCREENSHOTS=1', async () => {
+      expect((await configWith('1')).testIgnore).toEqual([]);
+    });
   });
 });

@@ -775,7 +775,10 @@ describe('page list and tokens', () => {
   });
 
   it('reads a theme value by name', () => {
-    expect(themeColor('company-light', 'ground')).toBe('#f6f3ec');
-    expect(themeColor('company-dark', 'ground')).toBe('#15120f');
+    const ground = loadTokens().color.tokens.find((token) => token.name === 'ground');
+    expect(themeColor('company-light', 'ground')).toBe(ground?.value['company-light']);
+    expect(themeColor('company-dark', 'ground')).toBe(ground?.value['company-dark']);
+    expect(themeColor('company-light', 'ground')).not.toBe(themeColor('company-dark', 'ground'));
+    expect(() => themeColor('company-light', 'no-such-token' as 'ground')).toThrow(/no no-such-token for company-light/);
   });
 });

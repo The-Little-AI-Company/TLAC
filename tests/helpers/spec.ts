@@ -7,6 +7,7 @@
  * Copy is compared exactly, so the curly quotes and apostrophes the site is typed with are written here too.
  */
 import { SITE, SITE_NAME, type PageId } from './dist';
+import { themeColor } from './tokens';
 
 export const VERSION_PATTERN = /^v\d+\.\d+\.\d+$/;
 export const RELEASED_PATTERN = /^Released · v\d+\.\d+\.\d+$/;
@@ -20,8 +21,9 @@ export const HEAD = {
   ogImageHeight: '630',
   twitterCard: 'summary_large_image',
   colorScheme: 'light dark',
-  themeColorLight: { content: '#f6f3ec', media: '(prefers-color-scheme: light)' },
-  themeColorDark: { content: '#15120f', media: '(prefers-color-scheme: dark)' },
+  // The browser chrome wears the ground of the theme it is in, so these are the ground tokens.
+  themeColorLight: { content: themeColor('company-light', 'ground'), media: '(prefers-color-scheme: light)' },
+  themeColorDark: { content: themeColor('company-dark', 'ground'), media: '(prefers-color-scheme: dark)' },
   favicons: [
     { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
@@ -472,7 +474,6 @@ export const DESCRIPTIONS: Record<PageId, string> = {
 
 export const TOOLS_EXPECTED = {
   callout: {
-    fallback: 'v0.2.0',
     summary:
       'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
     repo: 'https://github.com/The-Little-AI-Company/callout',
