@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+---
+
+<Base
+  title="Page not found"
+  description="That address doesn't lead anywhere on this site. Go to the home page, or contact me if a link here is broken."
+  noindex
+>
+  <section class="page-head">
+    <div class="wrap">
+      <h1 class="display-l">Page not found</h1>
+      <p class="lede">That address doesn't lead anywhere on this site.</p>
+      <div class="actions">
+        <Button href="/" variant="primary">Go to the home page</Button>
+        <Button href="/contact/" variant="secondary">Contact</Button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Keeps the last line of the lede from holding a single word. */
+  .lede {
+    text-wrap: pretty;
+  }
+</style>
