@@ -59,7 +59,7 @@ describe('callout: hero', () => {
   it('shows the facts plate beside the text: the rows, then the quote the result header carries', () => {
     const plate = one(hero(), '.plate');
     expect(rowMismatches(lanes(plate, 'dl'), CALLOUT_PAGE.plate.rows)).toEqual([]);
-    expect(textOf(one(plate, 'figure.quote blockquote p'))).toBe(CALLOUT_PAGE.plate.quote);
+    expect(textOf(one(plate, 'figure.quote blockquote p'))).toBe(CALLOUT_PAGE.plate.quoteShown);
     expect(textOf(one(plate, 'figure.quote figcaption'))).toBe(CALLOUT_PAGE.plate.quoteCaption);
     expect(one(plate, 'dl').closest('figure'), 'the facts are not a figure').toBeNull();
   });

@@ -8,7 +8,7 @@ import type { Locator, Page } from '@playwright/test';
 import { NAV_LINKS, SITE_NAME } from '../helpers/dist';
 import { FOOTER } from '../helpers/spec';
 import {
-  CONTENT_MAX, PAGES, VIEWPORT_HEIGHT, box, boxes, chInPixels, countHairlines, dotted, expect, firstFamily, isPhone, open, ramp, rgb, round, sidePadding, space, style, test, type Box,
+  CONTENT_MAX, PAGES, VIEWPORT_HEIGHT, box, boxes, chInPixels, countHairlines, expect, firstFamily, isPhone, open, ramp, rgb, round, sidePadding, space, style, test, type Box,
 } from './support';
 
 const LAYOUT_WIDTHS = [320, 360, 768, 859, 860, 861, 1024, 1280, 1440] as const;
@@ -366,7 +366,7 @@ for (const width of LAYOUT_WIDTHS) {
         expect(s['border-top-color']).toBe(rgb('light', 'rule'));
         expect(s['font-size']).toBe('13px');
         expect(s['color']).toBe(rgb('light', 'ink-faint'));
-        const line = await box(footer.getByText(dotted(FOOTER.line)));
+        const line = await box(footer.getByText(FOOTER.line, { exact: true }));
         const links = await boxes(footer.getByRole('link'));
         if (phone) expect(Math.min(...links.map((l) => l.y)), 'links below the line').toBeGreaterThanOrEqual(line.bottom - 1);
         else {

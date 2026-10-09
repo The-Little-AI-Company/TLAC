@@ -281,12 +281,6 @@ export async function pageBackground(page: Page): Promise<string> {
   });
 }
 
-/**
- * A pattern for text written with " · " separators, such as the footer line. The dots are spans with their own
- * margin and no spaces around them in the page, so the pattern allows spaces or none on either side.
- */
-export const dotted = (text: string): RegExp => new RegExp(text.split(' · ').map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*·\\s*'));
-
 /** Name of the screenshot file for a page, width and scheme. */
 export const screenshotName = (info: PageInfo, width: number, scheme: Scheme): string => `${info.label}-${width}-${scheme}.png`;
 

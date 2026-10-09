@@ -102,6 +102,8 @@ export const IMAGE_VARIANTS = {
   neonNoir: { src: '/images/neon-noir-2026-10-08-320.webp', width: 320, height: 200, of: IMAGES.neonNoir },
 } as const satisfies Record<string, ImageVariant>;
 
+const CALLOUT_QUOTE = 'Signals in the text itself. Not a truth check.';
+
 /** The facts plate for Callout. The home page and the Callout page show the same one. */
 export const CALLOUT_PLATE = {
   rows: [
@@ -110,7 +112,10 @@ export const CALLOUT_PLATE = {
     { term: 'License', detail: 'MIT' },
     { term: 'API keys', detail: 'Yours, kept in Windows Credential Manager' },
   ],
-  quote: 'Signals in the text itself. Not a truth check.',
+  /** The words the data carries. */
+  quote: CALLOUT_QUOTE,
+  /** The same words as the plate sets them: in curly quotes, since they are upright display type and not italic. */
+  quoteShown: `“${CALLOUT_QUOTE}”`,
   quoteCaption: 'The header on every Callout result.',
 } as const;
 
@@ -144,7 +149,7 @@ export const HOME = {
       small: IMAGE_VARIANTS.workspace,
     },
     body:
-      'A desktop workspace for working with AI agents on your own projects. Conversations sit beside your notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay on your machine.',
+      'A desktop workspace for working with AI agents on your own projects. Conversations sit beside your notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay where you run them.',
     tone: 'wip',
     status: 'Unsigned Windows preview · Sept 22, 2026',
     button: { label: 'More about Vivary', href: '/vivary/' },
@@ -162,7 +167,7 @@ export const HOME = {
   },
   how: {
     heading: 'How I work',
-    text: 'I make small tools that keep you in charge of the AI you use. Memory in files you can open. Claims with the sources behind them. Nothing that runs where you can’t see it, stop it, or undo it.',
+    text: 'Memory in files you can open. Claims with the sources behind them. Nothing runs that you can’t see, stop, or undo.',
     lanes: [
       { term: 'You decide', detail: 'The tool proposes and you approve. A human gate is a feature, not a speed bump.' },
       { term: 'You can read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
@@ -257,7 +262,7 @@ export const CALLOUT_PAGE = {
     {
       heading: 'What it does',
       paragraphs: [
-        'Select text anywhere on Windows, press the hotkey, and a small popover answers two questions. Every result carries the same header: signals in the text itself, not a truth check.',
+        'Select text anywhere on Windows, press the hotkey, and a small popover answers two questions.',
       ],
       lanes: [
         {
@@ -301,7 +306,7 @@ export const CALLOUT_PAGE = {
         {
           term: 'No server',
           detail:
-            'No server, no account, no telemetry. The text you check goes to the three APIs you configure and to the pages Callout fetches for evidence, and nowhere else.',
+            'No account, no telemetry. The text you check goes to the three APIs you configure and to the pages Callout fetches for evidence, and nowhere else.',
         },
         { term: 'Your keys', detail: 'You bring your own API keys. They sit in Windows Credential Manager, never in a plain-text file.' },
         { term: 'Your history', detail: 'Off by default. Usage counters stay local.' },
@@ -329,7 +334,7 @@ export const VIVARY_PAGE = {
     { label: 'Release queue on GitHub', href: 'https://github.com/vivary-dev/vivary/milestone/1', variant: 'secondary' },
   ],
   description:
-    'A desktop workspace for AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first. Your files stay on your machine.',
+    'A desktop workspace for AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first. Files stay where you run them.',
   plate: {
     ...IMAGES.vivarySite,
     alt: 'The vivaryagent.xyz home page: the headline “Your projects. Your AI agents.”, a Windows preview download button, and the felt antlered mascot holding a book.',
@@ -398,13 +403,13 @@ export const ABOUT_PAGE = {
     paragraphs: [
       'Most AI products are built to take work off your hands. Some of that is useful. Past a point it takes your judgment with it. You end up trusting output you can’t inspect, from a system you can’t stop.',
       'I build the other kind. A tool of mine shows where a claim came from. It keeps its state in files you can open. It waits for your approval before it changes anything that matters. It should leave you sharper than it found you.',
-      'That’s the whole company. Callout and Vivary are open source, and both run on your machine.',
+      'That’s the whole company. Callout and Vivary are open source, and both run on machines you control.',
     ],
   },
   dont: {
     heading: 'What I don’t do',
     lanes: [
-      { term: 'No hosted memory', detail: 'I don’t keep your data on my servers. I don’t have servers.' },
+      { term: 'No hosted memory', detail: 'I don’t keep your data on my servers. My tools don’t need one to run.' },
       { term: 'No telemetry', detail: 'My tools don’t phone home, and neither does this site.' },
       { term: 'No autopilot', detail: 'Nothing ships that acts on your behalf without a gate you can see.' },
       {
@@ -426,7 +431,7 @@ export const CONTACT_PAGE = {
     { term: 'Email', detail: 'jeff@littleaicompany.com', links: [{ label: 'jeff@littleaicompany.com', href: 'mailto:jeff@littleaicompany.com' }] },
     {
       term: 'Bugs',
-      detail: 'Report a bug in the tool’s issue tracker on GitHub: Callout issues or Vivary issues.',
+      detail: 'Report a bug on GitHub: Callout issues or Vivary issues.',
       links: [
         { label: 'Callout issues', href: 'https://github.com/The-Little-AI-Company/callout/issues' },
         { label: 'Vivary issues', href: 'https://github.com/vivary-dev/vivary/issues' },

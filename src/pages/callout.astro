@@ -22,8 +22,7 @@ const version = await latestVersion(callout.version);
   <SplitSection heading="What it does">
     <p slot="intro" class="text">
       Select text anywhere on Windows, press the hotkey, and a small popover answers
-      two questions. Every result carries the same header: signals in the text
-      itself, not a truth check.
+      two questions.
     </p>
     <Lanes>
       <Lane term="Fast lane, under a second">
@@ -31,7 +30,7 @@ const version = await latestVersion(callout.version);
         battery of manipulation signals, such as false urgency, loaded framing, and
         appeals that stand in for evidence.
       </Lane>
-      <Lane term="Deep lane, a few seconds">
+      <Lane term={'Deep lane, a\u00a0few seconds'}>
         Do the specific claims hold up? Callout pulls out the checkable claims, looks
         first at the sources the text cites, then searches the web, and shows you
         what it found. Nothing is shown without a source. Unsure is a real answer.
@@ -65,7 +64,7 @@ const version = await latestVersion(callout.version);
   <SplitSection heading="What stays on your machine">
     <Lanes>
       <Lane term="No server">
-        No server, no account, no telemetry. The text you check goes to the three
+        No account, no telemetry. The text you check goes to the three
         APIs you configure and to the pages Callout fetches for evidence, and nowhere
         else.
       </Lane>

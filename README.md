@@ -85,7 +85,7 @@ exports of the same mark. Run `pnpm icons` after changing the mark.
 The components in `src/components/`:
 
 - `Button`: a link styled as a button, primary, secondary or text.
-- `Dotted`: text whose middle dots are set as separators, with an even margin on both sides.
+- `Dotted`: text whose middle dots are set as separators. The text keeps an ordinary space on each side of the dot, and a margin evens out the gap.
 - `Lanes` and `Lane`: ruled rows, each a name in the display face and what it means. A row sets the name beside the meaning when it has room, and stacks them when it does not.
 - `Mark`: the skull bunny, drawn in `currentColor`.
 - `NowLine`: the sentence at the top of a page about what is happening now, with a status dot.

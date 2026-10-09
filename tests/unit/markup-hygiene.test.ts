@@ -3,8 +3,9 @@
  * (status badge, button, now line, plates, lanes) keep their markup contracts.
  */
 import { describe, expect, it } from 'vitest';
-import { all, classesOf, show, type El } from '../helpers/dom';
+import { all, classesOf, one, show, type El } from '../helpers/dom';
 import { PAGE_CASES, parsePage } from '../helpers/dist';
+import { FOOTER, HOME, RELEASED_PATTERN } from '../helpers/spec';
 import { visibleText } from '../helpers/text';
 
 const TONES = ['shipped', 'live', 'alpha', 'demo', 'wip', 'retired'];
@@ -118,7 +119,25 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
       expect(sep.getAttribute('aria-hidden'), 'the dot is not hidden from assistive technology').toBeUndefined();
     }
     for (const el of all(doc(), '.status, footer p')) {
-      expect(el.textContent, `${show(el)} has a spaced middle dot that is not a .sep`).not.toMatch(/ · /);
+      const dots = el.textContent.match(/·/g)?.length ?? 0;
+      expect(all(el, '.sep'), `${show(el)} has a middle dot that is not a .sep`).toHaveLength(dots);
+    }
+  });
+
+  it('keeps an ordinary space on each side of every middle dot in the text, so copy, search and a screen reader meet separate words', () => {
+    const dotted = all(doc(), '.status, footer p').filter((el) => el.textContent.includes('·'));
+    expect(dotted.length, 'the footer carries a dotted line on every page').toBeGreaterThan(0);
+    for (const el of dotted) {
+      expect(el.textContent, `${show(el)} has a dot with no space beside it, or a no-break space`).not.toMatch(/[^ ]·|·[^ ]/);
+      expect(el.textContent, show(el)).toMatch(/\S · \S/);
+    }
+  });
+
+  it('reads the footer line and every dotted badge with " · " in the built text', () => {
+    expect(one(doc(), 'footer .row p').textContent).toBe(FOOTER.line);
+    for (const badge of all(doc(), '.status').filter((el) => el.textContent.includes('·'))) {
+      const text = badge.textContent;
+      expect(text === HOME.vivary.status || RELEASED_PATTERN.test(text), `${show(badge)} reads "${text}"`).toBe(true);
     }
   });
 

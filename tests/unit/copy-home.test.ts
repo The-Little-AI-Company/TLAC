@@ -199,7 +199,7 @@ describe('home: #work', () => {
 
     it('quotes the result header in a figure of its own, with the caption that credits it', () => {
       const quote = one(feature(), 'figure.quote');
-      expect(textOf(one(quote, 'blockquote p'))).toBe(c.plate.quote);
+      expect(textOf(one(quote, 'blockquote p'))).toBe(c.plate.quoteShown);
       expect(textOf(one(quote, 'figcaption'))).toBe(c.plate.quoteCaption);
       expect(quote.closest('.plate'), 'the quote sits in the same plate as the facts').toBe(one(feature(), 'dl').closest('.plate'));
     });

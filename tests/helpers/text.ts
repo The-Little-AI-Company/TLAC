@@ -50,11 +50,6 @@ export function textBlocks(root: HTMLElement): string[] {
       flush();
       return;
     }
-    // A `.sep` is a middle dot whose spaces come from its margin (see Dotted.astro). Read it as the spaced dot it shows.
-    if (node.classList.contains('sep')) {
-      line += ' · ';
-      return;
-    }
     const block = !INLINE.has(tag);
     if (block) flush();
     for (const child of node.childNodes) visit(child);

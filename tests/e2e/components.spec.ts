@@ -4,7 +4,7 @@
  */
 import { CALLOUT_PLATE, FOOTER, HOME, SKIP_LINK, VIVARY_PAGE } from '../helpers/spec';
 import { NAV_LINKS } from '../helpers/dist';
-import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, countHairlines, expect, firstFamily, isPhone, open, rgb, style, test } from './support';
+import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, countHairlines, expect, firstFamily, isPhone, open, rgb, round, style, test } from './support';
 
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
 const [getCallout, seeVivary] = HOME.buttons;
@@ -108,16 +108,34 @@ for (const scheme of SCHEMES) {
           expect(dot['border-top-left-radius']).toBe('50%');
         });
 
-        test('the middle dot in a badge is a separator with an even margin of .28em on each side', async ({ page }) => {
+        test('the middle dot in a badge is a separator with a margin of .15em on each side of the spaces the text has, which sets the dot .35em from each word', async ({ page }) => {
           await open(page, '/');
           const badge = page.locator('section#work .status--wip');
-          const sep = await style(badge.locator('.sep'), ['margin-left', 'margin-right', 'font-size']);
+          const sep = await style(badge.locator('.sep'), ['margin-left', 'margin-right', 'font-size', 'white-space']);
           const em = parseFloat(sep['font-size'] ?? '0');
-          expect(parseFloat(sep['margin-left'] ?? '0')).toBeCloseTo(0.28 * em, 1);
-          expect(parseFloat(sep['margin-right'] ?? '0')).toBeCloseTo(0.28 * em, 1);
-          const dot = await box(badge.locator('.sep'));
-          const before = await box(badge.locator('span').first());
-          expect(dot.x, 'the dot sits inside the label').toBeGreaterThan(before.x);
+          expect(parseFloat(sep['margin-left'] ?? '0')).toBeCloseTo(0.15 * em, 1);
+          expect(parseFloat(sep['margin-right'] ?? '0')).toBeCloseTo(0.15 * em, 1);
+          expect(sep['white-space'], 'a line never starts with the dot').toBe('nowrap');
+          expect(await badge.textContent(), 'the text has an ordinary space on each side of the dot').toContain('preview · Sept');
+          // Where the ink is: from the last letter before the dot to the dot, and from the dot to the first letter after it.
+          const gaps = await badge.locator('.sep').evaluate((el) => {
+            const [before, after] = [el.previousSibling, el.nextSibling];
+            const dotNode = el.firstChild;
+            if (!(before instanceof Text) || !(after instanceof Text) || !(dotNode instanceof Text)) throw new Error('the dot is not set between two pieces of text');
+            const charBox = (node: Text, index: number): DOMRect => {
+              const range = document.createRange();
+              range.setStart(node, index);
+              range.setEnd(node, index + 1);
+              return range.getBoundingClientRect();
+            };
+            const dot = charBox(dotNode, dotNode.data.indexOf('·'));
+            const last = charBox(before, before.data.trimEnd().length - 1);
+            const first = charBox(after, after.data.length - after.data.trimStart().length);
+            return { left: dot.left - last.right, right: first.left - dot.right, em: parseFloat(getComputedStyle(el).fontSize) };
+          });
+          expect(gaps.left / gaps.em, `${round(gaps.left)}px before the dot`).toBeGreaterThan(0.3);
+          expect(gaps.left / gaps.em).toBeLessThan(0.4);
+          expect(Math.abs(gaps.left - gaps.right) / gaps.em, `${round(gaps.left)}px before the dot, ${round(gaps.right)}px after it`).toBeLessThan(0.03);
         });
 
         test('shipped and wip dots are filled with status-live and status-wip', async ({ page }) => {
@@ -195,7 +213,7 @@ for (const scheme of SCHEMES) {
           const value = await box(feature.locator('dl dd').first());
           expect(label.width, 'label column').toBeLessThanOrEqual(104.5);
           expect(value.x, 'value starts after the label column').toBeGreaterThan(label.right);
-          const quote = await style(feature.getByText(CALLOUT_PLATE.quote, { exact: true }), ['font-family', 'font-style', 'font-size', 'color']);
+          const quote = await style(feature.getByText(CALLOUT_PLATE.quoteShown, { exact: true }), ['font-family', 'font-style', 'font-size', 'color']);
           expect(firstFamily(quote['font-family'] ?? '')).toBe('Instrument Serif');
           expect(quote['font-style']).toBe('normal');
           expect(quote['font-size']).toBe('24px');
