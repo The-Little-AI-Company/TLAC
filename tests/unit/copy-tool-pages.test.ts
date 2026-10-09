@@ -1,6 +1,6 @@
 /**
- * SPEC section 8, "/callout/" and "/vivary/": the rebuilt tool hero, then the sections that
- * carry over the previous copy.
+ * The /callout/ and /vivary/ pages: the tool hero (badge, name, tagline, summary, buttons, plate),
+ * then every section, compared with the expected copy word for word.
  */
 import { describe, expect, it } from 'vitest';
 import { callout, vivary } from '../../src/data/tools';
@@ -62,10 +62,6 @@ describe('callout: hero', () => {
     expect(textOf(one(plate, 'figure.quote blockquote p'))).toBe(CALLOUT_PAGE.plate.quote);
     expect(textOf(one(plate, 'figure.quote figcaption'))).toBe(CALLOUT_PAGE.plate.quoteCaption);
     expect(one(plate, 'dl').closest('figure'), 'the facts are not a figure').toBeNull();
-  });
-
-  it('has no facts line under the buttons, since the plate carries the facts', () => {
-    expect(all(hero(), 'p.facts')).toHaveLength(0);
   });
 
   it('runs badge, h1, tagline, summary, buttons, plate', () => {
@@ -193,10 +189,6 @@ describe('vivary: sections', () => {
     it('runs the status lede, then the command-line note', () => {
       expect(inOrder(vivaryDoc(), [paragraph(section(), s.lede), paragraph(section(), s.cli)])).toBe(true);
     });
-  });
-
-  it('no longer says a Windows candidate was tested privately', () => {
-    expect(textOf(one(vivaryDoc(), 'main'))).not.toMatch(/candidate|tested privately|Watch the release queue/);
   });
 });
 

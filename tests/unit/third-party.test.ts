@@ -1,10 +1,10 @@
 /**
- * SPEC section 0 and 6: no third-party request of any kind. The footer promises "nothing loaded
- * from anyone else", so no script, style, font, image, frame or connection hint may leave the site.
+ * No third-party request of any kind. The footer promises "loads nothing from third parties", so no
+ * script, style, font, image, frame or connection hint may leave the site.
  * (The end-to-end suite watches the network for the same thing in a real browser.)
  */
 import { describe, expect, it } from 'vitest';
-import { all, attr, describe as show } from '../helpers/dom';
+import { all, attr, show } from '../helpers/dom';
 import { PAGE_CASES, SITE, pageStylesheets, parsePage, readDist, srcsetUrls } from '../helpers/dist';
 
 /** Elements that make the browser fetch something, and the attributes holding the URL. */

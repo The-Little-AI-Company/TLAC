@@ -492,7 +492,7 @@ describe('copy rules', () => {
     expect(allCapsWords("I'm A B C. GitHub, SmartScreen, JeffKazzee.dev, PyPI, v0.2.0, 262, Windows 10 and 11, X")).toEqual([]);
   });
 
-  it('allows Roman numerals up to ten and ZIP, which the spec copy needs', () => {
+  it('allows Roman numerals up to ten and ZIP, which the copy needs', () => {
     expect(allCapsWords('I. The main project. II. Released. III IV V VI VII VIII IX X')).toEqual([]);
     expect(allCapsWords('an unsigned portable ZIP')).toEqual([]);
     expect(allCapsWords('MIX CIVIL')).toEqual(['MIX', 'CIVIL']);
@@ -764,7 +764,7 @@ describe('page list and tokens', () => {
     expect(new Set(PAGES.map((p) => p.title)).size).toBe(PAGES.length);
   });
 
-  it('has the 17 color tokens of the spec in both company themes in design/tokens.json', () => {
+  it('has the 17 color tokens in both company themes in design/tokens.json', () => {
     const tokens = loadTokens();
     expect(COLOR_NAMES).toHaveLength(17);
     expect(tokens.color.tokens.map((t) => t.name).sort()).toEqual([...COLOR_NAMES].sort());

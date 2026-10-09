@@ -1,9 +1,9 @@
 /**
- * SPEC sections 0, 3 and 5: the built markup has no script, no inline style, no emphasis
- * elements, and the shared components keep their markup contracts.
+ * The built markup has no script, no inline style, no emphasis elements, and the shared components
+ * (status badge, button, now line, plates, lanes) keep their markup contracts.
  */
 import { describe, expect, it } from 'vitest';
-import { all, classesOf, describe as show, type El } from '../helpers/dom';
+import { all, classesOf, show, type El } from '../helpers/dom';
 import { PAGE_CASES, parsePage } from '../helpers/dist';
 import { visibleText } from '../helpers/text';
 

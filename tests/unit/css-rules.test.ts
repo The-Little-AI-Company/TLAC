@@ -1,6 +1,7 @@
 /**
- * SPEC sections 0, 3 and 4 as rules over the CSS the site ships (the built stylesheets) and
- * over the sources under src/. Built CSS is minified, so values are compared normalised.
+ * Rules over the CSS the site ships (the built stylesheets) and over the sources under src/: color
+ * only from tokens, the type rules, one breakpoint, one kind of motion, flat shapes, and the focus
+ * ring. Built CSS is minified, so values are compared normalised.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -18,6 +19,7 @@ import {
   type DeclarationContext,
 } from '../helpers/css';
 import { SRC, listFiles, siteCss } from '../helpers/dist';
+import { MOTION } from '../helpers/spec';
 
 const sheet = (): CssBlock[] => {
   const css = siteCss();
@@ -57,7 +59,7 @@ function splitTopLevel(value: string): string[] {
 
 const sourceFiles = (): string[] => listFiles(SRC).filter((f) => /\.(astro|ts|tsx|js|mjs|css|html|svg|md|mdx)$/.test(f));
 
-describe('color literals (SPEC 0)', () => {
+describe('color literals', () => {
   it('src/ has some files to check', () => {
     expect(sourceFiles().length).toBeGreaterThan(5);
   });
@@ -80,7 +82,7 @@ describe('color literals (SPEC 0)', () => {
   });
 });
 
-describe('type rules (SPEC 3)', () => {
+describe('type rules', () => {
   it('never sets text-transform: uppercase (or capitalize)', () => {
     const bad = decls().filter((c) => c.declaration.prop === 'text-transform' && /uppercase|capitalize|full-width/.test(c.declaration.value));
     expect(bad.map(where)).toEqual([]);
@@ -140,7 +142,7 @@ describe('type rules (SPEC 3)', () => {
   });
 });
 
-describe('type sizes (SPEC 3)', () => {
+describe('type sizes', () => {
   it('sets every font size in rem, so a larger default text size in the browser scales the page', () => {
     const bad = decls().filter((c) => {
       const { prop, value } = c.declaration;
@@ -174,7 +176,7 @@ describe('forced colors', () => {
   });
 });
 
-describe('breakpoint (SPEC 0)', () => {
+describe('breakpoint', () => {
   it('uses 860px as the only width breakpoint, in media and container queries', () => {
     const widths = breakpoints(sheet());
     expect(widths.length, 'no width media or container queries found').toBeGreaterThan(0);
@@ -183,11 +185,12 @@ describe('breakpoint (SPEC 0)', () => {
   });
 });
 
-describe('motion (SPEC 0)', () => {
+describe('motion', () => {
   const transitions = (): DeclarationContext[] => decls().filter((c) => /^transition(?:-|$)/.test(c.declaration.prop) && outsideReducedMotion(c));
   const COLOR_PROPERTIES = /^(?:color|background-color|border(?:-(?:top|right|bottom|left|block|inline)(?:-(?:start|end))?)?-color|text-decoration-color|outline-color|fill|stroke|caret-color)$/;
-  const EASES = /^(?:var\(--ease\)|cubic-bezier\(\.22,1,\.36,1\))$/;
-  const DURATIONS = /^(?:var\(--dur\)|\.18s|180ms)$/;
+  // The token or its value, as the minifier may write it.
+  const EASES = new Set(['var(--ease)', normalizeValue(MOTION.ease)]);
+  const DURATIONS = new Set(['var(--dur)', normalizeValue(`${MOTION.seconds}s`), `${MOTION.seconds * 1000}ms`]);
 
   it('has color and border transitions (hover and focus states)', () => {
     expect(transitions().length).toBeGreaterThan(0);
@@ -219,14 +222,14 @@ describe('motion (SPEC 0)', () => {
       if (prop === 'transition') {
         for (const part of splitTopLevel(v)) {
           const tokens = part.split(/\s+(?![^(]*\))/);
-          if (!tokens.some((t) => DURATIONS.test(t))) bad.push(`${where(c)} (duration)`);
-          if (!tokens.some((t) => EASES.test(t))) bad.push(`${where(c)} (curve)`);
+          if (!tokens.some((t) => DURATIONS.has(t))) bad.push(`${where(c)} (duration)`);
+          if (!tokens.some((t) => EASES.has(t))) bad.push(`${where(c)} (curve)`);
           if (tokens.filter((t) => /^-?\d*\.?\d+m?s$/.test(t)).length > 1) bad.push(`${where(c)} (delay)`);
         }
       } else if (prop === 'transition-duration') {
-        for (const d of splitTopLevel(v)) if (!DURATIONS.test(d)) bad.push(where(c));
+        for (const d of splitTopLevel(v)) if (!DURATIONS.has(d)) bad.push(where(c));
       } else if (prop === 'transition-timing-function') {
-        for (const e of splitTopLevel(v)) if (!EASES.test(e)) bad.push(where(c));
+        for (const e of splitTopLevel(v)) if (!EASES.has(e)) bad.push(where(c));
       } else if (prop === 'transition-delay') {
         for (const d of splitTopLevel(v)) if (seconds(d) !== 0) bad.push(where(c));
       }
@@ -268,7 +271,7 @@ describe('!important', () => {
   });
 });
 
-describe('shape and depth (SPEC 0 and 4)', () => {
+describe('shape and depth', () => {
   it('has no shadows except an inset ring', () => {
     const bad = decls().filter(
       (c) =>
@@ -307,7 +310,7 @@ describe('shape and depth (SPEC 0 and 4)', () => {
   });
 });
 
-describe('focus and selection (SPEC 0)', () => {
+describe('focus and selection', () => {
   it('draws the focus ring as 2px solid var(--accent) on :focus-visible', () => {
     const rings = decls().filter((c) => /:focus-visible/.test(owner(c).prelude) && c.declaration.prop === 'outline');
     expect(rings.length, 'no :focus-visible outline rule').toBeGreaterThan(0);

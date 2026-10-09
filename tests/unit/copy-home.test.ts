@@ -1,5 +1,5 @@
 /**
- * SPEC section 8, "/ home": every exact string, link, image and attribute of the home page.
+ * The home page: every exact string, link, image and attribute, section by section.
  */
 import { describe, expect, it } from 'vitest';
 import { callout } from '../../src/data/tools';
@@ -107,7 +107,7 @@ describe('home: #work', () => {
 
   it('has two features, Vivary then Callout', () => {
     expect(features()).toHaveLength(2);
-    expect(features().map((f) => textOf(one(f, 'h2')))).toEqual(['Vivary', 'Callout']);
+    expect(features().map((f) => textOf(one(f, 'h2')))).toEqual([HOME.vivary.title, HOME.callout.title]);
   });
 
   describe('Vivary', () => {
@@ -181,12 +181,12 @@ describe('home: #work', () => {
       expect(textOf(h2)).toBe(c.title);
     });
 
-    it('has a spec plate with Runs on, Version, License and API keys, in that order', () => {
+    it('has a facts plate with Runs on, Version, License and API keys, in that order', () => {
       const rows = lanes(feature(), 'dl');
       expect(rowMismatches(rows, c.plate.rows)).toEqual([]);
     });
 
-    it('sits the spec plate in a raised plate frame beside the text', () => {
+    it('sits the facts plate in a raised plate frame beside the text', () => {
       const dl = one(feature(), 'dl');
       expect(dl.closest('.plate'), 'the facts list should sit in a plate').not.toBeNull();
       expect(dl.closest('.plate')?.querySelector('h2')).toBeNull();
@@ -208,7 +208,7 @@ describe('home: #work', () => {
       expect(textOf(paragraph(feature(), callout.summary))).toBe(callout.summary);
     });
 
-    it('has the shipped badge reading "Released · vX.Y.Z", with the version the spec plate shows', () => {
+    it('has the shipped badge reading "Released · vX.Y.Z", with the version the facts plate shows', () => {
       const [badge] = badges(feature());
       expect(badges(feature())).toHaveLength(1);
       expect(badge?.tone).toBe(c.tone);

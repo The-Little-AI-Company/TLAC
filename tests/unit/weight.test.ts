@@ -1,13 +1,13 @@
 /**
- * SPEC section 10 "Page weight budget": a page is HTML, CSS, fonts and the images it loads
- * eagerly, and together they stay at or under 300 KB. Every image in public/images stays at
- * or under 100 KB. (KB here is 1000 bytes, the stricter reading.)
+ * Page weight budget: a page is HTML, CSS, fonts and the images it loads eagerly, and together
+ * they stay at or under 300 KB. Every image in public/images stays at or under 100 KB.
+ * (KB here is 1000 bytes, the stricter reading.)
  */
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { all } from '../helpers/dom';
-import { PAGE_CASES, PUBLIC, distPath, listFiles, pageStylesheets, parsePage, resolveSitePath, srcsetUrls, type PageInfo } from '../helpers/dist';
+import { PAGE_CASES, PUBLIC, distPath, listFiles, page, pageStylesheets, parsePage, resolveSitePath, srcsetUrls, type PageInfo } from '../helpers/dist';
 
 const KB = 1000;
 const PAGE_BUDGET = 300 * KB;
@@ -61,7 +61,7 @@ describe('page weight', () => {
   });
 
   it('counts the three fonts and the mascot on the home page (the budget check sees what loads)', () => {
-    const home = weigh(PAGE_CASES[0]![1]);
+    const home = weigh(page('home'));
     expect(home.fonts, 'the home page should declare the three Instrument fonts').toBeGreaterThan(60 * KB);
     expect(home.images, 'the home page loads the mascot eagerly').toBeGreaterThan(40 * KB);
   });

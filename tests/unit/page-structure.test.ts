@@ -1,11 +1,11 @@
 /**
- * SPEC sections 6 and 10: the head, the landmarks and the navigation of every built page.
+ * The head, the landmarks, the navigation and the footer of every built page.
  */
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { all, attr, documentOrder, focusables, headingLevel, one } from '../helpers/dom';
 import { NAV_LINKS, PAGES, PAGE_CASES, SITE_NAME, distPath, parsePage, readDist } from '../helpers/dist';
-import { BRAND, DESCRIPTIONS, FOOTER, HEAD, SKIP_LINK } from '../helpers/spec';
+import { DESCRIPTIONS, FOOTER, HEAD, SKIP_LINK } from '../helpers/spec';
 import { textOf } from '../helpers/text';
 
 describe('the site builds every page', () => {
@@ -192,13 +192,13 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
     it('starts with the brand link to / holding the mark and the name', () => {
       const brand = all(nav(), 'a')[0]!;
       expect(attr(brand, 'href')).toBe('/');
-      expect(textOf(brand)).toBe(BRAND);
+      expect(textOf(brand)).toBe(SITE_NAME);
       const marks = all(brand, 'svg');
       expect(marks).toHaveLength(1);
       expect(attr(marks[0]!, 'aria-hidden')).toBe('true');
       expect(all(marks[0]!, 'path[fill="currentColor"]').length, 'the mark is drawn in currentColor').toBeGreaterThan(0);
       const label = attr(brand, 'aria-label');
-      if (label !== undefined) expect(label, 'an aria-label must contain the visible text').toContain(BRAND);
+      if (label !== undefined) expect(label, 'an aria-label must contain the visible text').toContain(SITE_NAME);
     });
 
     it('then links Callout, Vivary, About and Contact in that order', () => {

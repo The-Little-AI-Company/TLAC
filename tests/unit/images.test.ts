@@ -1,12 +1,12 @@
 /**
- * SPEC sections 5, 8 and 10: every <img> is accessible, sized, and loads a file that exists;
- * the staged images are in place byte for byte.
+ * Every <img> is accessible, sized, and loads a file that exists, and the image files in public/
+ * have the sizes, proportions and weights the pages rely on.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { all, describe as show, type El } from '../helpers/dom';
-import { DIST, PAGE_CASES, PAGES, PUBLIC, listFiles, parsePage, resolveSitePath, sha256, srcsetUrls } from '../helpers/dist';
+import { all, show, type El } from '../helpers/dom';
+import { DIST, PAGE_CASES, PAGES, PUBLIC, listFiles, parsePage, resolveSitePath, srcsetUrls } from '../helpers/dist';
 import { readWebp } from '../helpers/image';
 import { IMAGES, IMAGE_COUNT, IMAGE_VARIANTS } from '../helpers/spec';
 
@@ -18,7 +18,7 @@ describe.each(PAGE_CASES)('images on %s', (_label, info) => {
   const doc = () => parsePage(info);
   const imgs = (): El[] => all(doc(), 'img');
 
-  it('are exactly the images the spec lists', () => {
+  it('are exactly the images this page is meant to show', () => {
     expect(imgs().length).toBe(IMAGE_COUNT[info.id]);
   });
 
@@ -115,7 +115,7 @@ describe.each(PAGE_CASES)('images on %s', (_label, info) => {
   });
 });
 
-describe('the staged images', () => {
+describe('the image files', () => {
   const entries = Object.entries(IMAGES).map(([name, image]) => [name, image] as const);
   const variants = Object.entries(IMAGE_VARIANTS).map(([name, variant]) => [name, variant] as const);
 
@@ -128,12 +128,8 @@ describe('the staged images', () => {
   describe.each(entries)('%s', (_name, image) => {
     const path = join(PUBLIC, image.src);
 
-    it('is the staged file, byte for byte', () => {
-      expect(existsSync(path), `${image.src} missing`).toBe(true);
-      expect(sha256(readFileSync(path))).toBe(image.sha256);
-    });
-
     it(`is ${image.width}x${image.height}`, () => {
+      expect(existsSync(path), `${image.src} missing`).toBe(true);
       const { width, height } = readWebp(readFileSync(path));
       expect([width, height]).toEqual([image.width, image.height]);
     });

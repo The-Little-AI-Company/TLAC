@@ -1,6 +1,7 @@
 /**
- * SPEC section 7: voice and copy rules, checked over the visible text of every built page,
- * the alt text of its images, and the text search engines and social cards show.
+ * Voice and copy rules, checked over the visible text of every built page, the alt text of its
+ * images, and the text search engines and social cards show: first person singular, no hype words,
+ * typeset quotes, sentence case, no invented prices, dates or placeholders.
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -66,10 +67,10 @@ describe.each(PAGE_CASES)('copy rules on %s', (_label, info) => {
     expect(offenders).toEqual([]);
   });
 
-  it('dates only the days the spec gives (Sept 22, Oct 3 and Oct 8, 2026)', () => {
+  it('dates only the days the site has a reason to name (Sept 22, Oct 3 and Oct 8, 2026)', () => {
     const found = snippets(info).flatMap((s) => dates(s.text));
     const unknown = found.filter((d) => !(KNOWN_DATES as readonly string[]).includes(d));
-    expect(unknown, 'a date that is not in the spec would be invented').toEqual([]);
+    expect(unknown, 'a date that is not in KNOWN_DATES would be invented').toEqual([]);
   });
 
   it('keeps headings, buttons, labels, captions and lane names in sentence case', () => {

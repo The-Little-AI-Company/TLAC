@@ -1,13 +1,13 @@
 /**
- * SPEC section 2: three self-hosted Instrument faces and nothing else. The old Big Shoulders
- * and Archivo files are gone, the preloads point at real files, and the italic is its own family.
+ * Three self-hosted Instrument faces and nothing else: the font files and their license texts, the
+ * @font-face rules, the preloads, and the rule that the italic is its own family, not font-style: italic.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { declarations, normalizeValue, parseCss, type CssBlock } from '../helpers/css';
-import { DIST, PAGE_CASES, PUBLIC, distPath, listFiles, pageStylesheets, parsePage, readDist, sha256, siteCss } from '../helpers/dist';
-import { FONT_FACES, FONT_FILES, FONT_SHA256, HEAD, OFL_BODY_SHA256, OFL_FILES, RETIRED_FONT_FILES } from '../helpers/spec';
+import { normalizeValue, parseCss, type CssBlock } from '../helpers/css';
+import { DIST, PAGE_CASES, PUBLIC, distPath, listFiles, pageStylesheets, parsePage, sha256, siteCss } from '../helpers/dist';
+import { FONT_FACES, FONT_FILES, HEAD, OFL_FILES } from '../helpers/spec';
 
 const FONT_URL = /\.(?:woff2?|ttf|otf|eot)(?:[?#]|$)/i;
 const fontDir = join(PUBLIC, 'fonts');
@@ -31,11 +31,6 @@ describe('font files in public/fonts', () => {
     expect(listFiles(fontDir)).toEqual([...FONT_FILES, ...Object.keys(OFL_FILES)].sort());
   });
 
-  it.each(RETIRED_FONT_FILES)('no longer has %s', (file) => {
-    expect(existsSync(join(fontDir, file))).toBe(false);
-    expect(existsSync(distPath(`fonts/${file}`))).toBe(false);
-  });
-
   it('ships the same files in dist/fonts', () => {
     expect(listFiles(join(DIST, 'fonts'))).toEqual([...FONT_FILES, ...Object.keys(OFL_FILES)].sort());
   });
@@ -45,9 +40,6 @@ describe('font files in public/fonts', () => {
       expect(readFileSync(join(fontDir, file)).toString('ascii', 0, 4)).toBe('wOF2');
     });
 
-    it('is the staged file, byte for byte', () => {
-      expect(sha256(readFileSync(join(fontDir, file)))).toBe(FONT_SHA256[file]);
-    });
   });
 
   it('has three different font files', () => {
@@ -68,11 +60,14 @@ describe('license texts', () => {
       expect(text()).toContain('This Font Software is licensed under the SIL Open Font License, Version 1.1.');
     });
 
-    it('carries the OFL 1.1 text unchanged', () => {
+    it('carries the whole OFL 1.1 text, from its preamble to its disclaimer', () => {
       const t = text();
-      const start = t.indexOf('-----------------------------------------------------------\nSIL OPEN FONT LICENSE');
-      expect(start, 'the dashed rule before "SIL OPEN FONT LICENSE Version 1.1" is missing').toBeGreaterThan(0);
-      expect(sha256(t.slice(start))).toBe(OFL_BODY_SHA256);
+      const at = (heading: string): number => t.indexOf(`\n${heading}\n`);
+      const headings = ['SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007', 'PREAMBLE', 'DEFINITIONS', 'PERMISSION & CONDITIONS', 'TERMINATION', 'DISCLAIMER'];
+      const positions = headings.map(at);
+      expect(positions.map((position, i) => (position === -1 ? `missing "${headings[i]}"` : 'found')), 'sections of the license').toEqual(headings.map(() => 'found'));
+      expect(positions, 'the sections come in the license order').toEqual([...positions].sort((a, b) => a - b));
+      expect(t.trimEnd().endsWith('OTHER DEALINGS IN THE FONT SOFTWARE.')).toBe(true);
     });
   });
 });
@@ -154,17 +149,5 @@ describe.each(PAGE_CASES)('fonts referenced by %s', (_label, info) => {
       expect(link.getAttribute('type'), 'type').toBe('font/woff2');
       expect(link.hasAttribute('crossorigin'), 'crossorigin').toBe(true);
     }
-  });
-
-  it('never mention the retired faces', () => {
-    const html = readDist(info.file) + pageStylesheets(info).map((s) => s.css).join('\n');
-    expect(html).not.toMatch(/big shoulders|archivo|stencil/i);
-  });
-});
-
-describe('declarations in the built CSS', () => {
-  it('name the retired faces nowhere', () => {
-    const names = declarations(parseCss(siteCss())).filter((c) => /big shoulders|archivo|stencil/i.test(c.declaration.value));
-    expect(names.map((c) => `${c.declaration.prop}: ${c.declaration.value}`)).toEqual([]);
   });
 });

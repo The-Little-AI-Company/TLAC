@@ -38,7 +38,7 @@ export const PAGES: readonly PageInfo[] = [
   { id: 'about', label: 'about', url: '/about/', file: 'about/index.html', title: `About. ${SITE_NAME}`, navHref: '/about/', canonical: `${SITE}/about/` },
   { id: 'contact', label: 'contact', url: '/contact/', file: 'contact/index.html', title: `Contact. ${SITE_NAME}`, navHref: '/contact/', canonical: `${SITE}/contact/` },
   { id: 'not-found', label: '404', url: '/404.html', file: '404.html', title: `Page not found. ${SITE_NAME}` },
-] as const;
+];
 
 /** `[label, page]` tuples for `describe.each`, so test names read `home` rather than `'home'`. */
 export const PAGE_CASES: readonly (readonly [string, PageInfo])[] = PAGES.map((p) => [p.label, p] as const);
@@ -49,7 +49,7 @@ export const page = (id: PageId): PageInfo => {
   return found;
 };
 
-/** Main navigation, in the order the spec fixes. */
+/** Main navigation, in the order the header shows it. */
 export const NAV_LINKS = [
   { label: 'Callout', href: '/callout/' },
   { label: 'Vivary', href: '/vivary/' },
@@ -99,8 +99,6 @@ export function listFiles(dir: string): string[] {
 }
 
 export const sha256 = (data: Buffer | string): string => createHash('sha256').update(data).digest('hex');
-
-export const fileSize = (path: string): number => statSync(path).size;
 
 // ---------------------------------------------------------------------------
 // Stylesheets

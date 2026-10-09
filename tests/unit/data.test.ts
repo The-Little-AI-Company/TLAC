@@ -1,27 +1,21 @@
 /**
- * SPEC section 9 and 10 "Data invariants": src/data/tools.ts and src/data/projects.ts.
+ * The data the pages are built from: src/data/tools.ts (the two tools, the release lookup and the facts
+ * plate) and src/data/projects.ts (the four other things made). Each record is compared with the
+ * expected copy in helpers/spec.ts field by field, so a swapped or dropped field fails.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { projects } from '../../src/data/projects';
 import { callout, calloutPlate, latestVersion, stampedStatus, tools, vivary, type VersionSpec } from '../../src/data/tools';
 import { PUBLIC, SRC, listFiles } from '../helpers/dist';
-import { PROJECTS, TOOLS_EXPECTED, VERSION_PATTERN } from '../helpers/spec';
+import { CALLOUT_PAGE, CALLOUT_PLATE, PROJECTS, TOOLS_EXPECTED, VERSION_PATTERN } from '../helpers/spec';
 
 /** Every string anywhere inside a value, depth first. */
 function strings(value: unknown): string[] {
   if (typeof value === 'string') return [value];
   if (Array.isArray(value)) return value.flatMap(strings);
   if (value && typeof value === 'object') return Object.values(value).flatMap(strings);
-  return [];
-}
-
-/** Every number anywhere inside a value. */
-function numbers(value: unknown): number[] {
-  if (typeof value === 'number') return [value];
-  if (Array.isArray(value)) return value.flatMap(numbers);
-  if (value && typeof value === 'object') return Object.values(value).flatMap(numbers);
   return [];
 }
 
@@ -51,22 +45,17 @@ describe('tools.ts', () => {
       expect(callout.summary).toBe(c.summary);
       expect(callout.repo).toBe(c.repo);
       expect(callout.primary).toEqual(c.primary);
-      expect(callout.tagline).toBe('Press a key. Get the receipts.');
+      expect(callout.tagline).toBe(CALLOUT_PAGE.lede);
       expect(callout.version.fallback).toBe(c.fallback);
       expect(callout.version.fallback).toMatch(VERSION_PATTERN);
-      expect(callout.version.repo).toBe('The-Little-AI-Company/callout');
+      expect(callout.version.repo, 'the release lookup reads the repository the page links to').toBe(new URL(c.repo).pathname.slice(1));
     });
 
     it('shares one facts plate between the home page and its own page, with the version it is given', () => {
       const plate = calloutPlate('v9.8.7');
-      expect(plate.rows).toEqual([
-        { term: 'Runs on', detail: 'Windows 10 and 11' },
-        { term: 'Version', detail: 'v9.8.7' },
-        { term: 'License', detail: 'MIT' },
-        { term: 'API keys', detail: 'Yours, kept in Windows Credential Manager' },
-      ]);
-      expect(plate.quote).toBe('Signals in the text itself. Not a truth check.');
-      expect(plate.caption).toBe('The header on every Callout result.');
+      expect(plate.rows).toEqual(CALLOUT_PLATE.rows.map((row) => ({ term: row.term, detail: row.term === 'Version' ? 'v9.8.7' : row.detail })));
+      expect(plate.quote).toBe(CALLOUT_PLATE.quote);
+      expect(plate.caption).toBe(CALLOUT_PLATE.quoteCaption);
     });
   });
 
@@ -94,7 +83,7 @@ describe('tools.ts', () => {
     });
   });
 
-  it('never mentions the old Vivary-New repository name, in data or in source', () => {
+  it('names the repository vivary-dev/vivary and never by its former name, Vivary-New, anywhere in src/', () => {
     const found: string[] = [];
     for (const file of listFiles(SRC)) {
       if (/Vivary-New/i.test(readFileSync(join(SRC, file), 'utf-8'))) found.push(`src/${file}`);
@@ -216,53 +205,31 @@ describe('tools.ts', () => {
 });
 
 describe('projects.ts', () => {
-  const file = join(SRC, 'data/projects.ts');
-  const load = async (): Promise<readonly unknown[]> => {
-    if (!existsSync(file)) throw new Error('src/data/projects.ts does not exist. It lists the four "other things I have made" (SPEC section 9).');
-    const mod = (await import(/* @vite-ignore */ pathToFileURL(file).href)) as Record<string, unknown>;
-    const list = mod['projects'];
-    if (!Array.isArray(list)) throw new Error('src/data/projects.ts must export `projects`, an array (like `tools` in tools.ts).');
-    return list as readonly unknown[];
-  };
-
-  it('exists and exports the array `projects` with four entries', async () => {
-    expect(await load()).toHaveLength(4);
+  it('lists the four projects, in the order of the page, each field as the copy expects', () => {
+    expect(projects).toStrictEqual(
+      PROJECTS.map((p) => ({
+        title: p.title,
+        line: p.line,
+        tone: p.tone,
+        status: p.status,
+        href: p.href,
+        linkLabel: p.linkLabel,
+        image: p.image.src,
+        thumb: p.thumb.src,
+        width: p.image.width,
+        height: p.image.height,
+        imageAlt: `${p.title} home page`,
+      })),
+    );
   });
 
-  it('keeps the projects in the order of the page', async () => {
-    const list = await load();
-    expect(list.map((entry) => strings(entry).find((s) => PROJECTS.some((p) => p.title === s)))).toEqual(PROJECTS.map((p) => p.title));
+  it('has only non-empty strings and https URLs', () => {
+    for (const s of strings(projects)) expect(s.trim(), 'empty string in projects.ts').not.toBe('');
+    for (const url of urls(projects)) expect(url).toMatch(/^https:\/\/[^\s/]+\.[^\s/]+/);
   });
 
-  it.each(PROJECTS.map((p, i) => [p.title, i] as const))('records %s completely (entry %s)', async (_title, i) => {
-    const entry = (await load())[i];
-    const p = PROJECTS[i]!;
-    const all = strings(entry);
-    for (const [what, expected] of [
-      ['title', p.title],
-      ['line', p.line],
-      ['status label', p.status],
-      ['tone', p.tone],
-      ['address', p.href],
-      ['address label', p.linkLabel],
-      ['image path', p.image.src],
-      ['thumbnail path', p.thumb.src],
-    ] as const) {
-      expect(all, `${p.title}: ${what} "${expected}"`).toContain(expected);
-    }
-    expect(numbers(entry), `${p.title}: image width`).toContain(p.image.width);
-    expect(numbers(entry), `${p.title}: image height`).toContain(p.image.height);
-  });
-
-  it('has only non-empty strings and https URLs', async () => {
-    const list = await load();
-    for (const s of strings(list)) expect(s.trim(), 'empty string in projects.ts').not.toBe('');
-    for (const url of urls(list)) expect(url).toMatch(/^https:\/\/[^\s/]+\.[^\s/]+/);
-  });
-
-  it('points every image at a file in public/images', async () => {
-    const list = await load();
-    const paths = imagePaths(list);
+  it('points every image at a file in public/images', () => {
+    const paths = imagePaths(projects);
     expect(paths, 'a picture and a thumbnail for each of the four').toHaveLength(8);
     for (const path of paths) expect(existsSync(join(PUBLIC, path)), path).toBe(true);
   });

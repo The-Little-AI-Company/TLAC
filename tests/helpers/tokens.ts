@@ -18,7 +18,7 @@ export interface TokenFile {
   layout: { tokens: { name: string; value: string }[] };
 }
 
-/** The 17 color tokens SPEC section 1 lists, in the order it lists them. */
+/** The 17 color tokens every theme defines, in the order tokens.css lists them. */
 export const COLOR_NAMES = [
   'ground', 'ground-alt', 'raised', 'ink', 'ink-soft', 'ink-faint', 'rule', 'field', 'accent', 'accent-hover',
   'accent-fill', 'on-accent', 'status-live', 'status-wip', 'danger', 'success', 'selection',
@@ -44,7 +44,7 @@ export function themeColor(theme: Theme, name: ColorName): string {
   return value;
 }
 
-/** Names and values of the non-color tokens tokens.css must carry, as SPEC section 1 lists them. */
+/** Names and values of the non-color tokens tokens.css carries: the spacing scale, the three smallest radii, the measure and the content width. */
 export function nonColorTokens(): { name: string; value: string }[] {
   const t = loadTokens();
   const spacing = t.spacing.tokens.map((s) => ({ name: s.name, value: s.value }));
@@ -55,6 +55,22 @@ export function nonColorTokens(): { name: string; value: string }[] {
 
 /** src/styles/tokens.css, or an error that says it is missing. */
 export function readTokensCss(): string {
-  if (!existsSync(TOKENS_CSS)) throw new Error('src/styles/tokens.css does not exist. It defines every design token (SPEC section 1).');
+  if (!existsSync(TOKENS_CSS)) throw new Error('src/styles/tokens.css does not exist. It defines every design token.');
   return readFileSync(TOKENS_CSS, 'utf-8');
+}
+
+/** A pixel length from design/tokens.json: `space-4` is 16, `content-max` is 1072. */
+export function tokenPx(name: string): number {
+  const { spacing, layout } = loadTokens();
+  const value = [...spacing.tokens, ...layout.tokens].find((token) => token.name === name)?.value;
+  const px = /^(\d+(?:\.\d+)?)px$/.exec(value ?? '')?.[1];
+  if (px === undefined) throw new Error(`design/tokens.json has no token ${name} in pixels`);
+  return Number(px);
+}
+
+/** The font family list of a design/tokens.json `type.families` entry: `display`, `display-italic`, `text` or `mono`. */
+export function fontFamilyToken(name: string): string {
+  const value = loadTokens().type.families[name];
+  if (value === undefined) throw new Error(`design/tokens.json has no type family ${name}`);
+  return value;
 }

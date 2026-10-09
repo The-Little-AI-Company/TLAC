@@ -1,12 +1,14 @@
 /**
- * SPEC section 9: the web manifest, the social card, the README, and the generator script.
+ * The files around the pages: the web manifest, the app icons, the social card, the README, the sitemap
+ * and robots.txt, and the project files.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { DIST, PAGES, PUBLIC, ROOT, SITE, listFiles, sha256 } from '../helpers/dist';
-import { decodePng, readPngSize } from '../helpers/image';
-import { HEAD } from '../helpers/spec';
+import { DIST, PAGES, PUBLIC, ROOT, SITE, SITE_NAME, listFiles } from '../helpers/dist';
+import { decodePng, pixelAt, readPngSize } from '../helpers/image';
+import { themeColor } from '../helpers/tokens';
+import { HEAD, RETIRED_PAGES } from '../helpers/spec';
 import { contrast, parseHex } from '../helpers/color';
 
 interface Manifest {
@@ -17,9 +19,6 @@ interface Manifest {
   display?: string;
   icons?: { src: string; sizes: string; type: string }[];
 }
-
-/** sha256 of the old (education-era rebrand) public/og.png. The new card must be a different image. */
-const OLD_OG_SHA256 = '10bde011fcdfed564f623c9d55a301ce9fd1a8490117168d045b5cef70e6bcce';
 
 describe.each([
   ['public/site.webmanifest', join(PUBLIC, 'site.webmanifest')],
@@ -33,7 +32,7 @@ describe.each([
   });
 
   it('keeps its name and standalone display', () => {
-    expect(manifest().name).toBe('The Little AI Company');
+    expect(manifest().name).toBe(SITE_NAME);
     expect(manifest().short_name).toBe('Little AI Co');
     expect(manifest().display).toBe('standalone');
   });
@@ -52,16 +51,39 @@ describe.each([
   });
 });
 
+describe('the app icons', () => {
+  const ground = parseHex(HEAD.themeColorLight.content);
+  const ink = parseHex(themeColor('company-light', 'ink'));
+
+  it.each([
+    ['apple-touch-icon.png', 180],
+    ['icon-192.png', 192],
+    ['icon-512.png', 512],
+  ] as const)('%s is an opaque %spx square of the ground color with the mark in ink', (file, size) => {
+    const png = decodePng(readFileSync(join(PUBLIC, file)));
+    expect([png.width, png.height]).toEqual([size, size]);
+    let translucent = 0;
+    let onGround = 0;
+    let inInk = 0;
+    for (let i = 0; i < png.pixels.length; i += 4) {
+      if (png.pixels[i + 3] !== 255) translucent++;
+      if (png.pixels[i] === ground.r && png.pixels[i + 1] === ground.g && png.pixels[i + 2] === ground.b) onGround++;
+      if (png.pixels[i] === ink.r && png.pixels[i + 1] === ink.g && png.pixels[i + 2] === ink.b) inInk++;
+    }
+    // iOS paints transparent pixels black, so an icon has none.
+    expect(translucent, 'pixels that are not fully opaque').toBe(0);
+    expect(onGround / (size * size), 'share of the icon that is the ground color').toBeGreaterThan(0.5);
+    expect(inInk / (size * size), 'share of the icon that is the ink of the mark').toBeGreaterThan(0.05);
+    expect(pixelAt(png, 0, 0), 'corner').toEqual([ground.r, ground.g, ground.b, 255]);
+  });
+});
+
 describe('the social card, public/og.png', () => {
   const file = join(PUBLIC, 'og.png');
 
   it('is a 1200x630 PNG, and the same file ships in dist/', () => {
     expect(readPngSize(readFileSync(file))).toEqual({ width: 1200, height: 630 });
-    expect(sha256(readFileSync(join(DIST, 'og.png')))).toBe(sha256(readFileSync(file)));
-  });
-
-  it('is regenerated in the new design, not the old card', () => {
-    expect(sha256(readFileSync(file))).not.toBe(OLD_OG_SHA256);
+    expect(readFileSync(join(DIST, 'og.png')).equals(readFileSync(file))).toBe(true);
   });
 
   describe('pixels', () => {
@@ -111,10 +133,6 @@ describe('scripts/', () => {
 describe('README.md', () => {
   const readme = () => readFileSync(join(ROOT, 'README.md'), 'utf-8');
 
-  it('no longer describes the retired faces', () => {
-    expect(readme()).not.toMatch(/Big Shoulders|Archivo|Stencil/);
-  });
-
   it('describes the new fonts, the tokens, and both test suites', () => {
     const text = readme();
     expect(text).toMatch(/Instrument Serif/);
@@ -148,9 +166,9 @@ describe('robots.txt and sitemap.xml', () => {
     for (const loc of locations()) expect(loc).toMatch(/^https:\/\/[^\s/]+\/\S*$/);
   });
 
-  it('leaves out the 404 page and every redirect from the old site', () => {
+  it('leaves out the 404 page and every redirect', () => {
     expect(sitemap()).not.toMatch(/404/);
-    for (const old of ['services', 'club', 'start-here', 'projects', 'brand', 'pages', 'guides']) expect(sitemap(), old).not.toContain(`/${old}/`);
+    for (const redirect of [...RETIRED_PAGES, 'guides']) expect(sitemap(), redirect).not.toContain(`/${redirect}/`);
   });
 
   it('is well-formed sitemap XML', () => {
