@@ -133,7 +133,7 @@ describe('home: #work', () => {
       expect(textOf(one(plate, 'figcaption'))).toBe(v.plate.caption);
     });
 
-    it('serves phones the 640px copy of the screenshot and everyone else the full one', () => {
+    it(`serves phones the ${v.plate.small.width}px copy of the screenshot and everyone else the full one`, () => {
       const img = one(one(feature(), 'figure.plate'), 'img');
       expect(attr(img, 'srcset')).toBe(`${v.plate.small.src} ${v.plate.small.width}w, ${v.plate.src} ${v.plate.width}w`);
       expect(attr(img, 'sizes'), 'srcset with w descriptors needs sizes').toBeDefined();

@@ -13,14 +13,11 @@ export function firstPersonPlural(text: string): string[] {
 /** Roman numerals up to ten. The feature numerals ("II. Ready to download") need them. */
 const ROMAN = /^(?:I{1,3}|IV|VI{0,3}|IX|X)$/;
 
-/** Extra all-caps words the copy needs, on top of CAPS_ALLOWLIST. */
-export const CAPS_EXTRA: ReadonlySet<string> = new Set(['ZIP']);
-
 /**
  * Words written in capitals: two or more characters, at least one capital letter, no
  * lowercase letters ("AI", "V1", "ZIP"). Words in the allowlist and Roman numerals pass.
  */
-export function allCapsWords(text: string, allowed: ReadonlySet<string> = new Set([...CAPS_ALLOWLIST, ...CAPS_EXTRA])): string[] {
+export function allCapsWords(text: string, allowed: ReadonlySet<string> = CAPS_ALLOWLIST): string[] {
   const found: string[] = [];
   for (const m of text.matchAll(/[A-Za-z0-9]+/g)) {
     const word = m[0];

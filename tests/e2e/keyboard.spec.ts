@@ -52,7 +52,7 @@ for (const scheme of SCHEMES) {
             expect(landed.isFirst, `focus is on "${landed.text}", not the first link in main`).toBe(true);
           });
 
-          test('clicking in main does not move the place the next Tab starts from to the top of main', async ({ page }) => {
+          test('clicking in main does not focus main', async ({ page }) => {
             await open(page, info);
             const heading = page.getByRole('heading', { level: 1 });
             await heading.click();

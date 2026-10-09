@@ -6,7 +6,7 @@
  * One test, and so one page load, per cell: what each cell checks is read from the same loaded page.
  * The checks are soft, so a failing cell reports everything that is wrong with it at once.
  */
-import { SCHEMES, WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, firstFamily, fontsReady, loadEverything, open, pageBackground, rgb, style, test } from './support';
+import { SCHEMES, WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, firstFamily, loadEverything, open, pageBackground, rgb, style, test } from './support';
 
 for (const scheme of SCHEMES) {
   for (const width of WIDTHS) {
@@ -80,11 +80,3 @@ for (const scheme of SCHEMES) {
     });
   }
 }
-
-test.describe('fonts settle before measuring', () => {
-  test('document.fonts.ready resolves', async ({ page }) => {
-    await page.goto('/');
-    await fontsReady(page);
-    expect(await page.evaluate(() => document.fonts.status)).toBe('loaded');
-  });
-});

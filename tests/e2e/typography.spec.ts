@@ -240,7 +240,7 @@ for (const width of [360, 1280] as const) {
               if (cs.backgroundImage !== 'none') out.push(`${name}: background-image ${cs.backgroundImage}`);
               if (cs.filter !== 'none') out.push(`${name}: filter ${cs.filter}`);
               const radius = cs.borderTopLeftRadius;
-              // --radius-none, --radius-xs (buttons, fields, the skip link), --radius-sm (inline code), and round dots
+              // --radius-none, --radius-xs (buttons and the skip link), --radius-sm (in the token set, used by nothing yet), and round dots
               const allowed = ['0px', '2px', '4px', '50%'].includes(radius);
               if (!allowed && el.tagName.toLowerCase() !== 'svg' && el.tagName.toLowerCase() !== 'path') out.push(`${name}: border-radius ${radius}`);
             }

@@ -133,7 +133,7 @@ describe('scripts/', () => {
 describe('README.md', () => {
   const readme = () => readFileSync(join(ROOT, 'README.md'), 'utf-8');
 
-  it('describes the new fonts, the tokens, and both test suites', () => {
+  it('describes the fonts, the tokens, and both test suites', () => {
     const text = readme();
     expect(text).toMatch(/Instrument Serif/);
     expect(text).toMatch(/Instrument Sans/);

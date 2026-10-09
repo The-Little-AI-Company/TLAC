@@ -35,11 +35,8 @@ describe('font files in public/fonts', () => {
     expect(listFiles(join(DIST, 'fonts'))).toEqual([...FONT_FILES, ...Object.keys(OFL_FILES)].sort());
   });
 
-  describe.each(FONT_FILES)('%s', (file) => {
-    it('is a woff2 file', () => {
-      expect(readFileSync(join(fontDir, file)).toString('ascii', 0, 4)).toBe('wOF2');
-    });
-
+  it.each(FONT_FILES)('%s is a woff2 file', (file) => {
+    expect(readFileSync(join(fontDir, file)).toString('ascii', 0, 4)).toBe('wOF2');
   });
 
   it('has three different font files', () => {
