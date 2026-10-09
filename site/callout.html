@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Callout · The Little AI Company</title>
+<meta name="description" content="Callout: press a hotkey over anything you read and see whether it is trying to manipulate you, and whether its claims hold up. Free for Windows, MIT.">
+<meta property="og:title" content="Callout · The Little AI Company">
+<meta property="og:description" content="Callout: press a hotkey over anything you read and see whether it is trying to manipulate you, and whether its claims hold up. Free for Windows, MIT.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://littleaicompany.com/assets/og-image.jpg">
+<link rel="canonical" href="https://littleaicompany.com/callout.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script>try{var t=localStorage.getItem('lai-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<div class="lai-root">
+<a class="sx-skip" href="#main">Skip to content</a>
+<header><nav class="lai-nav" aria-label="Main"><a class="lai-nav__brand" href="index.html">The Little AI Company</a><div class="lai-nav__links" id="nav-links"><a href="work.html" aria-current="page">Work</a><a href="services.html">Services</a><a href="about.html">About</a><a href="start.html">Start a project</a></div><a class="lai-btn lai-btn--primary lai-btn--sm" href="services.html#coaching">Book a session</a><button class="lai-nav__menu" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu"><span class="lai-nav__bars" aria-hidden="true"><i></i><i></i><i></i></span></button></nav></header>
+<main id="main">
+<section class="sx-open"><div class="sx-in"><p class="lai-label">Callout · v0.2.0 · Released</p>
+<h1 class="lai-display-l">Press a key. Get the receipts.</h1>
+<p class="lai-lede">Select text anywhere on Windows, press the hotkey, and a small popover answers two questions. Is this text trying to manipulate you? And do its claims hold up?</p>
+<div class="lai-row sx-open__actions"><a class="lai-btn lai-btn--primary" href="https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe">Download for Windows</a><a class="lai-btn" href="https://github.com/The-Little-AI-Company/callout">Source on GitHub</a></div>
+<p class="sx-note">Windows 10 and 11 · MIT license · No account</p></div></section><section class="sx-sec " aria-labelledby="does"><div class="sx-in"><div class="sx-head"><h2 class="lai-heading" id="does">What it does</h2>
+<p class="lai-text">Every result carries the same header: signals in the text itself, not a truth check.</p></div>
+<div class="sx-two">
+  <div class="lai-offer"><p class="lai-label">Under a second</p><h3 class="lai-title">The fast lane</h3><p class="lai-text">Is this text trying to manipulate you? Callout scores the passage against a battery of manipulation signals, such as false urgency, loaded framing, and appeals that stand in for evidence.</p></div>
+  <div class="lai-offer"><p class="lai-label">A few seconds</p><h3 class="lai-title">The deep lane</h3><p class="lai-text">Do the specific claims hold up? Callout pulls out the checkable claims, looks first at the sources the text cites, then searches the web, and shows you what it found. Nothing is shown without a source. Unsure is a real answer.</p></div>
+</div></div></section><section class="sx-sec sx-sec--alt" aria-labelledby="works"><div class="sx-in"><div class="sx-head"><h2 class="lai-heading" id="works">How it works</h2>
+<p class="lai-text">Three parts with one rule between them. The model that judges never writes prose, and the model that writes prose never judges.</p></div>
+<ul class="sx-three">
+  <li><h3 class="lai-title">A judging model</h3><p class="lai-text">Returns probabilities, never sentences. It scores content kind, the manipulation battery, passage relevance, claim-versus-evidence support, and every sentence the helper writes.</p></li>
+  <li><h3 class="lai-title">A writing helper</h3><p class="lai-text">Any OpenAI-compatible or Anthropic endpoint. It extracts claims, drafts search queries, reads screenshots, and writes the two-sentence summary. Everything it writes goes back through the judge.</p></li>
+  <li><h3 class="lai-title">Code owns the thresholds</h3><p class="lai-text">Every threshold, cap, and question lives in one readable file in the repository. Nothing is tuned behind a server.</p></li>
+</ul></div></section><section class="sx-sec " aria-labelledby="stays"><div class="sx-in"><div class="sx-head"><h2 class="lai-heading" id="stays">What stays on your machine</h2></div>
+<ul class="sx-three">
+  <li><h3 class="lai-title">Everything</h3><p class="lai-text">No server, no account, no telemetry. The text you check goes to the three APIs you configure and to the pages Callout fetches for evidence, and nowhere else.</p></li>
+  <li><h3 class="lai-title">Your keys</h3><p class="lai-text">You bring your own API keys. They sit in Windows Credential Manager, never in a plain-text file.</p></li>
+  <li><h3 class="lai-title">Your history</h3><p class="lai-text">Off by default. Usage counters stay local.</p></li>
+</ul></div></section><section class="sx-sec sx-sec--alt" aria-labelledby="get"><div class="sx-in"><div class="sx-split"><div><h2 class="lai-heading" id="get">Get it</h2>
+<p class="lai-text">Download the installer for Windows 10 and 11, run it, and paste your API keys into Settings. No account. Open source under MIT.</p>
+<div class="lai-row sx-open__actions"><a class="lai-btn lai-btn--primary" href="https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe">Download for Windows</a><a class="lai-btn lai-btn--text" href="https://github.com/The-Little-AI-Company/callout/issues">Report a bug</a></div></div>
+<div class="lai-notice lai-notice--info" role="note"><p class="lai-notice__title">Windows will warn you the first time</p><p class="lai-notice__body">The installer is not code-signed yet, so Windows SmartScreen warns on first run. Choose More info, then Run anyway. The source is on GitHub if you'd rather build it yourself.</p></div></div></div></section>
+</main>
+<footer class="sx-foot"><div class="sx-in">
+  <div class="sx-foot__grid">
+    <div><p class="sx-foot__brand">The Little AI Company</p><p>Jeff Kazzee · rural Idaho</p><p>Email <span class="sx-email">jeff@littleaicompany.com</span></p></div>
+    <div><ul><li><a href="work.html">Work</a></li><li><a href="services.html">Services</a></li><li><a href="about.html">About</a></li><li><a href="start.html">Start a project</a></li></ul></div>
+    <div><ul><li><a href="callout.html">Callout</a></li><li><a href="vivary.html">Vivary</a></li><li><a href="https://github.com/The-Little-AI-Company">GitHub</a></li><li><a href="https://jeffkazzee.dev">JeffKazzee.dev</a></li></ul></div>
+  </div>
+  <div class="sx-foot__base"><span>No trackers and no cookies on this site.</span><button class="lai-btn lai-btn--sm sx-theme" type="button" data-theme-toggle>Switch to dark</button></div>
+</div></footer>
+</div>
+<script src="js/site.js" defer></script>
+</body>
+</html>

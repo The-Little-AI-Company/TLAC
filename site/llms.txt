@@ -1,0 +1,20 @@
+# The Little AI Company
+
+> Jeff Kazzee builds small AI tools, websites and automations for people and local businesses, and teaches people to build their own on live screen-share sessions. Based in rural Idaho. One person.
+
+## Services
+- Live coaching, one-on-one or in groups, over screen share. Half hour $40. One hour $65. Three half hours $100. Small group of 2 to 4: $35 per person per hour. Workshop of 5 to 10: $25 per person per hour.
+- Pay for a half hour: https://buy.stripe.com/9B6dR92WvcoZ4Vw8BS08g09
+- Book a time after paying: https://calendar.app.google/HnkQMCj9ykUGUhoi6
+- Build jobs: websites for local businesses, small tools, automations. Quoted per job, with a written scope and price before work starts.
+- Contact: jeff@littleaicompany.com
+
+## Pages
+- [Services](services.html): coaching tracks, prices, booking steps, build jobs, questions
+- [Work](work.html): Vivary, Callout and smaller projects with their status
+- [About](about.html)
+- [Start a project](start.html)
+
+## Tools
+- [Callout](callout.html): press a hotkey over text on Windows to check it for manipulation signals and check its claims against sources. v0.2.0, released, MIT. Installer: https://github.com/The-Little-AI-Company/callout/releases/latest/download/Callout-Setup.exe
+- [Vivary](vivary.html): a desktop workspace for working with AI agents on your own projects. In development, Windows first, not a public release. Site: https://vivaryagent.xyz
