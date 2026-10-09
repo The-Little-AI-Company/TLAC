@@ -22,17 +22,52 @@ const COMPONENTS: Record<string, readonly string[]> = {
 
 const read = (path: string): string => readFileSync(join(SRC, path), 'utf-8');
 
-/** The body of `interface Props { ... }` in an Astro component, or undefined. */
-function propsBody(source: string): string | undefined {
-  const start = source.search(/\binterface\s+Props\b/);
-  if (start === -1) return undefined;
-  const open = source.indexOf('{', start);
+/** Text between the braces that follow `at`, or undefined. */
+function braceBody(source: string, at: number): string | undefined {
+  const open = source.indexOf('{', at);
+  if (open === -1) return undefined;
   let depth = 0;
   for (let i = open; i < source.length; i++) {
     if (source[i] === '{') depth++;
     if (source[i] === '}' && --depth === 0) return source.slice(open + 1, i);
   }
   return undefined;
+}
+
+/** The file an `import type { Name } from '...'` brings `Name` from, as a path under src/, or undefined. */
+function importedFrom(source: string, name: string, fromDir: string): string | undefined {
+  const m = new RegExp(`import\\s+(?:type\\s+)?\\{[^}]*\\b${name}\\b[^}]*\\}\\s+from\\s+['"]([^'"]+)['"]`).exec(source);
+  if (!m?.[1]) return undefined;
+  const base = join(fromDir, m[1]);
+  return [`${base}.ts`, `${base}.astro`, base].find((f) => existsSync(f));
+}
+
+/**
+ * The text that declares a component's props: `interface Props { ... }`, or `type Props = Name`
+ * with `Name` declared here or imported (a component may reuse a data type for its props).
+ * Returns undefined when the component declares no Props at all.
+ */
+function propsDeclaration(source: string, dir: string): string | undefined {
+  const iface = source.search(/\binterface\s+Props\b/);
+  if (iface !== -1) {
+    const head = source.slice(iface, source.indexOf('{', iface));
+    const own = braceBody(source, iface) ?? '';
+    const parent = /extends\s+([A-Za-z_]\w*)/.exec(head)?.[1];
+    return parent ? `${own}\n${typeBody(parent, source, dir) ?? ''}` : own;
+  }
+  const alias = /\btype\s+Props\s*=\s*([A-Za-z_]\w*)\s*;?/.exec(source)?.[1];
+  return alias ? typeBody(alias, source, dir) : undefined;
+}
+
+/** Body of `interface Name` declared in `source` or in a file it imports it from. */
+function typeBody(name: string, source: string, dir: string): string | undefined {
+  const here = source.search(new RegExp(`\\binterface\\s+${name}\\b`));
+  if (here !== -1) return braceBody(source, here);
+  const file = importedFrom(source, name, dir);
+  if (!file) return undefined;
+  const text = readFileSync(file, 'utf-8');
+  const there = text.search(new RegExp(`\\binterface\\s+${name}\\b`));
+  return there === -1 ? undefined : braceBody(text, there);
 }
 
 describe('the pages and layout exist', () => {
@@ -51,8 +86,8 @@ describe.each(Object.entries(COMPONENTS))('component %s', (name, props) => {
     expect(existsSync(join(SRC, path)), `src/${path} is missing`).toBe(true);
   });
 
-  it('declares a typed Props interface with the props the spec lists', () => {
-    const body = propsBody(read(path));
+  it('declares a typed Props (an interface, or an alias of one) with the props the spec lists', () => {
+    const body = propsDeclaration(read(path), join(SRC, 'components'));
     expect(body, `src/${path} needs \`interface Props\``).toBeDefined();
     for (const prop of props) expect(body, `Props of ${name} should have "${prop}"`).toMatch(new RegExp(`\\b${prop}\\??\\s*:`));
   });

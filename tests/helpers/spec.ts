@@ -495,3 +495,13 @@ export const TOKENS = {
 
 /** design/tokens.json is a verbatim copy of the design system's tokens.json. */
 export const TOKENS_JSON_SHA256 = '352231586dbdf01b171c7b185291ecb1afdf67942e9edf7dadb07a183a46aeb9';
+
+/** How many <img> elements each page has. SPEC 8 lists every image; nothing else is invented. */
+export const IMAGE_COUNT: Record<'home' | 'callout' | 'vivary' | 'about' | 'contact' | 'not-found', number> = {
+  home: 6, // the mascot, the Vivary screenshot and the four project thumbnails
+  callout: 0,
+  vivary: 1, // the vivaryagent.xyz screenshot
+  about: 0,
+  contact: 0,
+  'not-found': 0,
+};

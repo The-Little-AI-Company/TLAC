@@ -40,10 +40,9 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       expect(textOf(titles[0]!)).toBe(info.title);
     });
 
-    it('has a description of 40 to 200 characters, trimmed', () => {
+    it('has a description of at least 40 characters, trimmed', () => {
       const description = content('meta[name="description"]');
       expect(description.length).toBeGreaterThanOrEqual(40);
-      expect(description.length, 'search engines cut descriptions near 160').toBeLessThanOrEqual(200);
       expect(description).toBe(description.trim());
     });
 

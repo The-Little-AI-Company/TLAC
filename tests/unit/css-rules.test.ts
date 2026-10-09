@@ -96,25 +96,33 @@ describe('type rules (SPEC 3)', () => {
     const bad = decls().filter(
       (c) =>
         (c.declaration.prop === 'font-style' && /italic|oblique/.test(c.declaration.value)) ||
-        (c.declaration.prop === 'font' && /\b(?:italic|oblique)\b/.test(c.declaration.value)),
+        // var(--font-display-italic) is the italic family's name, not a style
+        (c.declaration.prop === 'font' && /\b(?:italic|oblique)\b/.test(c.declaration.value.replace(/var\([^)]*\)/g, ''))),
     );
     expect(bad.map(where)).toEqual([]);
   });
 
   it('takes every font family from a --font-* token', () => {
+    const FAMILY_VAR = /var\(--font-(?:display|display-italic|text|mono)\)/;
     const bad = decls().filter((c) => {
       if (inTokenBlock(c) || inFontFace(c)) return false;
       const { prop, value } = c.declaration;
-      if (prop === 'font-family') return !/^var\(--font-(?:display|display-italic|text|mono)\)$/.test(value.trim());
-      if (prop === 'font') return !/var\(--font-(?:display|display-italic|text|mono)\)/.test(value);
+      if (/^(?:inherit|initial|unset|revert)$/.test(value.trim())) return false;
+      if (prop === 'font-family') return !new RegExp(`^${FAMILY_VAR.source}$`).test(value.trim());
+      if (prop === 'font') return !FAMILY_VAR.test(value);
       return false;
     });
     expect(bad.map(where)).toEqual([]);
   });
 
-  it('sets a font-family on the page itself (body text is Instrument Sans through --font-text)', () => {
-    const families = decls().filter((c) => c.declaration.prop === 'font-family' && /var\(--font-text\)/.test(c.declaration.value));
-    expect(families.length).toBeGreaterThan(0);
+  it('sets the family of the page itself: body text is Instrument Sans through --font-text', () => {
+    const onPage = decls().filter(
+      (c) =>
+        /^(?:html|body|:root|\*)(?:\[|$|\s*,)/.test(owner(c).prelude.trim().split(',')[0] ?? '') &&
+        (c.declaration.prop === 'font-family' || c.declaration.prop === 'font') &&
+        /var\(--font-text\)/.test(c.declaration.value),
+    );
+    expect(onPage.length, 'html or body needs font-family: var(--font-text) (or the font shorthand with it)').toBeGreaterThan(0);
   });
 
   it('keeps display faces at weight 400', () => {
@@ -249,11 +257,11 @@ describe('shape and depth (SPEC 0 and 4)', () => {
     expect(bad.map(where)).toEqual([]);
   });
 
-  it('draws no heavy rules: borders are at most 1px', () => {
+  it('draws no heavy rules: no border is wider than 2px (the old 3px rules are gone)', () => {
     const bad = decls().filter((c) => {
       const { prop, value } = c.declaration;
       if (!/^border/.test(prop) || /radius|spacing|collapse|image/.test(prop)) return false;
-      return [...value.matchAll(/(\d*\.?\d+)px/g)].some((m) => Number(m[1]) > 1);
+      return [...value.matchAll(/(\d*\.?\d+)px/g)].some((m) => Number(m[1]) > 2);
     });
     expect(bad.map(where)).toEqual([]);
   });

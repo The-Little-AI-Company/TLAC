@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { all, describe as show, type El } from '../helpers/dom';
 import { DIST, PAGE_CASES, PAGES, PUBLIC, listFiles, parsePage, resolveSitePath, sha256, srcsetUrls } from '../helpers/dist';
 import { readWebp } from '../helpers/image';
-import { IMAGES } from '../helpers/spec';
+import { IMAGES, IMAGE_COUNT } from '../helpers/spec';
 
 const localFile = (src: string): string | undefined => (src.startsWith('/') && !src.startsWith('//') ? resolveSitePath(src) : undefined);
 const positiveInt = (value: string | undefined): boolean => value !== undefined && /^[1-9]\d*$/.test(value);
@@ -17,6 +17,10 @@ const size = (el: El): { w: number; h: number } => ({ w: Number(el.getAttribute(
 describe.each(PAGE_CASES)('images on %s', (_label, info) => {
   const doc = () => parsePage(info);
   const imgs = (): El[] => all(doc(), 'img');
+
+  it('are exactly the images the spec lists', () => {
+    expect(imgs().length).toBe(IMAGE_COUNT[info.id]);
+  });
 
   it('give every <img> alt text (empty alt only when the image is aria-hidden)', () => {
     const bad: string[] = [];

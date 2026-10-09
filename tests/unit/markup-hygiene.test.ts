@@ -66,7 +66,7 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
       const tone = classes.find((c) => c.startsWith('status--'))?.slice('status--'.length);
       if (badge.rawTagName.toLowerCase() !== 'span') bad.push(`${show(badge)} is not a span`);
       if (!tone || !TONES.includes(tone)) bad.push(`${show(badge)} has no known tone class`);
-      const dot = badge.childNodes.find((n): n is El => 'rawTagName' in n);
+      const dot = badge.childNodes.find((n): n is El => n.nodeType === 1);
       if (!dot || dot.rawTagName.toLowerCase() !== 'i') bad.push(`${show(badge)} does not start with <i>`);
       else if (dot.getAttribute('aria-hidden') !== 'true') bad.push(`${show(badge)} dot is not aria-hidden`);
       if (visibleText(badge) === '') bad.push(`${show(badge)} has no label word`);

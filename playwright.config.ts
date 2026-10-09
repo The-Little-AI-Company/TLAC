@@ -15,6 +15,9 @@ export default defineConfig({
   expect: { timeout: 5_000 },
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
+    // A static page answers at once. A locator that finds nothing after 3 seconds never will.
+    actionTimeout: 3_000,
+    navigationTimeout: 15_000,
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
