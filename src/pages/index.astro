@@ -1,188 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
-import Mark from '../components/Mark.astro';
-import Plate from '../components/Plate.astro';
-import { tools } from '../data/tools';
-
-const tenets = [
-  ['You decide', 'The tool proposes and you approve. A human gate is a feature, not a speed bump.'],
-  ['You can read everything', 'State is plain files on your machine, not a hosted store you cannot open.'],
-  ['You keep learning', 'A tool that thinks for you leaves you weaker. Ours show their work so you get sharper.'],
-  ['Sources or silence', 'Every claim carries where it came from. Unsure is a real answer.'],
-];
+import Button from '../components/Button.astro';
+import NowLine from '../components/NowLine.astro';
+// Placeholder until the home page is rebuilt on the new components.
 ---
 
 <Base
   title="The Little AI Company"
-  description="Pro-human AI tools. You stay in control, and you keep learning. Callout checks what you read. Vivary is a desktop workspace for working with agents on your own projects."
+  description="I'm Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop workspace for AI agents. Small tools that keep you in charge."
 >
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="placard">
-        <div class="placard-band">
-          <Mark size={28} />
-          <span>Warning</span>
-        </div>
-        <div class="placard-body">
-          <h1>Human<br />operated</h1>
-          <p class="lede">
-            We make small tools that keep you in charge of the AI you use. Memory in files
-            you can open. Claims with the sources behind them. Nothing that runs where you
-            can't see it, stop it, or undo it.
-          </p>
-          <p class="hero-actions">
-            <a class="action" href="/callout/">See Callout</a>
-            <a class="action action-quiet" href="/vivary/">See Vivary</a>
-          </p>
-        </div>
-      </div>
-      <div class="hero-mark" aria-hidden="true">
-        <Mark size={420} />
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="tools">
+  <section class="page-head">
     <div class="wrap">
-      <h2 class="section-title">What we make</h2>
-      <div class="plates">
-        {tools.map((t) => <Plate tool={t} />)}
+      <NowLine tone="wip">Now building Vivary. A Windows preview came out Sept 22.</NowLine>
+      <h1 class="display-xl">Tools for the work you keep doing by hand.</h1>
+      <p class="lede">
+        I'm Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop
+        workspace for AI agents. Small tools that keep you in charge of the AI you use.
+      </p>
+      <div class="actions">
+        <Button href="/callout/" variant="primary">Get Callout</Button>
+        <Button href="/vivary/">See Vivary</Button>
       </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <h2 class="section-title">What we hold to</h2>
-      <dl class="tenets">
-        {tenets.map(([head, body]) => (
-          <div class="tenet">
-            <dt>{head}</dt>
-            <dd>{body}</dd>
-          </div>
-        ))}
-      </dl>
     </div>
   </section>
 </Base>
-
-<style>
-  .hero {
-    padding: 56px 0 72px;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 40px;
-    align-items: center;
-  }
-
-  .placard {
-    border: 4px solid var(--ink);
-    background: var(--bone);
-  }
-
-  .placard-band {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--orange);
-    color: var(--ink);
-    border-bottom: 4px solid var(--ink);
-    padding: 8px 22px;
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: 1.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .placard-body {
-    padding: 28px 26px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .hero-mark {
-    display: flex;
-    justify-content: center;
-    color: var(--ink);
-  }
-
-  .hero-mark :global(svg) {
-    width: 100%;
-    max-width: 420px;
-    height: auto;
-  }
-
-  .plates {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
-  }
-
-  .tenets {
-    margin: 0;
-    display: grid;
-    gap: 0;
-    border-top: 1.5px solid var(--rule);
-  }
-
-  .tenet {
-    display: grid;
-    grid-template-columns: minmax(200px, 3fr) 9fr;
-    gap: 24px;
-    padding: 20px 0;
-    border-bottom: 1.5px solid var(--rule);
-  }
-
-  .tenet dt {
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 1.7rem;
-    line-height: 1;
-    letter-spacing: 0.02em;
-  }
-
-  .tenet dd {
-    margin: 0;
-    max-width: var(--measure);
-  }
-
-  @media (max-width: 900px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .hero-mark :global(svg) {
-      max-width: 260px;
-    }
-
-    .plates {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .hero {
-      padding: 32px 0 48px;
-    }
-
-    .placard-body {
-      padding: 22px 18px 26px;
-    }
-
-    .tenet {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-  }
-</style>
