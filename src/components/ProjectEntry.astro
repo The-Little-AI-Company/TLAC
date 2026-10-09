@@ -67,10 +67,15 @@ const { image, thumb, imageAlt, width, height, title, line, tone, status, href, 
     text-align: right;
   }
 
-  /* A long address wraps at its hyphens in the column rather than taking the width the description needs. */
   .meta a {
-    max-width: 24ch;
     overflow-wrap: anywhere;
+  }
+
+  /* Beside the text, a long address wraps at its hyphens in a narrow column rather than taking the width the description needs. */
+  @media (min-width: 861px) {
+    .meta a {
+      max-width: 18ch;
+    }
   }
 
   @media (max-width: 860px) {

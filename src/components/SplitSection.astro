@@ -24,7 +24,8 @@ const { heading, id } = Astro.props;
     display: grid;
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
     gap: var(--space-7);
-    align-items: start;
+    /* The heading's baseline sits on the baseline of the first line of the content: the first lane name, or the first line of a paragraph. */
+    align-items: first baseline;
   }
 
   /* With no introduction under it the heading is the whole column, so the grid gap alone separates it from the content. */
@@ -32,23 +33,11 @@ const { heading, id } = Astro.props;
     margin-bottom: 0;
   }
 
-  /*
-   * Beside a list of lanes, the heading's baseline sits on the first lane name's baseline. The name sits a lane
-   * padding (24px) and a half-leading below the rule that tops the list, so the 44px heading drops a quarter of its
-   * own size, which is 11px.
-   */
-  .split:has(.matter > :global(.lanes)) .heading {
-    padding-top: 0.25em;
-  }
-
+  /* In one column each part has a row of its own, so there is nothing to align. */
   @media (max-width: 860px) {
     .split {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-5);
-    }
-
-    .split:has(.matter > :global(.lanes)) .heading {
-      padding-top: 0;
     }
   }
 </style>

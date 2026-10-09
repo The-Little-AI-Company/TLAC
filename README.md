@@ -85,17 +85,17 @@ exports of the same mark. Run `pnpm icons` after changing the mark.
 The components in `src/components/`:
 
 - `Button`: a link styled as a button, primary, secondary or text.
-- `Dotted`: text whose middle dots are set as separators, with an even margin on both sides.
+- `Dotted`: text whose middle dots are set as separators. The text keeps an ordinary space on each side of the dot, and a margin evens out the gap.
 - `Lanes` and `Lane`: ruled rows, each a name in the display face and what it means. A row sets the name beside the meaning when it has room, and stacks them when it does not.
 - `Mark`: the skull bunny, drawn in `currentColor`.
 - `NowLine`: the sentence at the top of a page about what is happening now, with a status dot.
-- `PageHead`: the top of an inner page, an h1 and a lede, with room for buttons, a badge, and a picture beside the text.
+- `PageHead`: the top of an inner page, an h1 and a lede, with room for buttons, a badge, and a picture beside the text when both have room, and under it when they do not.
 - `Plate` and `PlateFrame`: a screenshot in a frame, like a plate in a book, with a dated caption.
 - `ProjectEntry`: one row of the list of other projects on the home page.
 - `ProjectFeature`: a project as a short case study, with its plate beside it.
 - `SiteFooter` and `SiteNav`: the footer, and the header with the four page links.
 - `SpecPlate`: a plate of facts for a tool that has no screenshot, with the line the tool says.
-- `SplitSection`: a section with its heading and introduction in a narrow column and the content beside it.
+- `SplitSection`: a section with its heading and introduction in a narrow column and the content beside it. The heading's baseline sits on the first baseline of the content.
 - `StatusBadge`: a project's status, a dot and a word. The word is always shown.
 - `ToolHero`: the header of a tool page, a `PageHead` with the tool's status, summary and buttons.
 - `types.ts`: the shared `Term` type, a name and what it means.

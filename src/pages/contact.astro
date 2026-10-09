@@ -19,7 +19,7 @@ import { tools } from '../data/tools';
         <a href="mailto:jeff@littleaicompany.com">jeff@littleaicompany.com</a>
       </Lane>
       <Lane term="Bugs">
-        Report a bug in the tool’s issue tracker on GitHub: {tools.map((t, i) => (
+        Report a bug on GitHub: {tools.map((t, i) => (
           <>
             <a class="nowrap" href={`${t.repo}/issues`}>{t.name} issues</a>{i < tools.length - 1 ? ' or ' : '.'}
           </>

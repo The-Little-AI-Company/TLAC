@@ -18,7 +18,7 @@ const calloutStatus = await stampedStatus(callout);
 
 const tenets: Term[] = [
   { term: 'You decide', detail: 'The tool proposes and you approve. A human gate is a feature, not a speed bump.' },
-  { term: 'You can read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
+  { term: 'You can\u00a0read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
   { term: 'You keep learning', detail: 'A tool that thinks for you leaves you weaker. My tools show their work so you get sharper.' },
   { term: 'Sources or silence', detail: 'Every claim carries where it came from. Unsure is a real answer.' },
 ];
@@ -77,7 +77,7 @@ const tenets: Term[] = [
         <p class="text">
           A desktop workspace for working with AI agents on your own projects. Conversations sit beside your
           notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay
-          on your machine.
+          where you run them.
         </p>
       </ProjectFeature>
 
@@ -107,8 +107,8 @@ const tenets: Term[] = [
 
   <SplitSection id="how" heading="How I work">
     <p slot="intro" class="text how-intro">
-      I make small tools that keep you in charge of the AI you use. Memory in files you can open. Claims
-      with the sources behind them. Nothing that runs where you can’t see it, stop it, or undo it.
+      Memory in files you can open. Claims with the sources behind them. Nothing runs that you can’t see,
+      stop, or undo.
     </p>
     <Lanes>
       {tenets.map(({ term, detail }) => <Lane term={term}>{detail}</Lane>)}

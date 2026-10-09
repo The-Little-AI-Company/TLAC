@@ -23,7 +23,7 @@ const { rows, quote, caption } = Astro.props;
   </dl>
   {quote && (
     <figure class="quote">
-      <blockquote><p>{quote}</p></blockquote>
+      <blockquote><p>“{quote}”</p></blockquote>
       {caption && <figcaption class="caption">{caption}</figcaption>}
     </figure>
   )}

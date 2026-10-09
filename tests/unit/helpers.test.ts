@@ -467,9 +467,10 @@ describe('text: visible text extraction', () => {
     expect(textOf(parseHtml("<p>I'm here</p>"))).toBe("I'm here");
   });
 
-  it('reads a .sep as a middle dot with a space on each side, as the page shows it', () => {
-    expect(visibleText(parseHtml('<p>Released<span class="sep">\u00b7</span>v0.2.0</p>'))).toBe('Released \u00b7 v0.2.0');
+  it('reads a middle dot with the spaces the markup gives it and adds none, so glued words in the page show up', () => {
+    expect(visibleText(parseHtml('<p>Released<span class="sep"> \u00b7</span> v0.2.0</p>'))).toBe('Released \u00b7 v0.2.0');
     expect(visibleText(parseHtml('<p>A <span class="sep">\u00b7</span> B</p>'))).toBe('A \u00b7 B');
+    expect(visibleText(parseHtml('<p>Released<span class="sep">\u00b7</span>v0.2.0</p>'))).toBe('Released\u00b7v0.2.0');
   });
 });
 
