@@ -1,141 +1,100 @@
 ---
 import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import Lane from '../components/Lane.astro';
+import Lanes from '../components/Lanes.astro';
+import SpecPlate from '../components/SpecPlate.astro';
+import SplitSection from '../components/SplitSection.astro';
 import ToolHero from '../components/ToolHero.astro';
-import { tool } from '../data/tools';
+import { callout, calloutPlate, latestVersion } from '../data/tools';
 
-const callout = tool('callout');
+const version = await latestVersion(callout.version);
 ---
 
 <Base
   title="Callout"
-  description="Press a hotkey over anything you are reading. Callout tells you whether the text is trying to manipulate you and whether its claims hold up against sources it fetched. Windows, bring your own keys, no server."
+  description="Press a hotkey over any text. Callout says whether it is trying to manipulate you and whether its claims hold up. Windows, bring your own keys, no server."
 >
-  <ToolHero tool={callout} />
+  <ToolHero tool={callout}>
+    <SpecPlate {...calloutPlate(version)} />
+  </ToolHero>
 
-  <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="section-title">What it does</h2>
-        <p>
-          Select text anywhere on Windows, press the hotkey, and a small popover answers
-          two questions. Every result carries the same header: signals in the text
-          itself, not a truth check.
-        </p>
-      </div>
-      <dl class="lanes">
-        <div class="lane">
-          <dt>Fast lane, under a second</dt>
-          <dd>
-            Is this text trying to manipulate you? Callout scores the passage against a
-            battery of manipulation signals, such as false urgency, loaded framing, and
-            appeals that stand in for evidence.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Deep lane, a few seconds</dt>
-          <dd>
-            Do the specific claims hold up? Callout pulls out the checkable claims, looks
-            first at the sources the text cites, then searches the web, and shows you
-            what it found. Nothing is shown without a source. Unsure is a real answer.
-          </dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+  <SplitSection heading="What it does">
+    <p slot="intro" class="text">
+      Select text anywhere on Windows, press the hotkey, and a small popover answers
+      two questions.
+    </p>
+    <Lanes>
+      <Lane term="Fast lane, under a second">
+        Is this text trying to manipulate you? Callout scores the passage against a
+        battery of manipulation signals, such as false urgency, loaded framing, and
+        appeals that stand in for evidence.
+      </Lane>
+      <Lane term={'Deep lane, a\u00a0few seconds'}>
+        Do the specific claims hold up? Callout pulls out the checkable claims, looks
+        first at the sources the text cites, then searches the web, and shows you
+        what it found. Nothing is shown without a source. Unsure is a real answer.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="section-title">How it works</h2>
-        <p>
-          Three parts with one rule between them. The model that judges never writes
-          prose, and the model that writes prose never judges.
-        </p>
-      </div>
-      <dl class="lanes">
-        <div class="lane">
-          <dt>A judging model</dt>
-          <dd>
-            Returns probabilities, never sentences. It scores content kind, the
-            manipulation battery, passage relevance, claim-versus-evidence support, and
-            every sentence the helper writes.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>A writing helper</dt>
-          <dd>
-            Any OpenAI-compatible or Anthropic endpoint. It extracts claims, drafts search
-            queries, reads screenshots, and writes the two-sentence summary. Everything it
-            writes goes back through the judge.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Code owns the thresholds</dt>
-          <dd>
-            Every threshold, cap, and question lives in one readable file in the
-            repository. Nothing is tuned behind a server.
-          </dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+  <SplitSection heading="How it works">
+    <p slot="intro" class="text">
+      Three parts with one rule between them. The model that judges never writes
+      prose, and the model that writes prose never judges.
+    </p>
+    <Lanes>
+      <Lane term="A judging model">
+        Returns probabilities, never sentences. It scores what kind of content this
+        is, the manipulation signals in it, whether a passage is relevant, whether
+        evidence supports a claim, and every sentence the helper writes.
+      </Lane>
+      <Lane term="A writing helper">
+        Any OpenAI-compatible or Anthropic endpoint. It extracts claims, drafts search
+        queries, reads screenshots, and writes the two-sentence summary. Everything it
+        writes goes back through the judge.
+      </Lane>
+      <Lane term="A rules file">
+        Every threshold, cap, and question lives in one readable file in the
+        repository. Nothing is tuned behind a server.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="section-title">What stays on your machine</h2>
-      </div>
-      <dl class="lanes">
-        <div class="lane">
-          <dt>Everything</dt>
-          <dd>
-            No server, no account, no telemetry. The text you check goes to the three
-            APIs you configure and to the pages Callout fetches for evidence, and nowhere
-            else.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Your keys</dt>
-          <dd>
-            You bring your own API keys. They sit in Windows Credential Manager, never in
-            a plain-text file.
-          </dd>
-        </div>
-        <div class="lane">
-          <dt>Your history</dt>
-          <dd>Off by default. Usage counters stay local.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+  <SplitSection heading="What stays on your machine">
+    <Lanes>
+      <Lane term="No server">
+        No account, no telemetry. The text you check goes to the three
+        APIs you configure and to the pages Callout fetches for evidence, and nowhere
+        else.
+      </Lane>
+      <Lane term="Your keys">
+        You bring your own API keys. They sit in Windows Credential Manager, never in
+        a plain-text file.
+      </Lane>
+      <Lane term="Your history">Off by default. Usage counters stay local.</Lane>
+    </Lanes>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap">
-      <h2 class="section-title">Get it</h2>
-      <p class="lede">
-        Download the installer for Windows 10 and 11, run it, and paste your API keys
-        into Settings. No account. Open source under MIT.
-      </p>
-      <p class="status-actions">
-        <a class="action" href={callout.primary.href}>{callout.primary.label}</a>
-      </p>
-      <p class="status-note">
-        The installer is not code-signed yet, so Windows SmartScreen warns on first
-        run. Choose More info, then Run anyway. The source is on GitHub if you'd
-        rather build it yourself.
-      </p>
+  <SplitSection id="get-it" heading="Get it">
+    <p class="lede">
+      Download the installer for Windows 10 and 11, run it, and paste your API keys
+      into Settings. No account. Open source under MIT.
+    </p>
+    <div class="actions">
+      <Button href={callout.primary.href} variant="primary">{callout.primary.label}</Button>
     </div>
-  </section>
+    <p class="text-sm note">
+      The installer is unsigned for now, so Windows SmartScreen warns on first run.
+      Choose More info, then Run anyway. The source is on GitHub if you’d rather
+      build it yourself.
+    </p>
+  </SplitSection>
 </Base>
 
 <style>
-  .status-actions {
-    margin-top: 24px;
-  }
-
-  .status-note {
-    margin-top: 20px;
-    color: var(--steel);
-    font-size: 0.95rem;
+  .note {
+    margin-top: var(--space-4);
+    color: var(--ink-faint);
   }
 </style>

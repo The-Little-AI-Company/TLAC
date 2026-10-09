@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import PageHead from '../components/PageHead.astro';
+---
+
+<Base
+  title="Page not found"
+  description="That address doesn’t lead anywhere on this site. Start at the home page, or contact me if a link on this site is broken."
+  noindex
+>
+  <PageHead title="Page not found" lede="That address doesn’t lead anywhere on this site." center>
+    <div class="actions">
+      <Button href="/" variant="primary">Go to the home page</Button>
+      <Button href="/contact/">Contact</Button>
+    </div>
+  </PageHead>
+</Base>

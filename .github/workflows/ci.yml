@@ -1,0 +1,61 @@
+name: CI
+
+# Checks every pull request, and every push to dev (the merge that deploy.yml publishes).
+# A push to any other branch is checked when its pull request is, not twice.
+on:
+  pull_request:
+  push:
+    branches: [dev]
+
+# Read-only: CI never publishes anything.
+permissions:
+  contents: read
+
+# A newer push to the same branch makes an older run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    # A hung browser or install should not hold a runner for the six hour default.
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      # pnpm's version comes from "packageManager" in package.json.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Type check, hints included
+        run: pnpm check
+      - name: Build the site
+        run: pnpm build
+        env:
+          # The build asks GitHub for Callout's latest release. A token keeps shared runners from being rate limited.
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Unit tests
+        run: pnpm test
+      # @playwright/test is pinned to the version whose Chromium this installs.
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: End-to-end tests
+        run: pnpm test:e2e
+      # The HTML report, and the trace of each failed test, so a failure on a runner can be opened and looked at.
+      - name: Keep the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

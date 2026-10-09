@@ -1,21 +1,20 @@
 ---
-import Mark from '../components/Mark.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import '../styles/tokens.css';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description: string;
+  // Keeps the page out of search results and gives it no canonical address (the 404 page).
+  noindex?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const fullTitle = title === 'The Little AI Company' ? title : `${title}. The Little AI Company`;
-const current = Astro.url.pathname;
-const nav = [
-  { href: '/callout/', label: 'Callout' },
-  { href: '/vivary/', label: 'Vivary' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
-];
+const ogImage = new URL('/og.png', Astro.site);
+const ogImageAlt = 'The Little AI Company, with its skull bunny mark and the line Tools for the work you keep doing by hand.';
 ---
 
 <!doctype html>
@@ -25,191 +24,35 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preload" href="/fonts/big-shoulders-stencil-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <meta name="theme-color" content="#111111" />
+    <link rel="preload" href="/fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="The Little AI Company" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/og.png', Astro.site)} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-head">
-      <div class="wrap site-head-row">
-        <a class="home" href="/" aria-label="The Little AI Company home">
-          <Mark size={36} />
-          <span class="home-name">The Little AI Company</span>
-        </a>
-        <nav aria-label="Site">
-          <ul class="nav">
-            {nav.map(({ href, label }) => (
-              <li>
-                <a href={href} aria-current={current === href ? 'page' : undefined}>{label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-    </header>
-
+    <SiteNav current={Astro.url.pathname} />
     <main id="main">
       <slot />
     </main>
-
-    <footer class="site-foot">
-      <div class="wrap site-foot-row">
-        <p class="foot-line">
-          <Mark size={20} class="foot-mark" />
-          The Little AI Company. Pro-human AI tools.
-        </p>
-        <ul class="foot-links">
-          <li><a href="mailto:jeff@littleaicompany.com">jeff@littleaicompany.com</a></li>
-          <li><a href="https://github.com/The-Little-AI-Company">GitHub</a></li>
-        </ul>
-        <p class="foot-note">This site sets no cookies, loads nothing from third parties, and keeps no analytics.</p>
-      </div>
-    </footer>
+    <SiteFooter />
   </body>
 </html>
-
-<style>
-  .skip {
-    position: absolute;
-    left: -999px;
-    top: 8px;
-    background: var(--ink);
-    color: var(--bone);
-    padding: 8px 14px;
-    text-decoration: none;
-    z-index: 10;
-  }
-
-  .skip:focus {
-    left: 8px;
-  }
-
-  .site-head {
-    border-bottom: 3px solid var(--ink);
-  }
-
-  .site-head-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    min-height: 68px;
-  }
-
-  .home {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 1.35rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .home:hover {
-    color: var(--ink);
-  }
-
-  .home:hover :global(svg) {
-    color: var(--orange);
-  }
-
-  .nav {
-    display: flex;
-    gap: 22px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .nav a {
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.98rem;
-    padding: 6px 0;
-    border-bottom: 3px solid transparent;
-  }
-
-  .nav a:hover {
-    color: var(--ink);
-    border-bottom-color: var(--orange);
-  }
-
-  .nav a[aria-current='page'] {
-    border-bottom-color: var(--ink);
-  }
-
-  .site-foot {
-    border-top: 3px solid var(--ink);
-    background: var(--ink);
-    color: var(--bone);
-    padding: 40px 0 48px;
-  }
-
-  .site-foot-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px 40px;
-    align-items: start;
-  }
-
-  .foot-line {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: 0.03em;
-  }
-
-  .foot-links {
-    display: flex;
-    gap: 22px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    font-size: 0.95rem;
-  }
-
-  .foot-note {
-    grid-column: 1 / -1;
-    color: var(--concrete);
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 720px) {
-    .site-head-row {
-      flex-wrap: wrap;
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
-
-    .home-name {
-      font-size: 1.1rem;
-    }
-
-    .nav {
-      gap: 16px;
-    }
-
-    .site-foot-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

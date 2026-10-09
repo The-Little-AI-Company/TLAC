@@ -1,82 +1,46 @@
 ---
-import type { Tool } from '../data/tools';
-import { latestVersion } from '../data/tools';
+// A real screenshot in a frame, like a plate in a book, with a dated caption. Lazy unless it is the first thing on the page.
+// Pass `srcset` with a smaller file for phones. The default `sizes` is the width a plate draws in a feature or a tool header.
+// The caption goes in the `caption` slot, as plain text or with markup, and the frame sets it under the picture.
+import PlateFrame from './PlateFrame.astro';
 
 interface Props {
-  tool: Tool;
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  eager?: boolean;
+  sizes?: string;
+  srcset?: string;
 }
-const { tool } = Astro.props;
-const version = await latestVersion(tool.version);
+const {
+  src,
+  alt,
+  width,
+  height,
+  eager = false,
+  sizes = '(max-width: 860px) calc(100vw - 50px), 524px',
+  srcset,
+} = Astro.props;
 ---
 
-<article class="plate" aria-labelledby={`plate-${tool.slug}`}>
-  <header class="plate-head">
-    <h3 id={`plate-${tool.slug}`}><a href={`/${tool.slug}/`}>{tool.name}</a></h3>
-    <span class="stamp">{version ?? tool.status}</span>
-  </header>
-  <p class="plate-tagline">{tool.tagline}</p>
-  <p class="plate-summary">{tool.summary}</p>
-  <dl class="facts">
-    <dt>Runs on</dt>
-    <dd>{tool.platform}</dd>
-    <dt>Status</dt>
-    <dd>{tool.status}</dd>
-    <dt>License</dt>
-    <dd>MIT, source on <a href={tool.repo}>GitHub</a></dd>
-  </dl>
-  <p class="plate-actions">
-    <a class="action" href={tool.primary.href}>{tool.primary.label}</a>
-    <a class="plate-more" href={`/${tool.slug}/`}>More about {tool.name}</a>
-  </p>
-</article>
+<PlateFrame>
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    srcset={srcset}
+    sizes={srcset ? sizes : undefined}
+    decoding="async"
+    loading={eager ? undefined : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
+  <slot name="caption" slot="caption" />
+</PlateFrame>
 
 <style>
-  .plate {
-    border: 3px solid var(--ink);
-    padding: 22px 26px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .plate-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    border-bottom: 3px solid var(--ink);
-    padding-bottom: 12px;
-  }
-
-  .plate-head h3 {
-    font-size: 2.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .plate-head a {
-    text-decoration: none;
-  }
-
-  .plate-tagline {
-    font-weight: 600;
-    font-size: 1.15rem;
-  }
-
-  .plate-summary {
-    color: var(--steel);
-  }
-
-  .plate-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 18px;
-    margin-top: auto;
-    padding-top: 6px;
-  }
-
-  .plate-more {
-    font-size: 0.95rem;
+  img {
+    width: 100%;
   }
 </style>
