@@ -1,16 +1,8 @@
 ---
-// A ruled list of names and meanings. Pass plain-text `items`, or put <Lane> children in the slot when a detail holds links.
-import Lane from './Lane.astro';
-import type { Fact } from './types';
-
-interface Props {
-  items?: Fact[];
-}
-const { items = [] } = Astro.props;
+// A ruled list of names and meanings. Put <Lane> children in the slot.
 ---
 
 <dl class="lanes">
-  {items.map(({ term, detail }) => <Lane term={term}>{detail}</Lane>)}
   <slot />
 </dl>
 

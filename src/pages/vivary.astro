@@ -5,22 +5,20 @@ import Lanes from '../components/Lanes.astro';
 import Plate from '../components/Plate.astro';
 import SplitSection from '../components/SplitSection.astro';
 import ToolHero from '../components/ToolHero.astro';
-import { tool } from '../data/tools';
+import { vivary } from '../data/tools';
 
-const vivary = tool('vivary');
 const releases = `${vivary.repo}/releases`;
-const queue = vivary.queue;
-if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, and the Status section links to it.');
 ---
 
 <Base
   title="Vivary"
-  description="A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first, self-hostable, and everything stays on your machine."
+  description="A desktop workspace for AI agents on your own projects. Agent chat, project files, tools, and memory in one app. Windows first. Your files stay on your machine."
 >
   <ToolHero tool={vivary}>
     <Plate
       src="/images/vivary-site-2026-10-08.webp"
-      alt="The vivaryagent.xyz home page, Oct 8, 2026."
+      srcset="/images/vivary-site-2026-10-08-640.webp 640w, /images/vivary-site-2026-10-08.webp 1200w"
+      alt="The vivaryagent.xyz home page: the headline “Your projects. Your AI agents.”, a Windows preview download button, and the felt antlered mascot holding a book."
       width={1200}
       height={750}
       caption="vivaryagent.xyz, Oct 8, 2026."
@@ -40,7 +38,7 @@ if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, a
         tools. Every change lands in your own folder.
       </Lane>
       <Lane term="Come back to it">
-        Return to a project's conversations, search past sessions, and keep the
+        Return to a project’s conversations, search past sessions, and keep the
         memory worth keeping in files you can open.
       </Lane>
       <Lane term="Use the harnesses you have">
@@ -48,13 +46,13 @@ if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, a
         inside the workspace with their own tools. Guidance for them lives in files
         in the project.
       </Lane>
-      <Lane term="See what you're building">
+      <Lane term="See what you’re building">
         Preview the site or dashboard the agent is working on, and let the agent
         inspect and debug it.
       </Lane>
       <Lane term="Reach it from your phone">
-        Run the instance on your computer or a server of your own, and connect a
-        phone browser to it when you choose to turn on remote access.
+        Run it on your computer or on a server of your own. Connect a phone browser
+        only when you turn on remote access.
       </Lane>
     </Lanes>
   </SplitSection>
@@ -64,7 +62,7 @@ if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, a
       <Lane term="No Vivary account">
         Local desktop use needs none. Your provider accounts are yours and separate.
       </Lane>
-      <Lane term="Remote access is opt-in">Off until you set it up, and authenticated when it's on.</Lane>
+      <Lane term="Remote access is opt-in">Off until you set it up, and authenticated when it’s on.</Lane>
       <Lane term="Windows first">
         The desktop app targets Windows. A Mac build is possible later work, not a promise.
       </Lane>
@@ -73,9 +71,9 @@ if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, a
 
   <SplitSection heading="Status">
     <p class="lede">
-      In development. A Windows preview came out on Sept 22, 2026 as a <a class="keep" href={releases}>pre-release</a>:
-      an unsigned portable ZIP, not a stable release. The <a class="keep" href={queue}>release queue</a> lists
-      what is verified and what is still required, in the open. MIT.
+      In development. A Windows preview came out on Sept 22, 2026 as a <a class="nowrap" href={releases}>pre-release</a>:
+      an unsigned portable ZIP, not a stable release. The <a class="nowrap" href={vivary.queue}>release queue</a> lists
+      what is verified and what is still required, in the open. Open source under MIT.
     </p>
     <p class="text-sm original">
       The original Vivary command-line tools, which scaffold typed memory for agent
@@ -85,11 +83,6 @@ if (!queue) throw new Error('Vivary has no release queue in src/data/tools.ts, a
 </Base>
 
 <style>
-  /* Keeps the two short links in the status line from breaking across rows. */
-  .keep {
-    white-space: nowrap;
-  }
-
   .original {
     margin-top: var(--space-5);
     color: var(--ink-faint);
