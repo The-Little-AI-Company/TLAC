@@ -1,6 +1,7 @@
 /**
- * The copy rules of SPEC section 7 as functions over a piece of text. Each returns what
- * it found, so a failing test can show the offending words.
+ * The voice and copy rules as functions over a piece of text: first person singular, no hype words,
+ * sentence case, no invented prices or dates. Each returns what it found, so a failing test can show
+ * the offending words.
  */
 import { BANNED_WORDS, CAPS_ALLOWLIST, RETIRED_NAMES } from './spec';
 
@@ -9,10 +10,10 @@ export function firstPersonPlural(text: string): string[] {
   return [...text.matchAll(/\b(?:we|our|ours|ourselves|us)\b|\blet['’]s\b/gi)].map((m) => m[0]);
 }
 
-/** Roman numerals up to ten. The spec's own numerals ("II. Released") need them. */
+/** Roman numerals up to ten. The feature numerals ("II. Ready to download") need them. */
 const ROMAN = /^(?:I{1,3}|IV|VI{0,3}|IX|X)$/;
 
-/** Extra all-caps words the spec's own copy needs, on top of the allowlist in SPEC section 7. */
+/** Extra all-caps words the copy needs, on top of CAPS_ALLOWLIST. */
 export const CAPS_EXTRA: ReadonlySet<string> = new Set(['ZIP']);
 
 /**
@@ -47,7 +48,7 @@ export function bannedWords(text: string): string[] {
   return [...text.matchAll(pattern)].map((m) => m[0]);
 }
 
-/** Retired names, case-sensitive and anywhere in the string, as the original test did. */
+/** Retired names, case-sensitive and anywhere in the string. */
 export function retiredNames(text: string): string[] {
   return RETIRED_NAMES.filter((name) => text.includes(name));
 }
@@ -57,7 +58,7 @@ export const semicolons = (text: string): number => (text.match(/;/g) ?? []).len
 export const exclamations = (text: string): number => (text.match(/!/g) ?? []).length;
 export const emoji = (text: string): string[] => text.match(/\p{Extended_Pictographic}/gu) ?? [];
 
-/** Dollar amounts. The spec says no invented prices. */
+/** Dollar amounts. The copy quotes no prices. */
 export const currency = (text: string): string[] => text.match(/[$€£]\s?\d(?:[\d,]*\d)?(?:\.\d+)?/g) ?? [];
 
 /** Dates written as `Sept 22, 2026` or `October 8, 2026`. */

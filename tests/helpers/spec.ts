@@ -1,16 +1,19 @@
 /**
- * The exact strings and numbers of SPEC sections 1 to 9, written once so the unit and
- * end-to-end tests quote the same contract. Change the spec, change this file.
+ * The copy, links, images and numbers each page must carry, written out once. The unit tests compare
+ * the built pages with it and the end-to-end tests take their strings from it, so a copy edit is made
+ * here and in src/ and nowhere else. It is written apart from src/data on purpose: a wrong edit to the
+ * source cannot also change what the tests expect.
  *
  * Copy is compared exactly, so the curly quotes and apostrophes the site is typed with are written here too.
  */
-import { SITE, type PageId } from './dist';
+import { SITE, SITE_NAME, type PageId } from './dist';
+import { themeColor } from './tokens';
 
 export const VERSION_PATTERN = /^v\d+\.\d+\.\d+$/;
 export const RELEASED_PATTERN = /^Released · v\d+\.\d+\.\d+$/;
 
 // ---------------------------------------------------------------------------
-// Head and chrome (SPEC 6)
+// Head and chrome
 
 export const HEAD = {
   ogImage: `${SITE}/og.png`,
@@ -18,8 +21,9 @@ export const HEAD = {
   ogImageHeight: '630',
   twitterCard: 'summary_large_image',
   colorScheme: 'light dark',
-  themeColorLight: { content: '#f6f3ec', media: '(prefers-color-scheme: light)' },
-  themeColorDark: { content: '#15120f', media: '(prefers-color-scheme: dark)' },
+  // The browser chrome wears the ground of the theme it is in, so these are the ground tokens.
+  themeColorLight: { content: themeColor('company-light', 'ground'), media: '(prefers-color-scheme: light)' },
+  themeColorDark: { content: themeColor('company-dark', 'ground'), media: '(prefers-color-scheme: dark)' },
   favicons: [
     { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
@@ -41,23 +45,15 @@ export const FOOTER = {
 } as const;
 
 export const SKIP_LINK = { label: 'Skip to content', href: '#main' } as const;
-export const BRAND = 'The Little AI Company';
 
 // ---------------------------------------------------------------------------
-// Fonts and assets (SPEC 2)
+// Fonts and images
 
 export const FONT_FILES = [
   'instrument-serif-latin.woff2',
   'instrument-serif-italic-latin.woff2',
   'instrument-sans-latin.woff2',
 ] as const;
-
-/** The staged font files, byte for byte (`$STAGE/fonts`). */
-export const FONT_SHA256: Record<(typeof FONT_FILES)[number], string> = {
-  'instrument-serif-latin.woff2': '5eb09b5ac0e28b67c2f041c8ba6d244604ca0c0980d65912ab2d47fed84ddc31',
-  'instrument-serif-italic-latin.woff2': '5a51946dfffa82972bc98745359c46761515641fda557c25116459a9f83da4a7',
-  'instrument-sans-latin.woff2': '2ee17598a98d8a59e4df8152d015bec9ab8e4d5672cc0ab42bef806b568e3971',
-};
 
 export const FONT_FACES = [
   { family: 'Instrument Serif', file: 'instrument-serif-latin.woff2', weight: '400' },
@@ -70,42 +66,30 @@ export const OFL_FILES = {
   'OFL-instrument-sans.txt': 'Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans)',
 } as const;
 
-/** sha256 of the OFL 1.1 body (from the dashed rule before "SIL OPEN FONT LICENSE" to the end) in the old OFL-archivo.txt. */
-export const OFL_BODY_SHA256 = 'f05e84c3000faf09cf8e445d35018b01fc0d6026953840e9398aeab501b86da2';
-
-/** Font files that must be gone from public/fonts. */
-export const RETIRED_FONT_FILES = [
-  'big-shoulders-stencil-latin.woff2',
-  'archivo-latin.woff2',
-  'OFL-big-shoulders-stencil.txt',
-  'OFL-archivo.txt',
-] as const;
-
-export interface StagedImage {
+export interface ImageFile {
   src: string;
   width: number;
   height: number;
-  sha256: string;
 }
 
-/** The staged images, byte for byte (`$STAGE/images`). */
+/** The full-size images and the size each is made at. */
 export const IMAGES = {
-  mascot760: { src: '/images/vivary-mascot-skate-760.webp', width: 760, height: 678, sha256: '0849a457e494783b40cdc984f85331b3f1c27da3db8c52ee24a94e63e34dcdd3' },
-  mascot640: { src: '/images/vivary-mascot-skate-640.webp', width: 640, height: 571, sha256: '4b5176741d1c554a0be662cccb0bcb80e41e00f5227de9ec882bee50bb2eecc7' },
-  workspace: { src: '/images/vivary-workspace-2026-10-03.webp', width: 1200, height: 844, sha256: 'da6e372374a7f7e9d50621a9590fae37a04055b8bffac4ffff244c4be5c45e23' },
-  vivarySite: { src: '/images/vivary-site-2026-10-08.webp', width: 1200, height: 750, sha256: '1dd7b9a4b31098a80f054aa6719ce37ff9298aa5aa74a516900f4d2022b3eed4' },
-  factbook: { src: '/images/open-world-factbook-2026-10-08.webp', width: 960, height: 600, sha256: 'fd642db3b9d93a32dd9d4605aba6c177541b99eb8f2f9a1a0d26ec575e086e5d' },
-  arcade: { src: '/images/llm-arcade-jeffkazzee-dev.webp', width: 960, height: 600, sha256: '9c1d7149eca6e2e50d876c9b701a0704684f8408fdc0eff4db3fec120ac67e59' },
-  puckwork: { src: '/images/puckwork-jeffkazzee-dev.webp', width: 960, height: 548, sha256: '5b3fd6de21ad4c854ea0a3c8fa4ddf1145ed100149e1f4df883d2786bf5af9ad' },
-  neonNoir: { src: '/images/neon-noir-2026-10-08.webp', width: 960, height: 600, sha256: 'dd3a9dcb110cc73dd6d259bd9d68febe36a9751307b727895d34df45cc171631' },
-} as const satisfies Record<string, StagedImage>;
+  mascot760: { src: '/images/vivary-mascot-skate-760.webp', width: 760, height: 678 },
+  mascot640: { src: '/images/vivary-mascot-skate-640.webp', width: 640, height: 571 },
+  workspace: { src: '/images/vivary-workspace-2026-10-03.webp', width: 1200, height: 844 },
+  vivarySite: { src: '/images/vivary-site-2026-10-08.webp', width: 1200, height: 750 },
+  factbook: { src: '/images/open-world-factbook-2026-10-08.webp', width: 960, height: 600 },
+  arcade: { src: '/images/llm-arcade-jeffkazzee-dev.webp', width: 960, height: 600 },
+  puckwork: { src: '/images/puckwork-jeffkazzee-dev.webp', width: 960, height: 548 },
+  neonNoir: { src: '/images/neon-noir-2026-10-08.webp', width: 960, height: 600 },
+} as const satisfies Record<string, ImageFile>;
 
 export interface ImageVariant {
   src: string;
   width: number;
   height: number;
   /** The full-size image this is a smaller copy of. */
-  of: StagedImage;
+  of: ImageFile;
 }
 
 /** Smaller copies that `srcset` serves to narrow screens, written by scripts/images.mjs. */
@@ -131,10 +115,10 @@ export const CALLOUT_PLATE = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Home (SPEC 8)
+// Home
 
 export const HOME = {
-  title: BRAND,
+  title: SITE_NAME,
   description: 'I’m Jeff Kazzee. I build Callout, which checks what you read, and Vivary, a desktop workspace for AI agents. Both keep you in charge.',
   now: 'Now building Vivary. A Windows preview came out Sept 22, 2026.',
   h1: 'Tools for the work you keep doing by hand.',
@@ -195,12 +179,12 @@ export interface ProjectExpectation {
   status: string;
   href: string;
   linkLabel: string;
-  image: StagedImage;
+  image: ImageFile;
   thumb: ImageVariant;
 }
 
 /** The four "other things I have made", in the order they appear. */
-export const PROJECTS: readonly ProjectExpectation[] = [
+export const PROJECTS = [
   {
     title: 'Open World Factbook',
     line: 'An open-source database of 262 countries and territories.',
@@ -241,10 +225,10 @@ export const PROJECTS: readonly ProjectExpectation[] = [
     image: IMAGES.neonNoir,
     thumb: IMAGE_VARIANTS.neonNoir,
   },
-] as const;
+] as const satisfies readonly ProjectExpectation[];
 
 // ---------------------------------------------------------------------------
-// Callout page (SPEC 8). Body copy is carried over from the previous callout.astro.
+// Callout page
 
 export interface LaneExpectation {
   term: string;
@@ -323,7 +307,7 @@ export const CALLOUT_PAGE = {
         { term: 'Your history', detail: 'Off by default. Usage counters stay local.' },
       ],
     },
-  ] satisfies readonly SectionExpectation[],
+  ] as const satisfies readonly SectionExpectation[],
   get: {
     heading: 'Get it',
     id: 'get-it',
@@ -334,7 +318,7 @@ export const CALLOUT_PAGE = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Vivary page (SPEC 8)
+// Vivary page
 
 export const VIVARY_PAGE = {
   h1: 'Vivary',
@@ -382,7 +366,7 @@ export const VIVARY_PAGE = {
         { term: 'Windows first', detail: 'The desktop app targets Windows. A Mac build is possible later work, not a promise.' },
       ],
     },
-  ] satisfies readonly SectionExpectation[],
+  ] as const satisfies readonly SectionExpectation[],
   statusSection: {
     heading: 'Status',
     lede:
@@ -402,7 +386,7 @@ export const VIVARY_PAGE = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// About, Contact, 404 (SPEC 8)
+// About, Contact, 404
 
 export const ABOUT_PAGE = {
   h1: 'About',
@@ -486,11 +470,10 @@ export const DESCRIPTIONS: Record<PageId, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Data (SPEC 9)
+// Data (src/data/tools.ts)
 
 export const TOOLS_EXPECTED = {
   callout: {
-    fallback: 'v0.2.0',
     summary:
       'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
     repo: 'https://github.com/The-Little-AI-Company/callout',
@@ -505,14 +488,14 @@ export const TOOLS_EXPECTED = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Voice (SPEC 7)
+// Voice
 
-/** All-caps words that are allowed in visible text. Roman numerals and ZIP are spec-forced, see copy-rules.test.ts. */
+/** All-caps words that are allowed in visible text. Roman numerals and ZIP are allowed on top of these, see copy.ts. */
 export const CAPS_ALLOWLIST: ReadonlySet<string> = new Set(['AI', 'MIT', 'API', 'APIs', 'LLM', 'HTML', 'CSS', 'CLI', 'V1', 'OS']);
 
 export const BANNED_WORDS = ['unlock', 'empower', 'seamless', 'robust', 'revolutionary', 'game-changing', 'elevate'] as const;
 
-/** Case-sensitive. Carried over from the old test suite. */
+/** Names of products and offers the company no longer has. Case-sensitive, and none may appear anywhere in the HTML. */
 export const RETIRED_NAMES = ['Wazoo', 'Hoolio', 'Bellamente', 'HarnessMax', 'Agent Relay', 'Starter Kit', 'beta', 'Beta', 'Two tools'] as const;
 
 /** Dates the copy may contain. Anything else would be invented. */
@@ -532,20 +515,14 @@ export const GUIDE_PAGES = [
   'guides/ai-good-and-bad',
 ] as const;
 
-export const TOKENS = {
-  fonts: {
-    '--font-display': '"Instrument Serif", Georgia, serif',
-    '--font-display-italic': '"Instrument Serif Italic", Georgia, serif',
-    '--font-text': '"Instrument Sans", system-ui, sans-serif',
-    '--font-mono': 'ui-monospace, Consolas, Menlo, monospace',
-  },
-  motion: { '--ease': 'cubic-bezier(.22, 1, .36, 1)', '--dur': '.18s' },
-} as const;
+/**
+ * The one duration and the one curve of every color or border change. They live in src/styles/tokens.css and
+ * not in design/tokens.json, so they are written here. `ease` is the CSS spelling; the browser reports it as
+ * `cubic-bezier(0.22, 1, 0.36, 1)`, which `normalizeValue` makes equal.
+ */
+export const MOTION = { seconds: 0.18, ease: 'cubic-bezier(.22, 1, .36, 1)' } as const;
 
-/** design/tokens.json is a verbatim copy of the design system's tokens.json. */
-export const TOKENS_JSON_SHA256 = '352231586dbdf01b171c7b185291ecb1afdf67942e9edf7dadb07a183a46aeb9';
-
-/** How many <img> elements each page has. SPEC 8 lists every image; nothing else is invented. */
+/** How many <img> elements each page has. Every image is listed here; nothing else is added. */
 export const IMAGE_COUNT: Record<PageId, number> = {
   home: 6, // the mascot, the Vivary screenshot and the four project thumbnails
   callout: 0,

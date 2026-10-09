@@ -1,5 +1,5 @@
 /**
- * SPEC section 8, "/about/", "/contact/" and the 404 page.
+ * The /about/, /contact/ and 404 pages: headings, copy, lanes, links and buttons.
  */
 import { describe, expect, it } from 'vitest';
 import { callout, vivary } from '../../src/data/tools';
@@ -22,7 +22,7 @@ describe('about', () => {
   });
 
   it('has the h2s The position and What I don\'t do, in that order', () => {
-    expect(headings(main())).toEqual([[1, 'About'], [2, ABOUT_PAGE.position.heading], [2, ABOUT_PAGE.dont.heading]]);
+    expect(headings(main())).toEqual([[1, ABOUT_PAGE.h1], [2, ABOUT_PAGE.position.heading], [2, ABOUT_PAGE.dont.heading]]);
   });
 
   describe('The position', () => {

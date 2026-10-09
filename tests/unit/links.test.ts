@@ -1,13 +1,13 @@
 /**
- * SPEC section 10 "Link integrity": every internal link lands on a built file, every fragment
- * exists, and everything external is https. Also: the site invents no destinations.
+ * Link integrity: every internal link lands on a built file, every fragment exists, and everything
+ * external is https. Also: the site names no host it did not already link to.
  */
 import { describe, expect, it } from 'vitest';
-import { all, attr, describe as show } from '../helpers/dom';
+import { all, attr, show } from '../helpers/dom';
 import { NAV_LINKS, PAGE_CASES, PAGES, SITE, fragmentsIn, parsePage, resolveSitePath, splitHref, srcsetUrls } from '../helpers/dist';
 import { RETIRED_PAGES } from '../helpers/spec';
 
-/** Every host the copy may link to. A new host means new content, which the spec did not ask for. */
+/** Every host the copy may link to. A new host is new content, so adding one is a decision for this list. */
 const EXTERNAL_HOSTS = new Set([
   'github.com',
   'jeffkazzee.dev',

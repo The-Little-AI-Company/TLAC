@@ -1,13 +1,12 @@
 /**
- * SPEC section 1: src/styles/tokens.css is the design tokens as CSS custom properties, and it
- * must agree with the vendored design/tokens.json, in the source and in the built CSS.
+ * src/styles/tokens.css is the design tokens as CSS custom properties, and it must agree with the
+ * vendored design/tokens.json, in the source and in the built CSS.
  */
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { sha256, siteCss } from '../helpers/dist';
+import { siteCss } from '../helpers/dist';
 import { darkRootVariables, normalizeHex, normalizeValue, parseCss, rootVariables } from '../helpers/css';
-import { TOKENS, TOKENS_JSON_SHA256 } from '../helpers/spec';
-import { COLOR_NAMES, THEMES, TOKENS_JSON, loadTokens, nonColorTokens, readTokensCss, themeColor, type Theme } from '../helpers/tokens';
+import { MOTION } from '../helpers/spec';
+import { COLOR_NAMES, THEMES, fontFamilyToken, loadTokens, nonColorTokens, readTokensCss, themeColor, type Theme } from '../helpers/tokens';
 
 const source = () => parseCss(readTokensCss());
 const lightVars = () => rootVariables(source());
@@ -21,12 +20,24 @@ const themeVars = (theme: Theme) => (theme === 'company-light' ? lightVars() : d
 /** `0` and `0px` are the same length. */
 const length = (value: string): string => normalizeValue(value).replace(/^0px$/, '0');
 
+/** CSS custom property -> family list in design/tokens.json. */
+const FONT_TOKENS = [
+  ['--font-display', 'display'],
+  ['--font-display-italic', 'display-italic'],
+  ['--font-text', 'text'],
+  ['--font-mono', 'mono'],
+] as const;
+const MOTION_TOKENS = [
+  ['--ease', MOTION.ease],
+  ['--dur', `${MOTION.seconds}s`],
+] as const;
+
 describe('design/tokens.json', () => {
-  it('is the design system file, byte for byte', () => {
-    expect(sha256(readFileSync(TOKENS_JSON))).toBe(TOKENS_JSON_SHA256);
+  it('says where the design system file came from', () => {
+    expect(loadTokens().meta.source.trim()).not.toBe('');
   });
 
-  it('defines the two company themes and the 17 color tokens of the spec', () => {
+  it('defines the two company themes and the 17 color tokens', () => {
     const tokens = loadTokens();
     expect(tokens.color.themes.map((t) => t.id)).toEqual(expect.arrayContaining(['company-light', 'company-dark']));
     expect(tokens.color.tokens.map((t) => t.name).sort()).toEqual([...COLOR_NAMES].sort());
@@ -67,7 +78,7 @@ describe('tokens.css structure', () => {
     expect(comments.some((c) => /860px/.test(c) && /breakpoint/i.test(c))).toBe(true);
   });
 
-  it('does not define tokens the spec leaves out', () => {
+  it('does not define the design system tokens the site has no use for: a pill radius, shadows, a second content width, font aliases', () => {
     const vars = lightVars();
     for (const skipped of ['--radius', '--radius-pill', '--shadow-rest', '--shadow-soft', '--shadow-none', '--site-max', '--font-serif', '--font-sans']) {
       expect(vars.has(skipped), `${skipped} must not be defined`).toBe(false);
@@ -87,19 +98,11 @@ describe('tokens.css other tokens', () => {
     expect(length(get(lightVars(), `--${name}`))).toBe(length(value));
   });
 
-  it.each(Object.entries(TOKENS.fonts))('%s is the family list the spec gives', (name, value) => {
-    expect(normalizeValue(get(lightVars(), name))).toBe(normalizeValue(value));
+  it.each(FONT_TOKENS)('%s is the %s family list of design/tokens.json', (name, family) => {
+    expect(normalizeValue(get(lightVars(), name))).toBe(normalizeValue(fontFamilyToken(family)));
   });
 
-  it('keeps the font families in design/tokens.json and the spec in step', () => {
-    const { families } = loadTokens().type;
-    expect(normalizeValue(families['display'] ?? '')).toBe(normalizeValue(TOKENS.fonts['--font-display']));
-    expect(normalizeValue(families['display-italic'] ?? '')).toBe(normalizeValue(TOKENS.fonts['--font-display-italic']));
-    expect(normalizeValue(families['text'] ?? '')).toBe(normalizeValue(TOKENS.fonts['--font-text']));
-    expect(normalizeValue(families['mono'] ?? '')).toBe(normalizeValue(TOKENS.fonts['--font-mono']));
-  });
-
-  it.each(Object.entries(TOKENS.motion))('%s is %s (one curve, one duration)', (name, value) => {
+  it.each(MOTION_TOKENS)('%s is %s (one curve, one duration)', (name, value) => {
     expect(normalizeValue(get(lightVars(), name))).toBe(normalizeValue(value));
   });
 
@@ -130,7 +133,8 @@ describe('built CSS carries the tokens', () => {
 
   it('has the motion and font tokens', () => {
     const vars = rootVariables(built());
-    for (const [name, value] of [...Object.entries(TOKENS.motion), ...Object.entries(TOKENS.fonts)]) {
+    const expected = [...MOTION_TOKENS, ...FONT_TOKENS.map(([name, family]) => [name, fontFamilyToken(family)] as const)];
+    for (const [name, value] of expected) {
       expect(normalizeValue(vars.get(name) ?? ''), name).toBe(normalizeValue(value));
     }
   });

@@ -4,7 +4,7 @@ import { textOf } from './text';
 export type El = HTMLElement;
 
 /** Short description of an element for failure messages: `<a href="/x" class="btn">Go</a>`. */
-export function describe(el: El): string {
+export function show(el: El): string {
   const tag = el.rawTagName.toLowerCase();
   const attrs = Object.entries(el.attributes)
     .filter(([name]) => !name.startsWith('data-astro'))

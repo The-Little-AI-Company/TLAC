@@ -1,6 +1,6 @@
 /**
- * Redirects from astro.config.mjs for the URLs of the old education-era site. SPEC section 8:
- * "Unchanged." Moved here from the original tests/site.test.ts.
+ * The redirects in astro.config.mjs keep every address the site has ever published working: the
+ * guides go to Jeff's account on GitHub and the retired pages go home.
  */
 import { describe, expect, it } from 'vitest';
 import { GUIDE_PAGES, GUIDE_REDIRECT_TARGET, RETIRED_PAGES } from '../helpers/spec';

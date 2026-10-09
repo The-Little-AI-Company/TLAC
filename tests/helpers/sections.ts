@@ -1,10 +1,10 @@
 /**
- * Finders for the pieces of a built page that the copy contracts talk about: sections by
- * heading, lanes, buttons, status badges, headings. They read structure the spec names
- * (`section`, `dl.lanes`, `.btn`, `.status`) and nothing else, so the page is free to
+ * Finders for the pieces of a built page that the copy tests talk about: sections by
+ * heading, lanes, buttons, status badges, headings. They read the structure the components
+ * promise (`section`, `dl.lanes`, `.btn`, `.status`) and nothing else, so a page is free to
  * choose its wrappers.
  */
-import { all, attr, classesOf, describe, headingLevel, type El } from './dom';
+import { all, attr, classesOf, headingLevel, type El } from './dom';
 import { textOf } from './text';
 
 export interface Lane {
@@ -56,7 +56,7 @@ export function lanes(root: El, selector = 'dl.lanes'): Lane[] {
 }
 
 /**
- * What differs between spec plate rows and what they should say, one message per difference.
+ * What differs between facts plate rows and what they should say, one message per difference.
  * A string detail must match exactly. A RegExp detail (a version) must match the pattern.
  */
 export function rowMismatches(rows: Lane[], expected: readonly { term: string; detail: string | RegExp }[]): string[] {
@@ -109,5 +109,3 @@ export function paragraph(root: El, text: string): El {
   if (!found) throw new Error(`No paragraph reads exactly:\n  ${text}\nParagraphs found:\n${all(root, 'p').map((p) => `  - ${textOf(p)}`).join('\n')}`);
   return found;
 }
-
-export { describe as show };

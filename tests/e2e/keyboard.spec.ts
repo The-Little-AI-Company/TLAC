@@ -1,58 +1,11 @@
 /**
- * SPEC section 0 and 10: the keyboard path. The first Tab lands on the skip link and shows it,
- * Enter moves the page to main so the next Tab lands on the first thing inside it (main is not itself
- * a tab stop), every focusable element shows a 2px solid accent outline offset by 3px when focused
- * from the keyboard, and Tab order follows the DOM.
+ * The keyboard path. The first Tab lands on the skip link and shows it, Enter moves the page to main
+ * so the next Tab lands on the first thing inside it (main is not itself a tab stop), and Tab then
+ * visits every focusable element in DOM order, each drawing a 2px solid accent outline offset by 3px.
  */
-import type { Page } from '@playwright/test';
-import { KEY_WIDTHS, PAGES, SCHEMES, VIEWPORT_HEIGHT, expect, open, rgb, test, type Scheme } from './support';
-
-interface Focused {
-  tag: string;
-  text: string;
-  href: string | null;
-  outlineStyle: string;
-  outlineWidth: string;
-  outlineColor: string;
-  outlineOffset: string;
-  focusVisible: boolean;
-  /** Whether the focused element is inside the viewport. */
-  inView: boolean;
-}
-
-/** What currently has focus, and how it is outlined. */
-async function focused(page: Page): Promise<Focused> {
-  return page.evaluate(() => {
-    const el = document.activeElement as HTMLElement;
-    const cs = getComputedStyle(el);
-    const r = el.getBoundingClientRect();
-    return {
-      tag: el.tagName.toLowerCase(),
-      text: (el.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 60),
-      href: el.getAttribute('href'),
-      outlineStyle: cs.outlineStyle,
-      outlineWidth: cs.outlineWidth,
-      outlineColor: cs.outlineColor,
-      outlineOffset: cs.outlineOffset,
-      focusVisible: el.matches(':focus-visible'),
-      inView: r.width > 0 && r.height > 0 && r.left >= 0 && r.top >= 0 && r.right <= window.innerWidth && r.bottom <= window.innerHeight,
-    };
-  });
-}
-
-/** Elements Tab should reach, in DOM order: links and anything with tabindex >= 0 that takes up space. */
-async function tabbablesInDomOrder(page: Page): Promise<string[]> {
-  return page.evaluate(() =>
-    Array.from(document.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, summary, [tabindex]'))
-      .filter((el) => {
-        if (el.matches('[tabindex^="-"]') || el.hasAttribute('disabled')) return false;
-        const style = getComputedStyle(el);
-        // The skip link is off-screen until focused but still tabbable, so only visibility and display decide.
-        return style.display !== 'none' && style.visibility !== 'hidden';
-      })
-      .map((el) => `${el.tagName.toLowerCase()}|${el.getAttribute('href') ?? ''}|${(el.textContent ?? '').replace(/\s+/g, ' ').trim()}`),
-  );
-}
+import { KEY_WIDTHS, PAGES, SCHEMES, VIEWPORT_HEIGHT, expect, focused, open, rgb, signature, tabbables, test } from './support';
+import { FOOTER, HOME, SKIP_LINK } from '../helpers/spec';
+import { NAV_LINKS, SITE_NAME } from '../helpers/dist';
 
 for (const scheme of SCHEMES) {
   for (const width of KEY_WIDTHS) {
@@ -64,11 +17,10 @@ for (const scheme of SCHEMES) {
           test('first Tab focuses the skip link, and it is visible', async ({ page }) => {
             await open(page, info);
             await page.keyboard.press('Tab');
-            const skip = page.getByRole('link', { name: 'Skip to content' });
+            const skip = page.getByRole('link', { name: SKIP_LINK.label });
             await expect(skip).toBeFocused();
             await expect(skip).toBeVisible();
-            const state = await focused(page);
-            expect(state.inView, 'the skip link must be inside the viewport when focused').toBe(true);
+            expect((await focused(page)).inView, 'the skip link must be inside the viewport when focused').toBe(true);
             const covered = await skip.evaluate((el) => {
               const r = el.getBoundingClientRect();
               const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
@@ -83,7 +35,7 @@ for (const scheme of SCHEMES) {
             await open(page, info);
             await page.keyboard.press('Tab');
             await page.keyboard.press('Enter');
-            expect(await page.evaluate(() => location.hash)).toBe('#main');
+            expect(await page.evaluate(() => location.hash)).toBe(SKIP_LINK.href);
             expect(await page.evaluate(() => document.activeElement === document.querySelector('main')), 'main is not a focus target').toBe(false);
           });
 
@@ -107,38 +59,25 @@ for (const scheme of SCHEMES) {
             expect(await page.evaluate(() => document.activeElement === document.querySelector('main')), 'main is not focusable, so a click cannot focus it').toBe(false);
           });
 
-          test('every focusable element draws a 2px solid accent outline, offset 3px, when focused by keyboard', async ({ page }) => {
+          test('Tab visits the focusable elements in DOM order, each with a 2px solid accent outline offset 3px', async ({ page }) => {
             await open(page, info);
-            const order = await tabbablesInDomOrder(page);
-            expect(order.length, 'no focusable elements found').toBeGreaterThan(5);
-            const bad: string[] = [];
-            for (let i = 0; i < order.length; i++) {
-              await page.keyboard.press('Tab');
-              const f = await focused(page);
-              const label = `${f.tag} "${f.text}" ${f.href ?? ''}`;
-              if (!f.focusVisible) bad.push(`${label}: not :focus-visible after Tab`);
-              if (f.outlineStyle !== 'solid') bad.push(`${label}: outline-style ${f.outlineStyle}`);
-              if (f.outlineWidth !== '2px') bad.push(`${label}: outline-width ${f.outlineWidth}`);
-              if (f.outlineColor !== rgb(scheme as Scheme, 'accent')) bad.push(`${label}: outline-color ${f.outlineColor}, expected ${rgb(scheme as Scheme, 'accent')}`);
-              if (f.outlineOffset !== '3px') bad.push(`${label}: outline-offset ${f.outlineOffset}`);
-            }
-            expect(bad).toEqual([]);
-          });
-
-          test('Tab order follows the DOM order', async ({ page }) => {
-            await open(page, info);
-            const expected = await tabbablesInDomOrder(page);
+            const expected = (await tabbables(page)).map(signature);
+            expect(expected.length, 'no focusable elements found').toBeGreaterThan(5);
             const seen: string[] = [];
+            const bad: string[] = [];
             for (let i = 0; i < expected.length; i++) {
               await page.keyboard.press('Tab');
-              seen.push(
-                await page.evaluate(() => {
-                  const el = document.activeElement as HTMLElement;
-                  return `${el.tagName.toLowerCase()}|${el.getAttribute('href') ?? ''}|${(el.textContent ?? '').replace(/\s+/g, ' ').trim()}`;
-                }),
-              );
+              const f = await focused(page);
+              seen.push(signature(f));
+              const label = `${f.tag} "${f.text.slice(0, 60)}" ${f.href ?? ''}`;
+              if (!f.focusVisible) bad.push(`${label}: not :focus-visible after Tab`);
+              if (f.outline.style !== 'solid') bad.push(`${label}: outline-style ${f.outline.style}`);
+              if (f.outline.width !== '2px') bad.push(`${label}: outline-width ${f.outline.width}`);
+              if (f.outline.color !== rgb(scheme, 'accent')) bad.push(`${label}: outline-color ${f.outline.color}, expected ${rgb(scheme, 'accent')}`);
+              if (f.outline.offset !== '3px') bad.push(`${label}: outline-offset ${f.outline.offset}`);
             }
-            expect(seen).toEqual(expected);
+            expect(bad).toEqual([]);
+            expect(seen, 'Tab order against DOM order').toEqual(expected);
             expect(await page.locator('[tabindex]:not([tabindex="0"]):not([tabindex="-1"])').count(), 'no positive tabindex').toBe(0);
           });
         });
@@ -150,20 +89,19 @@ for (const scheme of SCHEMES) {
 test.describe('keyboard order on the home page', () => {
   test('goes skip link, brand, four nav links, then the page, then the footer links', async ({ page }) => {
     await open(page, '/');
-    const names = await page.evaluate(() => {
-      const nav = Array.from(document.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Main"] a')).map((a) => a.textContent?.replace(/\s+/g, ' ').trim());
-      const foot = Array.from(document.querySelectorAll<HTMLAnchorElement>('footer a')).map((a) => a.textContent?.replace(/\s+/g, ' ').trim());
-      return { nav, foot };
-    });
+    const nav = [SITE_NAME, ...NAV_LINKS.map((l) => l.label)];
     const sequence: string[] = [];
-    for (let i = 0; i < 40; i++) {
+    const stops = (await tabbables(page)).length;
+    for (let i = 0; i < stops; i++) {
       await page.keyboard.press('Tab');
-      sequence.push(await page.evaluate(() => (document.activeElement?.textContent ?? '').replace(/\s+/g, ' ').trim()));
+      sequence.push((await focused(page)).text);
     }
-    expect(sequence.slice(0, 6)).toEqual(['Skip to content', ...names.nav]);
-    expect(names.nav).toEqual(['The Little AI Company', 'Callout', 'Vivary', 'About', 'Contact']);
-    expect(sequence.slice(6, 8)).toEqual(['Get Callout', 'See Vivary']);
-    for (const label of names.foot) expect(sequence, `footer link ${label}`).toContain(label);
-    expect(sequence.indexOf(names.foot[0] ?? '')).toBeGreaterThan(sequence.indexOf('More about Callout'));
+    expect(sequence.slice(0, 6)).toEqual([SKIP_LINK.label, ...nav]);
+    await expect(page.locator('nav[aria-label="Main"] a'), 'the nav links on the page').toHaveText(nav);
+    expect(sequence.slice(6, 8)).toEqual(HOME.buttons.map((b) => b.label));
+    const footerLinks = FOOTER.links.map((l) => l.label);
+    for (const label of footerLinks) expect(sequence, `footer link ${label}`).toContain(label);
+    await expect(page.locator('footer a'), 'the footer links on the page').toHaveText(footerLinks);
+    expect(sequence.indexOf(footerLinks[0] ?? '')).toBeGreaterThan(sequence.indexOf(HOME.callout.button.label));
   });
 });

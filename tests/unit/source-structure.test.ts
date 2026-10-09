@@ -1,13 +1,18 @@
 /**
- * SPEC sections 0 and 5: the source tree has the components the spec names, each with a typed
- * Props interface and the props and slots the spec lists, and no `any`.
+ * The shape of the source tree: every component has a typed Props interface with the props it is
+ * used with and the slots its callers fill, the pages and layout exist, nothing is typed `any`, and
+ * no page injects raw HTML.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SRC, listFiles } from '../helpers/dist';
 
-/** Props each component must accept (SPEC 5). Optional or required does not matter here. */
+/**
+ * Props each component must accept, optional or required. A component with none takes everything in
+ * slots. Every file in src/components/ has an entry (the first test below checks), so a new component
+ * cannot skip this list.
+ */
 const COMPONENTS: Record<string, readonly string[]> = {
   Button: ['href', 'variant', 'size'],
   StatusBadge: ['tone', 'label'],
@@ -18,11 +23,13 @@ const COMPONENTS: Record<string, readonly string[]> = {
   SpecPlate: ['rows', 'quote', 'caption'],
   ProjectEntry: ['image', 'imageAlt', 'title', 'line', 'tone', 'status', 'href', 'linkLabel'],
   Lane: ['term'],
+  Lanes: [],
   Dotted: ['text'],
   PageHead: ['title', 'lede', 'tagline', 'center'],
   SplitSection: ['heading', 'id'],
   ToolHero: ['tool'],
   SiteNav: ['current'],
+  SiteFooter: [],
   Mark: ['size', 'class'],
 };
 
@@ -85,6 +92,15 @@ describe('the pages and layout exist', () => {
   );
 });
 
+describe('the components', () => {
+  it('are all listed above, with the props they take', () => {
+    const files = listFiles(join(SRC, 'components'))
+      .filter((f) => f.endsWith('.astro'))
+      .map((f) => f.replace(/\.astro$/, ''));
+    expect(Object.keys(COMPONENTS).sort()).toEqual(files.sort());
+  });
+});
+
 describe.each(Object.entries(COMPONENTS))('component %s', (name, props) => {
   const path = `components/${name}.astro`;
 
@@ -92,15 +108,21 @@ describe.each(Object.entries(COMPONENTS))('component %s', (name, props) => {
     expect(existsSync(join(SRC, path)), `src/${path} is missing`).toBe(true);
   });
 
-  it('declares a typed Props (an interface, or an alias of one) with the props the spec lists', () => {
-    const body = propsDeclaration(read(path), join(SRC, 'components'));
-    expect(body, `src/${path} needs \`interface Props\``).toBeDefined();
-    for (const prop of props) expect(body, `Props of ${name} should have "${prop}"`).toMatch(new RegExp(`\\b${prop}\\??\\s*:`));
-  });
+  if (props.length > 0) {
+    it('declares a typed Props (an interface, or an alias of one) with the props its callers pass', () => {
+      const body = propsDeclaration(read(path), join(SRC, 'components'));
+      expect(body, `src/${path} needs \`interface Props\``).toBeDefined();
+      for (const prop of props) expect(body, `Props of ${name} should have "${prop}"`).toMatch(new RegExp(`\\b${prop}\\??\\s*:`));
+    });
 
-  it('reads its props from Astro.props', () => {
-    expect(read(path)).toMatch(/Astro\.props/);
-  });
+    it('reads its props from Astro.props', () => {
+      expect(read(path)).toMatch(/Astro\.props/);
+    });
+  } else {
+    it('takes no props: everything arrives in slots', () => {
+      expect(read(path)).not.toMatch(/Astro\.props|\binterface\s+Props\b/);
+    });
+  }
 
   it('ships no client script', () => {
     expect(read(path)).not.toMatch(/<script\b/);
@@ -122,10 +144,8 @@ describe('slots', () => {
     expect(read('components/NowLine.astro')).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
   });
 
-  it('Lanes takes its Lane children in the default slot, and has no props to pass the same thing twice', () => {
-    const source = read('components/Lanes.astro');
-    expect(source).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
-    expect(source).not.toMatch(/Astro\.props/);
+  it('Lanes takes its Lane children in the default slot (and no props, so there is one way to fill it)', () => {
+    expect(read('components/Lanes.astro')).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
   });
 
   it('SplitSection takes the introduction in a named slot and the content in the default slot', () => {
@@ -166,14 +186,10 @@ describe('TypeScript in src/', () => {
   });
 });
 
-describe('set:html', () => {
-  it('is used only with strings written in this repo (never props, fetches or requests)', () => {
-    const found: string[] = [];
-    for (const file of listFiles(SRC).filter((f) => f.endsWith('.astro'))) {
-      for (const m of read(file).matchAll(/set:html=\{([^}]*)\}/g)) {
-        if (/Astro\.(?:request|url|cookies)|fetch\(|await /.test(m[1] ?? '')) found.push(`src/${file}: ${m[0]}`);
-      }
-    }
-    expect(found).toEqual([]);
+describe('raw HTML', () => {
+  it("is never injected: no .astro file uses set:html, so every string goes through Astro's escaping", () => {
+    const files = listFiles(SRC).filter((f) => f.endsWith('.astro'));
+    expect(files.length, 'no .astro files to check').toBeGreaterThan(0);
+    expect(files.filter((file) => read(file).includes('set:html'))).toEqual([]);
   });
 });

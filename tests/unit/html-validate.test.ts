@@ -1,7 +1,7 @@
 /**
- * SPEC section 10 "HTML validity": html-validate with its recommended preset over every
- * built page. No rule is disabled. If one ever has to be, add it to `DISABLED` with the reason
- * next to it, and say so in the pull request.
+ * HTML validity: html-validate with its recommended preset over every built page. No rule is
+ * disabled. If one ever has to be, add it to `DISABLED` with the reason next to it, and say so in
+ * the pull request.
  */
 import { describe, expect, it } from 'vitest';
 import { HtmlValidate, type ConfigData } from 'html-validate/node';
