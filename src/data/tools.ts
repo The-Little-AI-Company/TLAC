@@ -1,3 +1,5 @@
+import type { Tone } from './status';
+
 export type VersionSource =
   | { kind: 'github-release'; repo: string }
   | { kind: 'npm'; pkg: string };
@@ -13,12 +15,20 @@ export interface Tool {
   tagline: string;
   summary: string;
   platform: string;
+  // The recorded state: the word on its badge and the dot beside it.
   status: string;
+  tone: Tone;
   // Absent when the tool has no public release to stamp.
   version?: { fallback: string; source: VersionSource };
+  // Short facts for the line under the hero buttons. Absent when the page has nothing to add.
+  facts?: string[];
   primary: Link;
   repo: string;
+  // Where the work still needed for the next release is listed in the open, when it is.
+  queue?: string;
 }
+
+const calloutPlatform = 'Windows 10 and 11';
 
 export const tools: Tool[] = [
   {
@@ -27,8 +37,10 @@ export const tools: Tool[] = [
     tagline: 'Press a key. Get the receipts.',
     summary:
       'Press a hotkey over anything you are reading. A small popover tells you whether the text is trying to manipulate you, and whether its claims hold up against sources it fetched.',
-    platform: 'Windows 10 and 11',
+    platform: calloutPlatform,
     status: 'Released',
+    tone: 'shipped',
+    facts: [calloutPlatform, 'MIT', 'No account'],
     version: {
       fallback: 'v0.2.0',
       source: { kind: 'github-release', repo: 'The-Little-AI-Company/callout' },
@@ -43,9 +55,11 @@ export const tools: Tool[] = [
     summary:
       'A desktop workspace for working with AI agents on your own projects. Agent chat, project files, tools, and memory in one app, with your agents, credentials, files, and history kept on the host.',
     platform: 'Windows first. Web client for a self-hosted instance.',
-    status: 'In development',
-    primary: { label: 'Watch the release queue', href: 'https://github.com/vivary-dev/Vivary-New/milestone/1' },
-    repo: 'https://github.com/vivary-dev/Vivary-New',
+    status: 'Unsigned Windows preview · Sept 22, 2026',
+    tone: 'wip',
+    primary: { label: 'Visit vivaryagent.xyz', href: 'https://vivaryagent.xyz' },
+    repo: 'https://github.com/vivary-dev/vivary',
+    queue: 'https://github.com/vivary-dev/vivary/milestone/1',
   },
 ];
 

@@ -1,5 +1,6 @@
 ---
-// Header of a tool page: status, name, tagline and the two ways in.
+// Header of a tool page: its recorded status, name, tagline, summary and the two ways in.
+// Anything in the default slot (a Plate, for a tool with a screenshot) sits below the buttons.
 import type { Tool } from '../data/tools';
 import { latestVersion } from '../data/tools';
 import Button from './Button.astro';
@@ -10,22 +11,59 @@ interface Props {
 }
 const { tool } = Astro.props;
 const version = await latestVersion(tool.version);
+const status = version ? `${tool.status} · ${version}` : tool.status;
+// A tool with an open release queue points there. One without points at its source.
+const second = tool.queue
+  ? { label: 'Release queue on GitHub', href: tool.queue }
+  : { label: 'Source on GitHub', href: tool.repo };
 ---
 
 <section class="page-head">
   <div class="wrap">
-    <p class="badge"><StatusBadge tone={version ? 'shipped' : 'wip'} label={version ?? tool.status} /></p>
+    <p class="badge"><StatusBadge tone={tool.tone} label={status} /></p>
     <h1 class="display-l">{tool.name}</h1>
     <p class="lede">{tool.tagline}</p>
+    <p class="text summary">{tool.summary}</p>
     <div class="actions">
       <Button href={tool.primary.href} variant="primary">{tool.primary.label}</Button>
-      <Button href={tool.repo}>Source on GitHub</Button>
+      <Button href={second.href}>{second.label}</Button>
     </div>
+    {tool.facts && <p class="text-sm facts">{tool.facts.join(' · ')}</p>}
+    {Astro.slots.has('default') && <div class="media"><slot /></div>}
   </div>
 </section>
 
 <style>
   .badge {
     margin-bottom: var(--space-4);
+  }
+
+  .summary {
+    margin-top: var(--space-4);
+  }
+
+  .actions {
+    margin-top: var(--space-6);
+  }
+
+  .facts {
+    margin-top: var(--space-4);
+    color: var(--ink-faint);
+  }
+
+  /* The picture is what the page shows first, so it gets room to breathe above it. */
+  .media {
+    margin-top: var(--space-7);
+  }
+
+  /* The single breakpoint is 860px, as in global.css. */
+  @media (max-width: 860px) {
+    .actions {
+      margin-top: var(--space-5);
+    }
+
+    .media {
+      margin-top: var(--space-6);
+    }
   }
 </style>

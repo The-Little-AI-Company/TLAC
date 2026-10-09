@@ -1,0 +1,35 @@
+---
+// A section of a long page: the heading and a short introduction in a narrow column, the matter beside it in a wide one.
+// Put the introduction in the `intro` slot and the content (Lanes, a lede, a button) in the default slot.
+interface Props {
+  heading: string;
+}
+const { heading } = Astro.props;
+---
+
+<section class="section">
+  <div class="wrap split">
+    <div class="intro">
+      <h2 class="heading">{heading}</h2>
+      <slot name="intro" />
+    </div>
+    <div class="matter"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  /* The single breakpoint is 860px, as in global.css. */
+  @media (max-width: 860px) {
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-5);
+    }
+  }
+</style>
