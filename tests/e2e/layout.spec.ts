@@ -1,8 +1,9 @@
 /**
  * Layout: one breakpoint at 860px, a centered hero, one column on a phone, two on a desktop, full-width
  * 48px buttons (up to 440px), 44px nav links, a mascot that stands on the hairline. Between 360px and 860px the page margins, the display sizes and
- * the hero padding grow along a straight line from the phone value to the desktop one (`ramp`). Layout
- * does not depend on the color scheme, so this runs in light.
+ * the hero padding grow along a straight line from the phone value to the desktop one (`ramp`). The header and the footer
+ * put their parts on one row whenever the parts fit, and the tool heroes put the text and the plate side by side whenever
+ * each has room, so those follow the width and not the breakpoint. Layout does not depend on the color scheme, so this runs in light.
  */
 import type { Locator, Page } from '@playwright/test';
 import { NAV_LINKS, SITE_NAME } from '../helpers/dist';
@@ -11,13 +12,23 @@ import {
   CONTENT_MAX, PAGES, VIEWPORT_HEIGHT, box, boxes, chInPixels, countHairlines, expect, firstFamily, isPhone, open, ramp, rgb, round, sidePadding, space, style, test, type Box,
 } from './support';
 
-const LAYOUT_WIDTHS = [320, 360, 768, 859, 860, 861, 1024, 1280, 1440] as const;
+const LAYOUT_WIDTHS = [320, 360, 600, 768, 859, 860, 861, 1024, 1280, 1440] as const;
 /** Widths across the range where a lane's name and meaning go from stacked to side by side. */
 const LANE_WIDTHS = [861, 900, 1000, 1100, 1160, 1200, 1280, 1440] as const;
 /** The pages made of split sections: a heading in a narrow column, the content in a wide one. */
 const SPLIT_PAGES = ['/', '/callout/', '/vivary/', '/about/', '/contact/'] as const;
+/** The split sections that hold prose and not lanes: the heading's baseline sits on the first line of the text. */
+const PROSE_SECTIONS = [['/about/', 'The position'], ['/callout/', 'Get it'], ['/vivary/', 'Status']] as const;
 /** A lane is side by side when it is at least 13rem + 26rem + the gap between name and meaning wide (see Lane.astro), and stacked below that. */
 const LANE_ROOM = 13 * 16 + 26 * 16 + space(5);
+/** A tool hero is side by side when its content is at least 27rem for the text + 28rem for the plate + the gap wide (see PageHead.astro). */
+const HERO_ROOM = 27 * 16 + 28 * 16 + space(7);
+/** The narrowest either column of a tool hero is when they are side by side. */
+const HERO_COLUMN_MIN = 26 * 16;
+/** The header's brand (about 205px) and four links (about 265px) and the 24px between them share a row from 560px wide, and wrap below that. */
+const NAV_ONE_ROW_FROM = 560;
+/** The footer's line (about 285px), its three links (about 315px) and the 24px between them share a row from about 740px wide, and wrap below that. */
+const FOOTER_ONE_ROW_FROM = 740;
 /** The bottom of the (empty) strut we put on the first line is that line's baseline. */
 const baselineOf = (target: Locator): Promise<number> =>
   target.first().evaluate((el) => {
@@ -30,6 +41,8 @@ const baselineOf = (target: Locator): Promise<number> =>
   });
 const near = (a: number, b: number, tolerance: number): boolean => Math.abs(a - b) <= tolerance;
 const center = (b: Box): number => b.x + b.width / 2;
+/** Where the page content ends on the right: the margin, or the middle of a screen wider than the content is. */
+const contentRightAt = (width: number): number => width / 2 + Math.min(width - 2 * sidePadding(width), CONTENT_MAX) / 2;
 
 for (const width of LAYOUT_WIDTHS) {
   const phone = isPhone(width);
@@ -38,22 +51,24 @@ for (const width of LAYOUT_WIDTHS) {
 
     // -- Navigation ----------------------------------------------------------------------------
     test.describe('navigation', () => {
+      const oneRow = width >= NAV_ONE_ROW_FROM;
+      const contentRight = contentRightAt(width);
       for (const info of PAGES) {
-        test(`${info.label}: ${phone ? 'brand on row one, the four links on row two' : 'brand left, links right, one row'}`, async ({ page }) => {
+        test(`${info.label}: ${oneRow ? 'brand left, links right, one row' : 'brand on row one, the four links on row two'}`, async ({ page }) => {
           await open(page, info);
           const nav = page.getByRole('navigation', { name: 'Main' });
           const brand = await box(nav.getByRole('link').first());
           const links = await boxes(nav.getByRole('link').filter({ hasNotText: SITE_NAME }));
           expect(links).toHaveLength(4);
-          if (phone) {
-            for (const link of links) expect(link.y, `link top ${round(link.y)} vs brand bottom ${round(brand.bottom)}`).toBeGreaterThanOrEqual(brand.bottom - 1);
-            for (const link of links) expect(link.height, 'nav links are at least 44px tall').toBeGreaterThanOrEqual(44);
-            expect(Math.min(...links.map((l) => l.x))).toBeGreaterThanOrEqual(sidePadding(width) - 1);
-          } else {
+          if (phone) for (const link of links) expect(link.height, 'nav links are at least 44px tall').toBeGreaterThanOrEqual(44);
+          if (oneRow) {
             expect(brand.right, 'brand ends before the first link').toBeLessThanOrEqual(Math.min(...links.map((l) => l.x)));
-            for (const link of links) expect(near(link.y + link.height / 2, brand.y + brand.height / 2, 16), 'links share a row with the brand').toBe(true);
+            for (const link of links) expect(near(link.y + link.height / 2, brand.y + brand.height / 2, 4), `links share a row with the brand (link middle ${round(link.y + link.height / 2)}, brand middle ${round(brand.y + brand.height / 2)})`).toBe(true);
             expect(Math.max(...links.map((l) => l.right)), 'links sit on the right').toBeGreaterThan(width / 2);
-            expect(Math.max(...links.map((l) => l.right))).toBeLessThanOrEqual(width - 16);
+            expect(near(Math.max(...links.map((l) => l.right)), contentRight, 1), `links end at the right edge of the content (${round(Math.max(...links.map((l) => l.right)))} vs ${round(contentRight)})`).toBe(true);
+          } else {
+            for (const link of links) expect(link.y, `link top ${round(link.y)} vs brand bottom ${round(brand.bottom)}`).toBeGreaterThanOrEqual(brand.bottom - 1);
+            expect(Math.min(...links.map((l) => l.x))).toBeGreaterThanOrEqual(sidePadding(width) - 1);
           }
           expect(brand.x, 'brand keeps the page side padding').toBeGreaterThanOrEqual(sidePadding(width) - 1);
         });
@@ -357,7 +372,9 @@ for (const width of LAYOUT_WIDTHS) {
 
     // -- Footer ------------------------------------------------------------------------------------
     test.describe('footer', () => {
-      test(`${phone ? 'stacks its two groups' : 'puts the line left and the links right'}, on the ground-alt band with a 1px rule`, async ({ page }) => {
+      const oneRow = width >= FOOTER_ONE_ROW_FROM;
+      const contentRight = contentRightAt(width);
+      test(`${oneRow ? 'puts the line left and the links right' : 'stacks its two groups'}, on the ground-alt band with a 1px rule`, async ({ page }) => {
         await open(page, '/');
         const footer = page.getByRole('contentinfo');
         const s = await style(footer, ['background-color', 'border-top-width', 'border-top-color', 'font-size', 'color']);
@@ -368,11 +385,11 @@ for (const width of LAYOUT_WIDTHS) {
         expect(s['color']).toBe(rgb('light', 'ink-faint'));
         const line = await box(footer.getByText(FOOTER.line, { exact: true }));
         const links = await boxes(footer.getByRole('link'));
-        if (phone) expect(Math.min(...links.map((l) => l.y)), 'links below the line').toBeGreaterThanOrEqual(line.bottom - 1);
-        else {
+        if (oneRow) {
           expect(Math.min(...links.map((l) => l.x)), 'links right of the line').toBeGreaterThan(line.right - 1);
-          expect(near(links[0]!.y, line.y, 8), 'same row').toBe(true);
-        }
+          expect(near(links[0]!.y + links[0]!.height / 2, line.y + line.height / 2, 4), 'same row').toBe(true);
+          expect(near(Math.max(...links.map((l) => l.right)), contentRight, 1), 'links end at the right edge of the content').toBe(true);
+        } else expect(Math.min(...links.map((l) => l.y)), 'links below the line').toBeGreaterThanOrEqual(line.bottom - 1);
         const bounds = await box(footer);
         expect(bounds.width, 'the band is full width').toBeGreaterThanOrEqual(width - 1);
       });
@@ -392,22 +409,45 @@ for (const width of LAYOUT_WIDTHS) {
 
     // -- Tool heroes -------------------------------------------------------------------------------
     test.describe('tool heroes', () => {
+      const heroContent = Math.min(width - 2 * sidePadding(width), CONTENT_MAX);
+      const heroBeside = heroContent >= HERO_ROOM;
       for (const [path, what] of [['/callout/', 'facts plate'], ['/vivary/', 'screenshot']] as const) {
-        test(`${path}: the ${what} sits ${phone ? 'under the buttons, as wide as the text' : 'right of the text, level with its middle, in the ratio 1.2 to 1'}`, async ({ page }) => {
+        test(`${path}: the ${what} sits ${heroBeside ? 'right of the text, level with its top, and neither column is under 26rem' : 'under the buttons, as wide as the text'}`, async ({ page }) => {
           await open(page, path);
           const hero = page.locator('main section').first();
           const copy = await box(hero.locator('.copy'));
           const media = await box(hero.locator('.plate'));
-          if (phone) {
+          if (heroBeside) {
+            expect(media.x, `plate left ${round(media.x)} vs copy right ${round(copy.right)}`).toBeGreaterThanOrEqual(copy.right);
+            expect(near(media.y, copy.y, 1), `plate top ${round(media.y)} level with the top of the text ${round(copy.y)}`).toBe(true);
+            expect(copy.width, 'text column').toBeGreaterThanOrEqual(HERO_COLUMN_MIN - 1);
+            expect(media.width, 'plate column').toBeGreaterThanOrEqual(HERO_COLUMN_MIN - 1);
+            expect(media.width, `plate ${round(media.width)}px is wider than the text ${round(copy.width)}px`).toBeGreaterThan(copy.width);
+          } else {
             expect(media.y, `plate top ${round(media.y)} vs copy bottom ${round(copy.bottom)}`).toBeGreaterThanOrEqual(copy.bottom - 1);
             expect(near(media.x, copy.x, 1) && near(media.width, copy.width, 1), 'same column').toBe(true);
-          } else {
-            expect(media.x, `plate left ${round(media.x)} vs copy right ${round(copy.right)}`).toBeGreaterThanOrEqual(copy.right);
-            expect(near(media.y + media.height / 2, copy.y + copy.height / 2, 2), 'level with the middle of the text').toBe(true);
-            expect(near(media.width / copy.width, 1.2, 0.05), `media ${round(media.width)}px, copy ${round(copy.width)}px`).toBe(true);
+          }
+        });
+
+        test(`${path}: the two buttons ${phone ? 'are stacked' : 'share one row'}, never split into uneven rows`, async ({ page }) => {
+          await open(page, path);
+          const [primary, second] = await boxes(page.locator('main section').first().locator('.actions .btn'));
+          if (phone) expect(second!.y, 'stacked').toBeGreaterThanOrEqual(primary!.bottom);
+          else {
+            expect(near(primary!.y, second!.y, 1), `buttons at ${round(primary!.y)} and ${round(second!.y)}`).toBe(true);
+            expect(second!.x).toBeGreaterThan(primary!.right);
           }
         });
       }
+
+      test('the headline sits at the same height on both tool pages', async ({ page }) => {
+        const tops: number[] = [];
+        for (const path of ['/callout/', '/vivary/']) {
+          await open(page, path);
+          tops.push((await box(page.locator('main section').first().getByRole('heading', { level: 1 }))).y);
+        }
+        expect(near(tops[0]!, tops[1]!, 1), `Callout headline at ${round(tops[0]!)}, Vivary at ${round(tops[1]!)}`).toBe(true);
+      });
 
       test(`stacked buttons on a tool page and the 404 page are never wider than 440px${phone ? '' : ', and hug their labels on a desktop'}`, async ({ page }) => {
         for (const path of ['/callout/', '/vivary/', '/404.html']) {
@@ -446,18 +486,31 @@ for (const width of LAYOUT_WIDTHS) {
       });
 
       if (!phone) {
-        test('put the heading baseline on the baseline of the first lane name', async ({ page }) => {
+        test('put the heading baseline on the baseline of the first lane name, or of the first line of the text', async ({ page }) => {
           for (const path of SPLIT_PAGES) {
             await open(page, path);
-            const sections = page.locator('.split:has(.matter > .lanes)');
-            expect(await sections.count(), `${path} has sections of lanes to measure`).toBeGreaterThan(0);
+            const sections = page.locator('.split');
+            expect(await sections.count(), `${path} has sections to measure`).toBeGreaterThan(0);
             for (let i = 0; i < (await sections.count()); i++) {
               const heading = await baselineOf(sections.nth(i).locator('h2'));
-              const name = await baselineOf(sections.nth(i).locator('dt').first());
-              expect(Math.abs(heading - name), `${path} section ${i}: heading baseline ${round(heading)}, first lane name ${round(name)}`).toBeLessThanOrEqual(1);
+              const first = sections.nth(i).locator('.matter dt, .matter p').first();
+              const name = await baselineOf(first);
+              expect(Math.abs(heading - name), `${path} section ${i}: heading baseline ${round(heading)}, first ${await first.evaluate((el) => el.tagName.toLowerCase())} baseline ${round(name)}`).toBeLessThanOrEqual(1);
             }
           }
         });
+
+        for (const [path, heading] of PROSE_SECTIONS) {
+          test(`${path}: "${heading}", a section of prose, has its heading on the baseline of its first line`, async ({ page }) => {
+            await open(page, path);
+            const section = page.locator('.split', { has: page.getByRole('heading', { level: 2, name: heading, exact: true }) });
+            await expect(section).toHaveCount(1);
+            expect(await section.locator('.matter dl.lanes').count(), 'a section of prose, not of lanes').toBe(0);
+            const h = await baselineOf(section.locator('h2'));
+            const first = await baselineOf(section.locator('.matter p').first());
+            expect(Math.abs(h - first), `heading baseline ${round(h)}, first line ${round(first)}`).toBeLessThanOrEqual(1);
+          });
+        }
       }
     });
 
@@ -534,16 +587,36 @@ for (const width of [861, 900, 950, 1024] as const) {
   test.describe(`project list at ${width}px`, () => {
     test.use({ viewport: { width, height: VIEWPORT_HEIGHT }, colorScheme: 'light' });
 
-    test('keeps the description at 300px or wider, and wraps the long address in its column', async ({ page }) => {
+    test('keeps the description at 300px or wider, and wraps the long address in its column of 18ch', async ({ page }) => {
       await open(page, '/');
       const entries = page.locator('section#other li.entry');
       for (let i = 0; i < (await entries.count()); i++) {
         const copy = await box(entries.nth(i).locator('.copy'));
         const link = entries.nth(i).locator('.meta a');
         const address = await box(link);
-        const limit = await chInPixels(link, 24);
+        const limit = await chInPixels(link, 18);
         expect(copy.width, `entry ${i}: description column ${round(copy.width)}px`).toBeGreaterThanOrEqual(300);
-        expect(address.width, `entry ${i}: address ${round(address.width)}px, limit 24ch = ${round(limit)}px`).toBeLessThanOrEqual(limit + 1);
+        expect(address.width, `entry ${i}: address ${round(address.width)}px, limit 18ch = ${round(limit)}px`).toBeLessThanOrEqual(limit + 1);
+      }
+    });
+  });
+}
+
+// -- Under the breakpoint the address sits under the text with the whole row to itself, so it does not wrap ----
+for (const width of [600, 768, 860] as const) {
+  test.describe(`project list at ${width}px`, () => {
+    test.use({ viewport: { width, height: VIEWPORT_HEIGHT }, colorScheme: 'light' });
+
+    test('sets every address on one line, since there is room for the longest', async ({ page }) => {
+      await open(page, '/');
+      const entries = page.locator('section#other li.entry');
+      expect(await entries.count()).toBe(4);
+      for (let i = 0; i < 4; i++) {
+        const link = entries.nth(i).locator('.meta a');
+        const [address, row, lineHeight] = await Promise.all([box(link), box(entries.nth(i)), style(link, ['line-height'])]);
+        const line = parseFloat(lineHeight['line-height'] ?? '0') || address.height;
+        expect(address.height, `entry ${i}: address ${round(address.height)}px tall, a line is ${round(line)}px`).toBeLessThan(line * 1.5);
+        expect(address.right, `entry ${i}: address stays inside its row`).toBeLessThanOrEqual(row.right);
       }
     });
   });
@@ -570,9 +643,10 @@ test.describe('the 860px breakpoint', () => {
       expect((await style(page.locator('section#work'), ['padding-top']))['padding-top']).toBe(layout === 'phone' ? '56px' : '96px');
       const mascot = await page.locator('section.hero picture img').evaluate((el: HTMLImageElement) => el.currentSrc);
       expect(mascot).toContain(layout === 'phone' ? '-640.webp' : '-760.webp');
+      // The header does not change at the breakpoint: the brand and the links share a row at both widths, since both have room.
       const nav = await box(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: NAV_LINKS[0].label, exact: true }));
       const brand = await box(page.getByRole('navigation', { name: 'Main' }).getByRole('link').first());
-      expect(nav.y >= brand.bottom - 1, `nav links on their own row: ${layout === 'phone'}`).toBe(layout === 'phone');
+      expect(nav.y < brand.bottom - 1, `nav links share a row with the brand at ${width}px`).toBe(true);
     });
   }
 

@@ -1,5 +1,5 @@
 ---
-// The site header: the brand on one side and the four page links on the other. No menu button, so it wraps to two rows on a phone.
+// The site header: the brand on one side and the four page links on the other. No menu button, so the links wrap under the brand when the two do not fit on a row.
 import Mark from './Mark.astro';
 
 interface Props {
@@ -82,10 +82,10 @@ const pageFor = (href: string) => (here === href ? 'page' : undefined);
   }
 
   @media (max-width: 860px) {
+    /* The links go under the brand only when the two do not fit on one row. */
     .nav {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0;
+      flex-wrap: wrap;
+      gap: 0 var(--space-5);
       padding-block: var(--space-4) var(--space-2);
     }
 
