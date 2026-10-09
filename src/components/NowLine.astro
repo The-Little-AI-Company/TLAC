@@ -11,22 +11,22 @@ const { tone = 'live' } = Astro.props;
 <p class={`now now--${tone}`}><slot /></p>
 
 <style>
+  /* The dot is inline, so a sentence that wraps (or is centered, as in the home hero) keeps it beside its first word. */
   .now {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 10px;
     font-size: 15px;
     color: var(--ink-soft);
+    text-wrap: balance;
   }
 
   .now::before {
     content: "";
-    flex: none;
+    display: inline-block;
     width: 8px;
     height: 8px;
-    margin-top: calc((1lh - 8px) / 2);
+    margin-right: 10px;
     border-radius: 50%;
     background: var(--status-live);
+    vertical-align: middle;
   }
 
   .now--wip::before {
