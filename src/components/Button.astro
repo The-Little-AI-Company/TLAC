@@ -1,8 +1,8 @@
 ---
-// A link that looks like a button: filled for the main action, outlined for the next, underlined for the quiet one.
+// A link that looks like a button: filled for the main action, outlined for the next.
 interface Props {
   href: string;
-  variant?: 'primary' | 'secondary' | 'text';
+  variant?: 'primary' | 'secondary';
   size?: 'md' | 'sm';
 }
 const { href, variant = 'secondary', size = 'md' } = Astro.props;
@@ -51,19 +51,6 @@ const { href, variant = 'secondary', size = 'md' } = Astro.props;
   .btn--primary:hover {
     background: var(--accent-hover);
     border-color: var(--accent-hover);
-  }
-
-  .btn--text {
-    padding: 0 2px;
-    border-width: 0;
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-  }
-
-  .btn--text:hover {
-    color: var(--accent-hover);
   }
 
   /* Forced colors give every border the same color, so the main action keeps its weight in the border. */

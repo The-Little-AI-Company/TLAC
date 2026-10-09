@@ -80,7 +80,7 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
     for (const btn of all(doc(), '.btn')) {
       const variant = classesOf(btn).find((c) => c.startsWith('btn--'));
       if (btn.rawTagName.toLowerCase() !== 'a') bad.push(`${show(btn)} is not an <a>`);
-      if (!variant || !['btn--primary', 'btn--secondary', 'btn--text'].includes(variant)) bad.push(`${show(btn)} has no btn--primary/secondary/text class`);
+      if (!variant || !['btn--primary', 'btn--secondary'].includes(variant)) bad.push(`${show(btn)} has no btn--primary/secondary class`);
       if (!btn.getAttribute('href')) bad.push(`${show(btn)} has no href`);
       if (visibleText(btn) === '') bad.push(`${show(btn)} has no label`);
     }
