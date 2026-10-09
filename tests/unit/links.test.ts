@@ -39,7 +39,7 @@ function references(info: (typeof PAGES)[number]): Reference[] {
   for (const s of all(doc, 'source')) {
     for (const url of srcsetUrls(attr(s, 'srcset') ?? '')) refs.push({ from: show(s), href: url });
   }
-  for (const m of all(doc, 'meta[property="og:image"]')) refs.push({ from: show(m), href: attr(m, 'content') ?? '' });
+  for (const m of all(doc, 'meta[property="og:image"], meta[name="twitter:image"]')) refs.push({ from: show(m), href: attr(m, 'content') ?? '' });
   return refs;
 }
 

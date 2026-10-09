@@ -10,6 +10,7 @@ import {
   breakpoints,
   declarations,
   inside,
+  isForcedColors,
   isReducedMotion,
   normalizeValue,
   parseCss,
@@ -139,6 +140,40 @@ describe('type rules (SPEC 3)', () => {
   });
 });
 
+describe('type sizes (SPEC 3)', () => {
+  it('sets every font size in rem, so a larger default text size in the browser scales the page', () => {
+    const bad = decls().filter((c) => {
+      const { prop, value } = c.declaration;
+      if (prop !== 'font-size' && prop !== 'font') return false;
+      return /\d(?:\.\d+)?px/.test(value);
+    });
+    expect(bad.map(where)).toEqual([]);
+  });
+
+  it('makes the display sizes fluid between the phone value at 360px and the desktop value at 860px', () => {
+    const sizeOf = (selector: string): string | undefined =>
+      decls().find((c) => owner(c).prelude.trim() === selector && c.declaration.prop === 'font-size' && outsideReducedMotion(c))?.declaration.value;
+    for (const selector of ['.display-xl', '.display-l', '.heading']) expect(sizeOf(selector), selector).toMatch(/^clamp\(/);
+  });
+});
+
+describe('forced colors', () => {
+  const forced = (): DeclarationContext[] => decls().filter((c) => inside(c, isForcedColors));
+
+  it('gives the filled status dots and the dot of the now line a border, since their color is a background', () => {
+    const selectors = forced()
+      .filter((c) => c.declaration.prop === 'border')
+      .map((c) => owner(c).prelude);
+    expect(selectors.some((s) => /\.status/.test(s) && /\bi\b/.test(s)), 'a filled status dot needs a border').toBe(true);
+    expect(selectors.some((s) => /\.now/.test(s)), 'the now dot needs a border').toBe(true);
+  });
+
+  it('gives the primary button a 2px border, so it differs from the secondary one', () => {
+    const rule = forced().find((c) => /\.btn--primary/.test(owner(c).prelude) && c.declaration.prop === 'border-width');
+    expect(rule?.declaration.value.trim()).toBe('2px');
+  });
+});
+
 describe('breakpoint (SPEC 0)', () => {
   it('uses 860px as the only width breakpoint, in media and container queries', () => {
     const widths = breakpoints(sheet());
@@ -257,10 +292,10 @@ describe('shape and depth (SPEC 0 and 4)', () => {
     expect(bad.map(where)).toEqual([]);
   });
 
-  it('draws no heavy rules: no border is wider than 2px (the old 3px rules are gone)', () => {
+  it('draws no heavy rules: no border is wider than 2px (a status dot in forced colors is a dot, not a rule)', () => {
     const bad = decls().filter((c) => {
       const { prop, value } = c.declaration;
-      if (!/^border/.test(prop) || /radius|spacing|collapse|image/.test(prop)) return false;
+      if (!/^border/.test(prop) || /radius|spacing|collapse|image/.test(prop) || inside(c, isForcedColors)) return false;
       return [...value.matchAll(/(\d*\.?\d+)px/g)].some((m) => Number(m[1]) > 2);
     });
     expect(bad.map(where)).toEqual([]);
@@ -290,9 +325,8 @@ describe('focus and selection (SPEC 0)', () => {
       const { prop, value } = c.declaration;
       const removes = (prop === 'outline' && /^(?:none|0|0px)$/.test(value.trim())) || (prop === 'outline-style' && value.trim() === 'none') || (prop === 'outline-width' && /^0/.test(value.trim()));
       if (!removes) return false;
-      const selector = owner(c).prelude;
-      // `:focus:not(:focus-visible)` and the skip-link target `main` are the two fair exceptions
-      return !/:not\(:focus-visible\)/.test(selector) && !/^(?:main|#main)(?:[:[]|$)/.test(selector.trim());
+      // `:focus:not(:focus-visible)` is the one fair exception
+      return !/:not\(:focus-visible\)/.test(owner(c).prelude);
     });
     expect(bad.map(where)).toEqual([]);
   });

@@ -1,7 +1,8 @@
 /**
  * SPEC section 0 and 10: the keyboard path. The first Tab lands on the skip link and shows it,
- * Enter moves focus into main, every focusable element shows a 2px solid accent outline offset by
- * 3px when focused from the keyboard, and Tab order follows the DOM.
+ * Enter moves the page to main so the next Tab lands on the first thing inside it (main is not itself
+ * a tab stop), every focusable element shows a 2px solid accent outline offset by 3px when focused
+ * from the keyboard, and Tab order follows the DOM.
  */
 import type { Page } from '@playwright/test';
 import { KEY_WIDTHS, PAGES, SCHEMES, VIEWPORT_HEIGHT, expect, open, rgb, test, type Scheme } from './support';
@@ -78,25 +79,32 @@ for (const scheme of SCHEMES) {
             expect(opacity).toBe('1');
           });
 
-          test('Enter on the skip link moves focus into main', async ({ page }) => {
+          test('Enter on the skip link points the page at main, which takes no focus of its own', async ({ page }) => {
             await open(page, info);
             await page.keyboard.press('Tab');
             await page.keyboard.press('Enter');
-            const inMain = await page.evaluate(() => {
-              const active = document.activeElement;
-              return { id: active?.id, inMain: Boolean(active && document.querySelector('main')?.contains(active)), hash: location.hash };
-            });
-            expect(inMain.hash).toBe('#main');
-            expect(inMain.inMain, 'focus should be on main or inside it').toBe(true);
+            expect(await page.evaluate(() => location.hash)).toBe('#main');
+            expect(await page.evaluate(() => document.activeElement === document.querySelector('main')), 'main is not a focus target').toBe(false);
           });
 
-          test('the next Tab after the skip link goes to the first thing in main, not back to the header', async ({ page }) => {
+          test('the next Tab after the skip link lands on the first focusable thing in main, not back in the header', async ({ page }) => {
             await open(page, info);
             await page.keyboard.press('Tab');
             await page.keyboard.press('Enter');
             await page.keyboard.press('Tab');
-            const inMain = await page.evaluate(() => Boolean(document.querySelector('main')?.contains(document.activeElement)));
-            expect(inMain, 'focus should continue inside main after the skip link').toBe(true);
+            const landed = await page.evaluate(() => {
+              const first = document.querySelector('main a[href]');
+              return { isFirst: document.activeElement === first, text: (document.activeElement?.textContent ?? '').trim().slice(0, 40), inMain: Boolean(document.querySelector('main')?.contains(document.activeElement)) };
+            });
+            expect(landed.inMain, `focus is on "${landed.text}", outside main`).toBe(true);
+            expect(landed.isFirst, `focus is on "${landed.text}", not the first link in main`).toBe(true);
+          });
+
+          test('clicking in main does not move the place the next Tab starts from to the top of main', async ({ page }) => {
+            await open(page, info);
+            const heading = page.getByRole('heading', { level: 1 });
+            await heading.click();
+            expect(await page.evaluate(() => document.activeElement === document.querySelector('main')), 'main is not focusable, so a click cannot focus it').toBe(false);
           });
 
           test('every focusable element draws a 2px solid accent outline, offset 3px, when focused by keyboard', async ({ page }) => {

@@ -95,9 +95,30 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
   });
 
   it('renders every Plate as <figure class="plate"> holding an <img>', () => {
-    for (const plate of all(doc(), 'figure.plate')) {
-      if (plate.querySelector('dl')) continue; // a SpecPlate holds facts, not a picture
-      expect(plate.querySelectorAll('img'), show(plate)).toHaveLength(1);
+    for (const plate of all(doc(), 'figure.plate')) expect(plate.querySelectorAll('img'), show(plate)).toHaveLength(1);
+  });
+
+  it('renders every SpecPlate as a <div class="plate"> of facts, with the quote in a figure of its own', () => {
+    for (const dl of all(doc(), '.plate dl')) {
+      const plate = dl.closest('.plate')!;
+      expect(plate.rawTagName.toLowerCase(), 'a figure would be named by the quote caption alone').toBe('div');
+      expect(dl.closest('figure'), show(dl)).toBeNull();
+      const quotes = all(plate, 'figure.quote');
+      expect(quotes.length, 'at most one quote').toBeLessThanOrEqual(1);
+      for (const quote of quotes) {
+        expect(quote.querySelectorAll('blockquote p'), show(quote)).toHaveLength(1);
+        expect(quote.querySelectorAll('figcaption').length, show(quote)).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  it('sets every middle dot in a status badge or the footer as a .sep, which keeps the dot in the text', () => {
+    for (const sep of all(doc(), '.sep')) {
+      expect(visibleText(sep), show(sep)).toBe('·');
+      expect(sep.getAttribute('aria-hidden'), 'the dot is not hidden from assistive technology').toBeUndefined();
+    }
+    for (const el of all(doc(), '.status, footer p')) {
+      expect(el.textContent, `${show(el)} has a spaced middle dot that is not a .sep`).not.toMatch(/ · /);
     }
   });
 

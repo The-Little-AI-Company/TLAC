@@ -4,7 +4,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { DIST, PUBLIC, ROOT, listFiles, sha256 } from '../helpers/dist';
+import { DIST, PAGES, PUBLIC, ROOT, SITE, listFiles, sha256 } from '../helpers/dist';
 import { decodePng, readPngSize } from '../helpers/image';
 import { HEAD } from '../helpers/spec';
 import { contrast, parseHex } from '../helpers/color';
@@ -130,6 +130,36 @@ describe('README.md', () => {
   });
 });
 
+describe('robots.txt and sitemap.xml', () => {
+  const robots = () => readFileSync(join(DIST, 'robots.txt'), 'utf-8');
+  const sitemap = () => readFileSync(join(DIST, 'sitemap.xml'), 'utf-8');
+  const locations = (): string[] => [...sitemap().matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1] ?? '');
+
+  it('ships a robots.txt that lets every crawler in and names the sitemap by its absolute address', () => {
+    expect(robots()).toMatch(/^User-agent: \*$/m);
+    expect(robots()).toMatch(/^Allow: \/$/m);
+    expect(robots()).not.toMatch(/^Disallow: ./m);
+    expect(robots()).toContain(`Sitemap: ${SITE}/sitemap.xml`);
+  });
+
+  it('lists exactly the five public pages, each by its absolute https address', () => {
+    const expected = PAGES.filter((p) => p.id !== 'not-found').map((p) => `${SITE}${p.url}`);
+    expect(locations().sort()).toEqual(expected.sort());
+    for (const loc of locations()) expect(loc).toMatch(/^https:\/\/[^\s/]+\/\S*$/);
+  });
+
+  it('leaves out the 404 page and every redirect from the old site', () => {
+    expect(sitemap()).not.toMatch(/404/);
+    for (const old of ['services', 'club', 'start-here', 'projects', 'brand', 'pages', 'guides']) expect(sitemap(), old).not.toContain(`/${old}/`);
+  });
+
+  it('is well-formed sitemap XML', () => {
+    expect(sitemap().startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
+    expect(sitemap()).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+    expect(sitemap().trimEnd().endsWith('</urlset>')).toBe(true);
+  });
+});
+
 describe('project files', () => {
   it('keeps the CNAME for the custom domain', () => {
     expect(readFileSync(join(PUBLIC, 'CNAME'), 'utf-8').trim()).toBe('littleaicompany.com');
@@ -144,7 +174,12 @@ describe('project files', () => {
     const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf-8')) as { scripts: Record<string, string> };
     expect(pkg.scripts['test']).toBe('vitest run');
     expect(pkg.scripts['test:e2e']).toBe('playwright test');
-    expect(pkg.scripts['verify']).toMatch(/astro check.*astro build.*vitest run.*playwright test/);
-    for (const name of ['dev', 'build', 'preview', 'check']) expect(pkg.scripts[name], name).toBeDefined();
+    expect(pkg.scripts['verify']).toBe('pnpm check && pnpm build && pnpm test && pnpm test:e2e');
+    expect(pkg.scripts['check']).toBe('astro check --minimumFailingSeverity hint');
+    expect(pkg.scripts['og']).toBe('node scripts/og.mjs');
+    expect(pkg.scripts['icons']).toBe('node scripts/icons.mjs');
+    expect(pkg.scripts['images']).toBe('node scripts/images.mjs');
+    expect(pkg.scripts['screenshots']).toBe('SCREENSHOTS=1 playwright test tests/e2e/screenshots.spec.ts');
+    for (const name of ['dev', 'build', 'preview']) expect(pkg.scripts[name], name).toBeDefined();
   });
 });

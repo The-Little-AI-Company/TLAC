@@ -50,6 +50,11 @@ export function textBlocks(root: HTMLElement): string[] {
       flush();
       return;
     }
+    // A `.sep` is a middle dot whose spaces come from its margin (see Dotted.astro). Read it as the spaced dot it shows.
+    if (node.classList.contains('sep')) {
+      line += ' · ';
+      return;
+    }
     const block = !INLINE.has(tag);
     if (block) flush();
     for (const child of node.childNodes) visit(child);
@@ -74,12 +79,7 @@ export function altTexts(root: HTMLElement): string[] {
     .filter(Boolean);
 }
 
-/** Curly quotes and apostrophes to straight ones, so copy compares equal however it was typed. */
-export function straighten(text: string): string {
-  return text.replace(/[‘’ʼ]/g, "'").replace(/[“”]/g, '"');
-}
-
-/** The text of one element, compared the way the copy contracts compare it. */
+/** The text of one element, the way a visitor reads it. Quotes and apostrophes are compared as they are typed: curly. */
 export function textOf(el: HTMLElement): string {
-  return straighten(visibleText(el));
+  return visibleText(el);
 }

@@ -20,8 +20,14 @@ export type Scheme = (typeof SCHEMES)[number];
 /** Phone layout is `max-width: 860px`. */
 export const isPhone = (width: number): boolean => width <= 860;
 export const VIEWPORT_HEIGHT = 900;
-/** Side padding of the page: --space-4 on a phone, --space-8 above. */
-export const sidePadding = (width: number): number => (isPhone(width) ? 16 : 64);
+/**
+ * A fluid value: `phone` at 360px and below, `desktop` at 860px and above, and a straight line between,
+ * which is the clamp() that global.css writes for the page margins, the display sizes and the hero padding.
+ */
+export const ramp = (width: number, phone: number, desktop: number): number =>
+  phone + (desktop - phone) * Math.min(1, Math.max(0, (width - 360) / 500));
+/** Side padding of the page: --space-4 at 360px and below, --space-8 at 860px and above. */
+export const sidePadding = (width: number): number => ramp(width, 16, 64);
 export const CONTENT_MAX = 1072;
 
 export const theme = (scheme: Scheme): Theme => (scheme === 'light' ? 'company-light' : 'company-dark');

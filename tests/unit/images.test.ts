@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { all, describe as show, type El } from '../helpers/dom';
 import { DIST, PAGE_CASES, PAGES, PUBLIC, listFiles, parsePage, resolveSitePath, sha256, srcsetUrls } from '../helpers/dist';
 import { readWebp } from '../helpers/image';
-import { IMAGES, IMAGE_COUNT } from '../helpers/spec';
+import { IMAGES, IMAGE_COUNT, IMAGE_VARIANTS } from '../helpers/spec';
 
 const localFile = (src: string): string | undefined => (src.startsWith('/') && !src.startsWith('//') ? resolveSitePath(src) : undefined);
 const positiveInt = (value: string | undefined): boolean => value !== undefined && /^[1-9]\d*$/.test(value);
@@ -75,12 +75,33 @@ describe.each(PAGE_CASES)('images on %s', (_label, info) => {
     expect(bad.map(show)).toEqual([]);
   });
 
+  it('serve each size from a file of that width: a srcset candidate says w, and the file is that wide, in the same proportions', () => {
+    const bad: string[] = [];
+    for (const img of imgs()) {
+      const srcset = img.getAttribute('srcset');
+      if (srcset === undefined || srcset === null) continue;
+      if (!img.hasAttribute('sizes')) bad.push(`${show(img)} has srcset in w units but no sizes`);
+      const declared = size(img);
+      for (const candidate of srcset.split(',').map((part) => part.trim().split(/\s+/))) {
+        const [url = '', descriptor = ''] = candidate;
+        const file = localFile(url);
+        if (!file) continue; // reported by the next test
+        const real = readWebp(readFileSync(join(DIST, file)));
+        if (descriptor !== `${real.width}w`) bad.push(`${url} is ${real.width}px wide but says "${descriptor}"`);
+        const drift = Math.abs(real.width / real.height - declared.w / declared.h) / (declared.w / declared.h);
+        if (drift > 0.01) bad.push(`${url} is ${real.width}x${real.height}, not the proportions of ${declared.w}x${declared.h}`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+
   it('only point at files that exist in dist/', () => {
     const missing: string[] = [];
     for (const img of imgs()) {
       const src = img.getAttribute('src') ?? '';
       if (!src.startsWith('/')) missing.push(`${show(img)} src must be a site path, got "${src}"`);
       else if (!localFile(src)) missing.push(`${src} is not in dist/`);
+      for (const url of srcsetUrls(img.getAttribute('srcset') ?? '')) if (!localFile(url)) missing.push(`${url} (srcset) is not in dist/`);
     }
     for (const source of all(doc(), 'picture source')) {
       for (const url of srcsetUrls(source.getAttribute('srcset') ?? '')) if (!localFile(url)) missing.push(`${url} (srcset) is not in dist/`);
@@ -96,9 +117,10 @@ describe.each(PAGE_CASES)('images on %s', (_label, info) => {
 
 describe('the staged images', () => {
   const entries = Object.entries(IMAGES).map(([name, image]) => [name, image] as const);
+  const variants = Object.entries(IMAGE_VARIANTS).map(([name, variant]) => [name, variant] as const);
 
-  it('are the only files in public/images and dist/images', () => {
-    const expected = entries.map(([, i]) => i.src.replace('/images/', '')).sort();
+  it('are the only files in public/images and dist/images, with the smaller copies that srcset serves', () => {
+    const expected = [...entries.map(([, i]) => i.src), ...variants.map(([, v]) => v.src)].map((src) => src.replace('/images/', '')).sort();
     expect(listFiles(join(PUBLIC, 'images'))).toEqual(expected);
     expect(listFiles(join(DIST, 'images'))).toEqual(expected);
   });
@@ -123,14 +145,39 @@ describe('the staged images', () => {
     }
   });
 
+  describe.each(variants)('the smaller copy %s', (_name, variant) => {
+    const bytes = () => readFileSync(join(PUBLIC, variant.src));
+
+    it(`is ${variant.width}x${variant.height}, in the proportions of the picture it is a copy of`, () => {
+      const { width, height } = readWebp(bytes());
+      expect([width, height]).toEqual([variant.width, variant.height]);
+      expect(Math.abs(width / height - variant.of.width / variant.of.height) / (variant.of.width / variant.of.height)).toBeLessThan(0.01);
+    });
+
+    it('weighs less than the picture it is a copy of, or it would not be worth serving', () => {
+      expect(bytes().length).toBeLessThan(readFileSync(join(PUBLIC, variant.of.src)).length);
+    });
+  });
+
+  // A plate is laid out at the proportions of its width and height attributes until the file it loaded says otherwise.
+  // A copy that is off by a rounded pixel would move everything under it by a fraction of a pixel at that moment.
+  // (Thumbnails are cropped to 16 by 10 in CSS, so their file proportions never reach the layout.)
+  it.each(['workspace', 'vivarySite'] as const)('keeps the exact proportions of the plate it is a copy of: %s', (name) => {
+    const { width, height, of } = IMAGE_VARIANTS[name];
+    expect(width * of.height, `${width}x${height} against ${of.width}x${of.height}`).toBe(height * of.width);
+  });
+
   it('are each used by a page (nothing orphaned)', () => {
     const used = new Set<string>();
     for (const info of PAGES) {
       if (!existsSync(join(DIST, info.file))) continue;
       const doc = parsePage(info);
-      for (const img of all(doc, 'img')) used.add(img.getAttribute('src') ?? '');
+      for (const img of all(doc, 'img')) {
+        used.add(img.getAttribute('src') ?? '');
+        srcsetUrls(img.getAttribute('srcset') ?? '').forEach((u) => used.add(u));
+      }
       for (const source of all(doc, 'picture source')) srcsetUrls(source.getAttribute('srcset') ?? '').forEach((u) => used.add(u));
     }
-    expect(entries.map(([, i]) => i.src).filter((src) => !used.has(src))).toEqual([]);
+    expect([...entries.map(([, i]) => i.src), ...variants.map(([, v]) => v.src)].filter((src) => !used.has(src))).toEqual([]);
   });
 });

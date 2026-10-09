@@ -70,5 +70,5 @@ export const headingLevel = (el: El): number => Number(el.rawTagName.slice(1));
 /** The classes on an element. */
 export const classesOf = (el: El): string[] => (el.getAttribute('class') ?? '').split(/\s+/).filter(Boolean);
 
-/** Compares text the way copy contracts do: straight quotes, collapsed whitespace. */
+/** Compares an element's visible text with an exact string, whitespace collapsed. */
 export const same = (el: El, expected: string): boolean => textOf(el) === expected;

@@ -2,7 +2,7 @@
  * SPEC section 8, "/about/", "/contact/" and the 404 page.
  */
 import { describe, expect, it } from 'vitest';
-import { tool } from '../../src/data/tools';
+import { callout, vivary } from '../../src/data/tools';
 import { all, attr, classesOf, inOrder, one } from '../helpers/dom';
 import { page, parsePage } from '../helpers/dist';
 import { buttons, headings, lanes, links, proseParagraphs, sectionOf } from '../helpers/sections';
@@ -28,22 +28,13 @@ describe('about', () => {
   describe('The position', () => {
     const paragraphs = () => proseParagraphs(sectionOf(main(), ABOUT_PAGE.position.heading));
 
-    it('has three paragraphs', () => {
-      expect(paragraphs()).toHaveLength(3);
+    it('has the three paragraphs, in first person singular, one idea to a sentence', () => {
+      expect(paragraphs()).toEqual([...ABOUT_PAGE.position.paragraphs]);
     });
 
-    it('keeps the first paragraph as it was', () => {
-      expect(paragraphs()[0]).toBe(ABOUT_PAGE.position.paragraphs[0]);
-    });
-
-    it('turns the second into first person singular', () => {
-      const { startsWith, endsWith } = ABOUT_PAGE.position.paragraphs[1];
-      expect(paragraphs()[1]).toMatch(new RegExp(`^${startsWith.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
-      expect(paragraphs()[1]?.endsWith(endsWith)).toBe(true);
-    });
-
-    it('ends with "That\'s the whole company. Everything I ship is open source and runs on your machine."', () => {
-      expect(paragraphs()[2]).toBe(ABOUT_PAGE.position.paragraphs[2]);
+    it('sets them as an article, with the larger, looser text of the design system', () => {
+      const article = one(sectionOf(main(), ABOUT_PAGE.position.heading), '.article');
+      expect(all(article, 'p.text')).toHaveLength(ABOUT_PAGE.position.paragraphs.length);
     });
   });
 
@@ -54,10 +45,10 @@ describe('about', () => {
       expect(lanes(section()).map(({ term, detail }) => ({ term, detail }))).toEqual(ABOUT_PAGE.dont.lanes.map(({ term, detail }) => ({ term, detail })));
     });
 
-    it('links github.com/Jeff-Kazzee from the Guides lane', () => {
-      const guides = lanes(section()).find((l) => l.term === 'Guides');
-      expect(guides).toBeDefined();
-      expect(links(guides!.dd)).toEqual([ABOUT_PAGE.dont.link]);
+    it('links github.com/Jeff-Kazzee from the lane about courses', () => {
+      const courses = lanes(section()).find((l) => l.term === 'No courses');
+      expect(courses).toBeDefined();
+      expect(links(courses!.dd)).toEqual([ABOUT_PAGE.dont.link]);
     });
   });
 });
@@ -73,6 +64,11 @@ describe('contact', () => {
     expect(textOf(one(main(), 'p.lede'))).toBe(CONTACT_PAGE.lede);
   });
 
+  it('has the h2 How to reach me over the lanes', () => {
+    expect(headings(main())).toEqual([[1, CONTACT_PAGE.h1], [2, CONTACT_PAGE.heading]]);
+    expect(one(sectionOf(main(), CONTACT_PAGE.heading), 'dl.lanes')).toBeDefined();
+  });
+
   it('has four lanes in order: Email, Bugs, Security, Elsewhere', () => {
     expect(lanes(main()).map(({ term, detail }) => ({ term, detail }))).toEqual(CONTACT_PAGE.lanes.map(({ term, detail }) => ({ term, detail })));
   });
@@ -85,7 +81,7 @@ describe('contact', () => {
 
   it('points the bug links at each tool repository issues page from tools.ts', () => {
     const bugs = lanes(main()).find((l) => l.term === 'Bugs');
-    expect(links(bugs!.dd).map((l) => l.href)).toEqual([`${tool('callout').repo}/issues`, `${tool('vivary').repo}/issues`]);
+    expect(links(bugs!.dd).map((l) => l.href)).toEqual([`${callout.repo}/issues`, `${vivary.repo}/issues`]);
   });
 });
 

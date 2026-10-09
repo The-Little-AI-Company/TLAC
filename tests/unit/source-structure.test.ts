@@ -9,14 +9,20 @@ import { SRC, listFiles } from '../helpers/dist';
 
 /** Props each component must accept (SPEC 5). Optional or required does not matter here. */
 const COMPONENTS: Record<string, readonly string[]> = {
-  Button: ['href', 'variant', 'size', 'block'],
+  Button: ['href', 'variant', 'size'],
   StatusBadge: ['tone', 'label'],
   NowLine: ['tone'],
   Plate: ['src', 'alt', 'width', 'height', 'caption', 'eager', 'sizes', 'srcset'],
   ProjectFeature: ['numeral', 'title', 'tone', 'status', 'href', 'linkLabel', 'reverse'],
-  SpecPlate: ['rows', 'quote'],
+  PlateFrame: ['tag', 'caption'],
+  SpecPlate: ['rows', 'quote', 'caption'],
   ProjectEntry: ['image', 'imageAlt', 'title', 'line', 'tone', 'status', 'href', 'linkLabel'],
-  Lanes: ['items'],
+  Lane: ['term'],
+  Dotted: ['text'],
+  PageHead: ['title', 'lede', 'tagline', 'center'],
+  SplitSection: ['heading', 'id'],
+  ToolHero: ['tool'],
+  SiteNav: ['current'],
   Mark: ['size', 'class'],
 };
 
@@ -71,7 +77,7 @@ function typeBody(name: string, source: string, dir: string): string | undefined
 }
 
 describe('the pages and layout exist', () => {
-  it.each(['pages/index.astro', 'pages/callout.astro', 'pages/vivary.astro', 'pages/about.astro', 'pages/contact.astro', 'pages/404.astro', 'layouts/Base.astro', 'styles/tokens.css', 'data/tools.ts', 'data/projects.ts', 'components/ToolHero.astro'])(
+  it.each(['pages/index.astro', 'pages/callout.astro', 'pages/vivary.astro', 'pages/about.astro', 'pages/contact.astro', 'pages/404.astro', 'layouts/Base.astro', 'styles/tokens.css', 'data/tools.ts', 'data/projects.ts', 'components/ToolHero.astro', 'components/PageHead.astro', 'pages/sitemap.xml.ts'])(
     'src/%s',
     (path) => {
       expect(existsSync(join(SRC, path)), `src/${path} is missing`).toBe(true);
@@ -114,6 +120,24 @@ describe('slots', () => {
 
   it('NowLine takes its sentence in the default slot', () => {
     expect(read('components/NowLine.astro')).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
+  });
+
+  it('Lanes takes its Lane children in the default slot, and has no props to pass the same thing twice', () => {
+    const source = read('components/Lanes.astro');
+    expect(source).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
+    expect(source).not.toMatch(/Astro\.props/);
+  });
+
+  it('SplitSection takes the introduction in a named slot and the content in the default slot', () => {
+    const source = read('components/SplitSection.astro');
+    expect(source).toMatch(/<slot\s+name=["']intro["']/);
+    expect(source).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
+  });
+
+  it('PageHead takes what follows the lede in the default slot, a badge in `before` and a picture in `media`', () => {
+    const source = read('components/PageHead.astro');
+    for (const name of ['before', 'media']) expect(source).toMatch(new RegExp(`<slot\\s+name=["']${name}["']`));
+    expect(source).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
   });
 });
 
