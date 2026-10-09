@@ -10,6 +10,13 @@ import { PAGES, SCHEMES, VIEWPORT_HEIGHT, expect, loadEverything, nextFrames, op
 const [getCallout, seeVivary] = HOME.buttons;
 const MOTION_MS = MOTION.seconds * 1000;
 
+/** A `layout-shift` performance entry, which the DOM typings do not describe. */
+interface LayoutShiftEntry {
+  value: number;
+  hadRecentInput: boolean;
+  sources: { node: Node | null }[];
+}
+
 /** The curves of a computed `transition-timing-function`, split at the commas outside parentheses. */
 const curvesOf = (timing: string): string[] => timing.split(/,(?![^(]*\))/).map(normalizeValue);
 
@@ -94,23 +101,45 @@ for (const scheme of SCHEMES) {
     test.use({ viewport: { width: 1280, height: VIEWPORT_HEIGHT }, colorScheme: scheme, contextOptions: { reducedMotion: 'no-preference' } });
 
     for (const info of PAGES) {
-      test(`${info.label}: no transition or animation runs while it loads, and nothing shifts once every image and font is in`, async ({ page }) => {
+      test(`${info.label}: no transition or animation runs while it loads, and no layout shifts, even once every image and font is in`, async ({ page }) => {
         await page.addInitScript(() => {
-          const w = window as unknown as { __motion: string[] };
+          const w = window as unknown as { __motion: string[]; __shifts: string[]; __observer: PerformanceObserver; __note: (entries: PerformanceEntryList) => void };
           w.__motion = [];
           for (const type of ['transitionrun', 'transitionstart', 'animationstart']) {
             document.addEventListener(type, (event) => w.__motion.push(`${type} on ${(event.target as Element)?.tagName}`), true);
           }
+          // Every layout shift the browser scores from the first frame on, except one that follows the visitor's own input.
+          w.__shifts = [];
+          w.__note = (entries) => {
+            for (const entry of entries as unknown as LayoutShiftEntry[]) {
+              if (entry.hadRecentInput) continue;
+              const moved = entry.sources.map(({ node }) => (node instanceof Element ? `${node.tagName.toLowerCase()}.${String(node.className)}` : 'text')).join(', ');
+              w.__shifts.push(`${entry.value.toFixed(4)}: ${moved}`);
+            }
+          };
+          w.__observer = new PerformanceObserver((list) => w.__note(list.getEntries()));
+          w.__observer.observe({ type: 'layout-shift', buffered: true });
         });
-        /** Where the first 80 elements of main sit on the page, whatever the scroll position, to a tenth of a pixel. */
+        /** The layout shifts so far, including the ones the observer has not delivered yet. */
+        const shifts = (): Promise<string[]> =>
+          page.evaluate(() => {
+            const w = window as unknown as { __shifts: string[]; __observer: PerformanceObserver; __note: (entries: PerformanceEntryList) => void };
+            w.__note(w.__observer.takeRecords());
+            return w.__shifts;
+          });
+        /** Where every element of main sits on the page, whatever the scroll position, to a tenth of a pixel. A shift below the fold is not scored, so this sees it too. */
         const positions = (): Promise<number[]> =>
-          page.evaluate(() => Array.from(document.querySelectorAll('main *')).slice(0, 80).map((el) => Math.round((el.getBoundingClientRect().top + window.scrollY) * 10)));
+          page.evaluate(() => Array.from(document.querySelectorAll('main *')).map((el) => Math.round((el.getBoundingClientRect().top + window.scrollY) * 10)));
 
         await open(page, info);
+        await nextFrames(page);
+        expect(await shifts(), 'layout shifts while the page loaded').toEqual([]);
         const first = await positions();
+
+        // Scrolling to the bottom loads the lazy images. One that arrives without room reserved moves what sits below it.
         await loadEverything(page);
         await nextFrames(page);
-
+        expect(await shifts(), 'layout shifts after scrolling to the bottom, once every image and font is in').toEqual([]);
         expect(await positions(), 'element positions changed after every image and font loaded').toEqual(first);
         expect(await page.evaluate(() => (window as unknown as { __motion: string[] }).__motion), 'transition or animation events').toEqual([]);
         expect(await page.evaluate(() => document.getAnimations().length), 'running CSS transitions or animations').toBe(0);
