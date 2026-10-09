@@ -3,11 +3,13 @@
 // Put the introduction in the `intro` slot and the content (Lanes, a lede, a button) in the default slot.
 interface Props {
   heading: string;
+  // Lets a link land on the section.
+  id?: string;
 }
-const { heading } = Astro.props;
+const { heading, id } = Astro.props;
 ---
 
-<section class="section">
+<section id={id} class="section">
   <div class="wrap split">
     <div class="intro">
       <h2 class="heading">{heading}</h2>
@@ -25,11 +27,28 @@ const { heading } = Astro.props;
     align-items: start;
   }
 
-  /* The single breakpoint is 860px, as in global.css. */
+  /* With no introduction under it the heading is the whole column, so the grid gap alone separates it from the content. */
+  .intro > .heading:last-child {
+    margin-bottom: 0;
+  }
+
+  /*
+   * Beside a list of lanes, the heading's baseline sits on the first lane name's baseline. The name sits a lane
+   * padding (24px) and a half-leading below the rule that tops the list, so the 44px heading drops a quarter of its
+   * own size, which is 11px.
+   */
+  .split:has(.matter > :global(.lanes)) .heading {
+    padding-top: 0.25em;
+  }
+
   @media (max-width: 860px) {
     .split {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-5);
+    }
+
+    .split:has(.matter > :global(.lanes)) .heading {
+      padding-top: 0;
     }
   }
 </style>

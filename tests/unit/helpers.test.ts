@@ -26,6 +26,7 @@ import {
   declarations,
   fontFamilies,
   inside,
+  isForcedColors,
   isReducedMotion,
   normalizeHex,
   normalizeValue,
@@ -36,7 +37,7 @@ import {
 import { documentOrder, focusables, inOrder, one, all } from '../helpers/dom';
 import { PAGES, ROOT, fragmentsIn, parseHtml, resolveSitePath, splitHref, srcsetUrls } from '../helpers/dist';
 import { decodePng, encodePng, pixelAt, readPngSize, readWebp } from '../helpers/image';
-import { altTexts, collapse, straighten, textBlocks, textOf, visibleText } from '../helpers/text';
+import { altTexts, collapse, textBlocks, textOf, visibleText } from '../helpers/text';
 import { COLOR_NAMES, loadTokens, themeColor } from '../helpers/tokens';
 
 const text = (html: string): string => visibleText(parseHtml(html));
@@ -335,6 +336,11 @@ describe('css: parser', () => {
     expect(inside(d, isReducedMotion)).toBe(false);
   });
 
+  it('finds the forced-colors block, and only that block', () => {
+    const q = parseCss('@media (forced-colors: active) { i { border: 4px solid } } @media (forced-colors: none) { i { border: 0 } } b { border: 0 }');
+    expect(declarations(q).map((d) => inside(d, isForcedColors))).toEqual([true, false, false]);
+  });
+
   it('strips comments but keeps strings that look like comments', () => {
     expect(stripComments('a/* x */b')).toBe('a b');
     expect(stripComments('content: "/* not a comment */"')).toBe('content: "/* not a comment */"');
@@ -454,9 +460,14 @@ describe('text: visible text extraction', () => {
     expect(visibleText(parseHtml('<div><i aria-hidden="true"></i></div>'))).toBe('');
   });
 
-  it('straightens curly quotes so copy compares equal however it was typed', () => {
-    expect(straighten('I\u2019m \u201cquoted\u201d \u2018too\u2019')).toBe('I\'m "quoted" \'too\'');
-    expect(textOf(parseHtml('<p>I&#8217;m here</p>'))).toBe("I'm here");
+  it('keeps curly quotes and apostrophes as typed, so a straight one in the copy cannot pass for a curly one', () => {
+    expect(textOf(parseHtml('<p>I&#8217;m &#8220;here&#8221;</p>'))).toBe('I\u2019m \u201chere\u201d');
+    expect(textOf(parseHtml("<p>I'm here</p>"))).toBe("I'm here");
+  });
+
+  it('reads a .sep as a middle dot with a space on each side, as the page shows it', () => {
+    expect(visibleText(parseHtml('<p>Released<span class="sep">\u00b7</span>v0.2.0</p>'))).toBe('Released \u00b7 v0.2.0');
+    expect(visibleText(parseHtml('<p>A <span class="sep">\u00b7</span> B</p>'))).toBe('A \u00b7 B');
   });
 });
 

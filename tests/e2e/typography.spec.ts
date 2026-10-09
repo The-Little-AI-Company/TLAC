@@ -4,7 +4,7 @@
  * display faces at weight 400, italics only on captions and numerals, only color transitions.
  */
 import type { Locator, Page } from '@playwright/test';
-import { PAGES, VIEWPORT_HEIGHT, expect, firstFamily, isPhone, loadEverything, open, rgb, secondsOf, style, test } from './support';
+import { PAGES, VIEWPORT_HEIGHT, expect, firstFamily, isPhone, loadEverything, open, ramp, rgb, secondsOf, style, test } from './support';
 
 interface Scale {
   /** What the row is, for the test title. */
@@ -27,7 +27,7 @@ const SCALE: readonly Scale[] = [
   { name: 'display-l: a feature title', page: '/', locate: (p) => p.getByRole('heading', { level: 2, name: 'Vivary' }), family: 'Instrument Serif', size: [64, 40], lineHeight: 1, weight: '400', tracking: -0.005 },
   { name: 'heading: a section h2', page: '/', locate: (p) => p.getByRole('heading', { level: 2, name: 'Other things I have made' }), family: 'Instrument Serif', size: [44, 32], lineHeight: 1.05, weight: '400' },
   { name: 'heading: a tool page section h2', page: '/callout/', locate: (p) => p.getByRole('heading', { level: 2, name: 'What it does' }), family: 'Instrument Serif', size: [44, 32], lineHeight: 1.05, weight: '400' },
-  { name: 'title: a project name', page: '/', locate: (p) => p.getByRole('heading', { level: 3, name: 'Open World Factbook' }), family: 'Instrument Serif', size: [28, 22], lineHeight: 1.1, weight: '400' },
+  { name: 'title: a project name', page: '/', locate: (p) => p.getByRole('heading', { level: 3, name: 'Open World Factbook' }), family: 'Instrument Serif', size: [28, 24], lineHeight: 1.1, weight: '400' },
   { name: 'caption: a plate caption', page: '/', locate: (p) => p.locator('section#work figcaption').first(), family: 'Instrument Serif Italic', size: [17, 15], lineHeight: 1.4, weight: '400' },
   { name: 'lede: the home lede', page: '/', locate: (p) => p.locator('section.hero .lede'), family: 'Instrument Sans', size: [19, 16], lineHeight: 1.65, weight: '400' },
   { name: 'lede: an inner page lede', page: '/contact/', locate: (p) => p.locator('main .lede'), family: 'Instrument Sans', size: [19, 16], lineHeight: 1.65, weight: '400' },
@@ -69,6 +69,57 @@ for (const width of [1280, 360] as const) {
     });
   });
 }
+
+// ---------------------------------------------------------------------------------------------
+// Between the phone and the desktop: the display sizes are fluid, and agree with the scale at both ends
+
+for (const width of [320, 360, 600, 768, 859, 860, 861, 1024, 1280, 1440] as const) {
+  test.describe(`display sizes at ${width}px`, () => {
+    test.use({ viewport: { width, height: VIEWPORT_HEIGHT }, colorScheme: 'light' });
+
+    test('run along the line from the phone size at 360px to the desktop size at 860px', async ({ page }) => {
+      await open(page, '/');
+      const xl = await style(page.locator('section.hero').getByRole('heading', { level: 1 }), ['font-size']);
+      expect(parseFloat(xl['font-size'] ?? '0'), 'display-xl').toBeCloseTo(ramp(width, 42, 92), 1);
+      await open(page, '/about/');
+      const l = await style(page.getByRole('heading', { level: 1 }), ['font-size']);
+      expect(parseFloat(l['font-size'] ?? '0'), 'display-l').toBeCloseTo(ramp(width, 40, 64), 1);
+      const heading = await style(page.getByRole('heading', { level: 2, name: 'The position' }), ['font-size']);
+      expect(parseFloat(heading['font-size'] ?? '0'), 'heading').toBeCloseTo(ramp(width, 32, 44), 1);
+    });
+
+    // Between 360px and 861px the sizes are on the ramp, which the test above checks. Outside it they are the design system's values.
+    if (width <= 360 || width >= 861) {
+      test('are exactly the design system values, the phone ones at 360px and below and the desktop ones at 861px and above', async ({ page }) => {
+        const phone = width <= 360;
+        await open(page, '/');
+        expect((await style(page.locator('section.hero').getByRole('heading', { level: 1 }), ['font-size']))['font-size']).toBe(phone ? '42px' : '92px');
+        await open(page, '/about/');
+        expect((await style(page.getByRole('heading', { level: 1 }), ['font-size']))['font-size']).toBe(phone ? '40px' : '64px');
+        expect((await style(page.getByRole('heading', { level: 2, name: 'The position' }), ['font-size']))['font-size']).toBe(phone ? '32px' : '44px');
+      });
+    }
+  });
+}
+
+test.describe('text wrapping', () => {
+  test.use({ viewport: { width: 1280, height: VIEWPORT_HEIGHT }, colorScheme: 'light' });
+
+  const wrap = async (page: Page, selector: string): Promise<string> => (await style(page.locator(selector), ['text-wrap-style']))['text-wrap-style'] ?? '';
+
+  test('balances display text, captions, lane names and the now line, so none ends on a lone word', async ({ page }) => {
+    await open(page, '/');
+    for (const selector of ['section.hero h1', 'section.hero .lede', 'section.hero .now', 'section#work figcaption', 'section#other h2', 'section#other h3', 'section#how dt', 'section#how h2', 'footer .note']) {
+      expect(await wrap(page, selector), selector).toBe('balance');
+    }
+  });
+
+  test('balances the lede under a page heading, which is two or three lines, and tidies the last line of longer text', async ({ page }) => {
+    await open(page, '/callout/');
+    expect(await wrap(page, '.page-head .lede'), '.page-head .lede').toBe('balance');
+    for (const selector of ['#get-it .lede', 'main .text', 'main dd', 'main .text-sm']) expect(await wrap(page, selector), selector).toBe('pretty');
+  });
+});
 
 // ---------------------------------------------------------------------------------------------
 // Sweeps: every element on every page

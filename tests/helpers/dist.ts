@@ -25,14 +25,14 @@ export interface PageInfo {
   file: string;
   /** The `<title>` the page must have. */
   title: string;
-  /** The nav link that carries `aria-current="page"`, or undefined for no nav match. */
+  /** The link in the header that carries `aria-current="page"` (the brand link on the home page), or undefined for none. */
   navHref?: string;
-  /** The canonical URL, when the spec fixes it. */
+  /** The canonical URL. The 404 page has none: it is not a page anyone should be sent to. */
   canonical?: string;
 }
 
 export const PAGES: readonly PageInfo[] = [
-  { id: 'home', label: 'home', url: '/', file: 'index.html', title: SITE_NAME, canonical: `${SITE}/` },
+  { id: 'home', label: 'home', url: '/', file: 'index.html', title: SITE_NAME, navHref: '/', canonical: `${SITE}/` },
   { id: 'callout', label: 'callout', url: '/callout/', file: 'callout/index.html', title: `Callout. ${SITE_NAME}`, navHref: '/callout/', canonical: `${SITE}/callout/` },
   { id: 'vivary', label: 'vivary', url: '/vivary/', file: 'vivary/index.html', title: `Vivary. ${SITE_NAME}`, navHref: '/vivary/', canonical: `${SITE}/vivary/` },
   { id: 'about', label: 'about', url: '/about/', file: 'about/index.html', title: `About. ${SITE_NAME}`, navHref: '/about/', canonical: `${SITE}/about/` },

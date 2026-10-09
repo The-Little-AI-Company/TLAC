@@ -2,58 +2,35 @@
 import Base from '../layouts/Base.astro';
 import Lane from '../components/Lane.astro';
 import Lanes from '../components/Lanes.astro';
+import PageHead from '../components/PageHead.astro';
+import SplitSection from '../components/SplitSection.astro';
 import { tools } from '../data/tools';
 ---
 
 <Base
   title="Contact"
-  description="Reach me by email, or on GitHub, X or Bluesky. Bug reports go to each tool's issue tracker."
+  description="Reach me by email, or on GitHub, X, or Bluesky. Bug reports go to each tool’s issue tracker, and security reports go to my email."
 >
-  <section class="page-head">
-    <div class="wrap">
-      <h1 class="display-l">Contact</h1>
-      <p class="lede">One person answers this. That's me. Expect a reply within a few days.</p>
-    </div>
-  </section>
+  <PageHead title="Contact" lede="One person answers this. That’s me. Expect a reply within a few days." />
 
-  <section class="list">
-    <div class="wrap">
-      <Lanes>
-        <Lane term="Email">
-          <a href="mailto:jeff@littleaicompany.com">jeff@littleaicompany.com</a>
-        </Lane>
-        <Lane term="Bugs">
-          Open an issue on the tool's repository: {tools.map((t, i) => (
-            <>
-              <a href={`${t.repo}/issues`}>{t.name}</a>{i < tools.length - 1 ? ' or ' : '.'}
-            </>
-          ))}
-        </Lane>
-        <Lane term="Security">
-          Email the address above with "security" in the subject. Don't open a public issue for a vulnerability.
-        </Lane>
-        <Lane term="Elsewhere">
-          <a href="https://github.com/The-Little-AI-Company">GitHub</a>, <a href="https://x.com/JeffKazzee">X</a>, and <a href="https://bsky.app/profile/jeffkazzee.bsky.social">Bluesky</a>.
-        </Lane>
-      </Lanes>
-    </div>
-  </section>
+  <SplitSection heading="How to reach me">
+    <Lanes>
+      <Lane term="Email">
+        <a href="mailto:jeff@littleaicompany.com">jeff@littleaicompany.com</a>
+      </Lane>
+      <Lane term="Bugs">
+        Report a bug in the tool’s issue tracker on GitHub: {tools.map((t, i) => (
+          <>
+            <a class="nowrap" href={`${t.repo}/issues`}>{t.name} issues</a>{i < tools.length - 1 ? ' or ' : '.'}
+          </>
+        ))}
+      </Lane>
+      <Lane term="Security">
+        Email me with “security” in the subject. Don’t open a public issue for a vulnerability.
+      </Lane>
+      <Lane term="Elsewhere">
+        <a href="https://github.com/The-Little-AI-Company">GitHub</a>, <a href="https://x.com/JeffKazzee">X</a>, and <a href="https://bsky.app/profile/jeffkazzee.bsky.social">Bluesky</a>.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 </Base>
-
-<style>
-  .lede {
-    text-wrap: pretty;
-  }
-
-  /* The list's own top rule opens it, so the section gets no hairline of its own. */
-  .list {
-    padding-bottom: var(--space-9);
-  }
-
-  /* The single breakpoint is 860px, as in global.css. */
-  @media (max-width: 860px) {
-    .list {
-      padding-bottom: var(--space-7);
-    }
-  }
-</style>

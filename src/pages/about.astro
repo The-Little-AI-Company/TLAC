@@ -2,87 +2,46 @@
 import Base from '../layouts/Base.astro';
 import Lane from '../components/Lane.astro';
 import Lanes from '../components/Lanes.astro';
+import PageHead from '../components/PageHead.astro';
+import SplitSection from '../components/SplitSection.astro';
 ---
 
 <Base
   title="About"
   description="The Little AI Company is my independent software studio. I build small tools for people who use AI and intend to stay in charge of it."
 >
-  <section class="page-head">
-    <div class="wrap">
-      <h1 class="display-l">About</h1>
-      <p class="lede">
-        The Little AI Company is my independent software studio. I'm Jeff Kazzee, and I
-        build small tools for people who use AI and intend to stay in charge of it.
+  <PageHead
+    title="About"
+    lede="The Little AI Company is my independent software studio. I’m Jeff Kazzee, and I build small tools for people who use AI and intend to stay in charge of it."
+  />
+
+  <SplitSection heading="The position">
+    <div class="article">
+      <p class="text">
+        Most AI products are built to take work off your hands. Some of that is
+        useful. Past a point it takes your judgment with it. You end up trusting
+        output you can’t inspect, from a system you can’t stop.
+      </p>
+      <p class="text">
+        I build the other kind. A tool of mine shows where a claim came from. It
+        keeps its state in files you can open. It waits for your approval before it
+        changes anything that matters. It should leave you sharper than it found you.
+      </p>
+      <p class="text">
+        That’s the whole company. Callout and Vivary are open source, and both run
+        on your machine.
       </p>
     </div>
-  </section>
+  </SplitSection>
 
-  <section class="section">
-    <div class="wrap split">
-      <h2 class="heading">The position</h2>
-      <div>
-        <p class="text">
-          Most AI products are built to take work off your hands. Some of that is
-          useful. Past a point it takes your judgment with it, and you end up trusting
-          output you can't inspect from a system you can't stop.
-        </p>
-        <p class="text">
-          I build the other kind. A tool of mine shows you where a claim came from,
-          keeps its state in files you can open, and waits for your approval before it
-          changes anything that matters. It should leave you sharper than it found you.
-        </p>
-        <p class="text">
-          That's the whole company. Everything I ship is open source and runs on your
-          machine.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap split">
-      <h2 class="heading">What I don't do</h2>
-      <Lanes>
-        <Lane term="No hosted memory">I don't keep your data on my servers. I don't have servers.</Lane>
-        <Lane term="No telemetry">My tools don't phone home, and neither does this site.</Lane>
-        <Lane term="No autopilot">Nothing ships that acts on your behalf without a gate you can see.</Lane>
-        <Lane term="Guides">
-          My guides and workshop notes on second brains and Zo Computer live on my own account at <a class="handle" href="https://github.com/Jeff-Kazzee">github.com/Jeff-Kazzee</a>.
-        </Lane>
-      </Lanes>
-    </div>
-  </section>
+  <SplitSection heading="What I don’t do">
+    <Lanes>
+      <Lane term="No hosted memory">I don’t keep your data on my servers. I don’t have servers.</Lane>
+      <Lane term="No telemetry">My tools don’t phone home, and neither does this site.</Lane>
+      <Lane term="No autopilot">Nothing ships that acts on your behalf without a gate you can see.</Lane>
+      <Lane term="No courses">
+        My guides and workshops on second brains and Zo Computer live on my own account at <a class="nowrap" href="https://github.com/Jeff-Kazzee">github.com/Jeff-Kazzee</a>.
+      </Lane>
+    </Lanes>
+  </SplitSection>
 </Base>
-
-<style>
-  /* Keeps the last line of the lede from holding a single word. */
-  .lede {
-    text-wrap: pretty;
-  }
-
-  /* The handle stays on one line rather than breaking at its hyphen. */
-  .handle {
-    white-space: nowrap;
-  }
-
-  /* Heading in one column, content in the other. One column under 860px. */
-  .split {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: var(--space-7);
-    align-items: start;
-  }
-
-  .split > .heading {
-    margin-bottom: 0;
-  }
-
-  /* The single breakpoint is 860px, as in global.css. */
-  @media (max-width: 860px) {
-    .split {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-5);
-    }
-  }
-</style>

@@ -3,18 +3,21 @@ import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
 import Lane from '../components/Lane.astro';
 import Lanes from '../components/Lanes.astro';
+import SpecPlate from '../components/SpecPlate.astro';
 import SplitSection from '../components/SplitSection.astro';
 import ToolHero from '../components/ToolHero.astro';
-import { tool } from '../data/tools';
+import { callout, calloutPlate, latestVersion } from '../data/tools';
 
-const callout = tool('callout');
+const version = await latestVersion(callout.version);
 ---
 
 <Base
   title="Callout"
-  description="Press a hotkey over anything you are reading. Callout tells you whether the text is trying to manipulate you and whether its claims hold up against sources it fetched. Windows, bring your own keys, no server."
+  description="Press a hotkey over any text. Callout says whether it is trying to manipulate you and whether its claims hold up. Windows, bring your own keys, no server."
 >
-  <ToolHero tool={callout} />
+  <ToolHero tool={callout}>
+    <SpecPlate {...calloutPlate(version)} />
+  </ToolHero>
 
   <SplitSection heading="What it does">
     <p slot="intro" class="text">
@@ -43,16 +46,16 @@ const callout = tool('callout');
     </p>
     <Lanes>
       <Lane term="A judging model">
-        Returns probabilities, never sentences. It scores content kind, the
-        manipulation battery, passage relevance, claim-versus-evidence support, and
-        every sentence the helper writes.
+        Returns probabilities, never sentences. It scores what kind of content this
+        is, the manipulation signals in it, whether a passage is relevant, whether
+        evidence supports a claim, and every sentence the helper writes.
       </Lane>
       <Lane term="A writing helper">
         Any OpenAI-compatible or Anthropic endpoint. It extracts claims, drafts search
         queries, reads screenshots, and writes the two-sentence summary. Everything it
         writes goes back through the judge.
       </Lane>
-      <Lane term="Code owns the thresholds">
+      <Lane term="A rules file">
         Every threshold, cap, and question lives in one readable file in the
         repository. Nothing is tuned behind a server.
       </Lane>
@@ -61,7 +64,7 @@ const callout = tool('callout');
 
   <SplitSection heading="What stays on your machine">
     <Lanes>
-      <Lane term="Everything">
+      <Lane term="No server">
         No server, no account, no telemetry. The text you check goes to the three
         APIs you configure and to the pages Callout fetches for evidence, and nowhere
         else.
@@ -74,7 +77,7 @@ const callout = tool('callout');
     </Lanes>
   </SplitSection>
 
-  <SplitSection heading="Get it">
+  <SplitSection id="get-it" heading="Get it">
     <p class="lede">
       Download the installer for Windows 10 and 11, run it, and paste your API keys
       into Settings. No account. Open source under MIT.
@@ -83,9 +86,9 @@ const callout = tool('callout');
       <Button href={callout.primary.href} variant="primary">{callout.primary.label}</Button>
     </div>
     <p class="text-sm note">
-      The installer is not code-signed yet, so Windows SmartScreen warns on first
-      run. Choose More info, then Run anyway. The source is on GitHub if you'd
-      rather build it yourself.
+      The installer is unsigned for now, so Windows SmartScreen warns on first run.
+      Choose More info, then Run anyway. The source is on GitHub if you’d rather
+      build it yourself.
     </p>
   </SplitSection>
 </Base>

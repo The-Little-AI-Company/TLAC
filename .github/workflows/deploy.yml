@@ -26,6 +26,9 @@ jobs:
       - name: Install, build, and upload the site
         uses: withastro/action@v6
         # package manager (pnpm) is auto-detected from pnpm-lock.yaml
+        env:
+          # The build asks GitHub for Callout's latest release. A token keeps shared runners from being rate limited.
+          GITHUB_TOKEN: ${{ github.token }}
 
   deploy:
     needs: build

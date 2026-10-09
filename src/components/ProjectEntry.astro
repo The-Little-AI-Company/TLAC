@@ -5,12 +5,21 @@ import type { Project } from '../data/projects';
 import StatusBadge from './StatusBadge.astro';
 
 type Props = Project;
-const { image, imageAlt, width, height, title, line, tone, status, href, linkLabel } = Astro.props;
+const { image, thumb, imageAlt, width, height, title, line, tone, status, href, linkLabel } = Astro.props;
 ---
 
 <li class="entry">
-  <div class="thumb">
-    <img src={image} alt={imageAlt} width={width} height={height} loading="lazy" decoding="async" />
+  <div class="frame thumb">
+    <img
+      src={image}
+      srcset={`${thumb} 320w, ${image} ${width}w`}
+      sizes="(max-width: 860px) 88px, 150px"
+      alt={imageAlt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
   </div>
   <div class="copy">
     <h3 class="title">{title}</h3>
@@ -38,9 +47,6 @@ const { image, imageAlt, width, height, title, line, tone, status, href, linkLab
 
   .thumb {
     padding: 5px;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-none);
-    background: var(--raised);
   }
 
   .thumb img {
@@ -57,24 +63,21 @@ const { image, imageAlt, width, height, title, line, tone, status, href, linkLab
     display: grid;
     gap: var(--space-2);
     justify-items: end;
-    font-size: 14px;
+    font-size: .875rem;
     text-align: right;
   }
 
+  /* A long address wraps at its hyphens in the column rather than taking the width the description needs. */
   .meta a {
+    max-width: 24ch;
     overflow-wrap: anywhere;
   }
 
-  /* The single breakpoint is 860px, as in global.css. */
   @media (max-width: 860px) {
     .entry {
       grid-template-columns: 88px 1fr;
       gap: 14px;
       padding: 14px 0;
-    }
-
-    .title {
-      font-size: 22px;
     }
 
     .meta {

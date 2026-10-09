@@ -3,15 +3,15 @@
  * carry over the previous copy.
  */
 import { describe, expect, it } from 'vitest';
-import { tool } from '../../src/data/tools';
+import { callout, vivary } from '../../src/data/tools';
 import { all, attr, classesOf, inOrder, one, type El } from '../helpers/dom';
-import { page, parsePage } from '../helpers/dist';
-import { badges, buttons, headings, lanes, links, paragraph, proseParagraphs, sectionOf } from '../helpers/sections';
+import { page, parsePage, srcsetUrls } from '../helpers/dist';
+import { badges, buttons, headings, lanes, links, paragraph, proseParagraphs, rowMismatches, sectionOf } from '../helpers/sections';
 import { CALLOUT_PAGE, RELEASED_PATTERN, VIVARY_PAGE, type SectionExpectation } from '../helpers/spec';
 import { textOf } from '../helpers/text';
 
-const callout = () => parsePage(page('callout'));
-const vivary = () => parsePage(page('vivary'));
+const calloutDoc = () => parsePage(page('callout'));
+const vivaryDoc = () => parsePage(page('vivary'));
 const heroOf = (doc: El): El => {
   const section = one(doc, 'main h1').closest('section');
   if (!section) throw new Error('the h1 is not inside a <section>');
@@ -26,7 +26,7 @@ function expectSection(doc: El, expected: SectionExpectation): void {
 }
 
 describe('callout: hero', () => {
-  const hero = () => heroOf(callout());
+  const hero = () => heroOf(calloutDoc());
 
   it('opens with the shipped badge reading "Released · vX.Y.Z"', () => {
     const found = badges(hero());
@@ -44,49 +44,61 @@ describe('callout: hero', () => {
 
   it('has the tagline as its lede and the tools.ts summary under it', () => {
     expect(textOf(one(hero(), 'p.lede'))).toBe(CALLOUT_PAGE.lede);
-    expect(CALLOUT_PAGE.lede).toBe(tool('callout').tagline);
-    expect(textOf(paragraph(hero(), tool('callout').summary))).toBe(tool('callout').summary);
+    expect(CALLOUT_PAGE.lede).toBe(callout.tagline);
+    expect(textOf(paragraph(hero(), callout.summary))).toBe(callout.summary);
   });
 
   it('has Download for Windows (primary, the installer) and Source on GitHub (secondary)', () => {
     expect(buttons(hero()).map((b) => ({ label: b.label, href: b.href, variant: b.variant }))).toEqual(
       CALLOUT_PAGE.buttons.map((b) => ({ label: b.label, href: b.href, variant: b.variant })),
     );
-    expect(tool('callout').primary.href).toBe(CALLOUT_PAGE.buttons[0].href);
-    expect(tool('callout').repo).toBe(CALLOUT_PAGE.buttons[1].href);
+    expect(callout.primary.href).toBe(CALLOUT_PAGE.buttons[0].href);
+    expect(callout.repo).toBe(CALLOUT_PAGE.buttons[1].href);
   });
 
-  it('has the facts line under the buttons', () => {
-    expect(textOf(paragraph(hero(), CALLOUT_PAGE.facts))).toBe(CALLOUT_PAGE.facts);
+  it('shows the facts plate beside the text: the rows, then the quote the result header carries', () => {
+    const plate = one(hero(), '.plate');
+    expect(rowMismatches(lanes(plate, 'dl'), CALLOUT_PAGE.plate.rows)).toEqual([]);
+    expect(textOf(one(plate, 'figure.quote blockquote p'))).toBe(CALLOUT_PAGE.plate.quote);
+    expect(textOf(one(plate, 'figure.quote figcaption'))).toBe(CALLOUT_PAGE.plate.quoteCaption);
+    expect(one(plate, 'dl').closest('figure'), 'the facts are not a figure').toBeNull();
   });
 
-  it('runs badge, h1, tagline, summary, buttons, facts', () => {
+  it('has no facts line under the buttons, since the plate carries the facts', () => {
+    expect(all(hero(), 'p.facts')).toHaveLength(0);
+  });
+
+  it('runs badge, h1, tagline, summary, buttons, plate', () => {
     const els = [
       one(hero(), '.status'),
       one(hero(), 'h1'),
       one(hero(), 'p.lede'),
-      paragraph(hero(), tool('callout').summary),
+      paragraph(hero(), callout.summary),
       one(hero(), '.actions'),
-      paragraph(hero(), CALLOUT_PAGE.facts),
+      one(hero(), '.plate'),
     ];
-    expect(inOrder(callout(), els)).toBe(true);
+    expect(inOrder(calloutDoc(), els)).toBe(true);
   });
 });
 
 describe('callout: sections', () => {
   it('has the h2s What it does, How it works, What stays on your machine, Get it', () => {
-    expect(headings(one(callout(), 'main')).filter(([level]) => level === 2).map(([, text]) => text)).toEqual([
+    expect(headings(one(calloutDoc(), 'main')).filter(([level]) => level === 2).map(([, text]) => text)).toEqual([
       ...CALLOUT_PAGE.sections.map((s) => s.heading),
       CALLOUT_PAGE.get.heading,
     ]);
   });
 
   it.each(CALLOUT_PAGE.sections.map((s) => [s.heading, s] as const))('carries over the copy of "%s"', (_heading, expected) => {
-    expectSection(callout(), expected);
+    expectSection(calloutDoc(), expected);
   });
 
   describe('Get it', () => {
-    const section = () => sectionOf(one(callout(), 'main'), CALLOUT_PAGE.get.heading);
+    const section = () => sectionOf(one(calloutDoc(), 'main'), CALLOUT_PAGE.get.heading);
+
+    it('can be linked to: the home page sends "Get Callout" to #get-it', () => {
+      expect(attr(section(), 'id')).toBe(CALLOUT_PAGE.get.id);
+    });
 
     it('has the lede, the download button, and the SmartScreen note', () => {
       expect(textOf(one(section(), 'p.lede'))).toBe(CALLOUT_PAGE.get.lede);
@@ -95,13 +107,13 @@ describe('callout: sections', () => {
     });
 
     it('runs lede, button, note', () => {
-      expect(inOrder(callout(), [one(section(), 'p.lede'), one(section(), '.btn'), paragraph(section(), CALLOUT_PAGE.get.note)])).toBe(true);
+      expect(inOrder(calloutDoc(), [one(section(), 'p.lede'), one(section(), '.btn'), paragraph(section(), CALLOUT_PAGE.get.note)])).toBe(true);
     });
   });
 });
 
 describe('vivary: hero', () => {
-  const hero = () => heroOf(vivary());
+  const hero = () => heroOf(vivaryDoc());
 
   it('opens with the wip badge and the unsigned preview date', () => {
     expect(badges(hero()).map((b) => [b.tone, b.label])).toEqual([['wip', VIVARY_PAGE.status]]);
@@ -116,8 +128,8 @@ describe('vivary: hero', () => {
 
   it('has the tagline as its lede and the tools.ts summary under it', () => {
     expect(textOf(one(hero(), 'p.lede'))).toBe(VIVARY_PAGE.lede);
-    expect(VIVARY_PAGE.lede).toBe(tool('vivary').tagline);
-    expect(textOf(paragraph(hero(), tool('vivary').summary))).toBe(tool('vivary').summary);
+    expect(VIVARY_PAGE.lede).toBe(vivary.tagline);
+    expect(textOf(paragraph(hero(), vivary.summary))).toBe(vivary.summary);
   });
 
   it('has Visit vivaryagent.xyz (primary) and Release queue on GitHub (secondary)', () => {
@@ -131,6 +143,8 @@ describe('vivary: hero', () => {
     const img = one(plate, 'img');
     const p = VIVARY_PAGE.plate;
     expect(attr(img, 'src')).toBe(p.src);
+    expect(srcsetUrls(attr(img, 'srcset') ?? '')).toEqual([p.small.src, p.src]);
+    expect(attr(img, 'sizes')).toBeDefined();
     expect(attr(img, 'width')).toBe(String(p.width));
     expect(attr(img, 'height')).toBe(String(p.height));
     expect(attr(img, 'alt')).toBe(p.alt);
@@ -141,25 +155,25 @@ describe('vivary: hero', () => {
   });
 
   it('runs badge, h1, tagline, summary, buttons, plate', () => {
-    const els = [one(hero(), '.status'), one(hero(), 'h1'), one(hero(), 'p.lede'), paragraph(hero(), tool('vivary').summary), one(hero(), '.actions'), one(hero(), 'figure.plate')];
-    expect(inOrder(vivary(), els)).toBe(true);
+    const els = [one(hero(), '.status'), one(hero(), 'h1'), one(hero(), 'p.lede'), paragraph(hero(), vivary.summary), one(hero(), '.actions'), one(hero(), 'figure.plate')];
+    expect(inOrder(vivaryDoc(), els)).toBe(true);
   });
 });
 
 describe('vivary: sections', () => {
   it('has the h2s What it is, What it asks of you, Status', () => {
-    expect(headings(one(vivary(), 'main')).filter(([level]) => level === 2).map(([, text]) => text)).toEqual([
+    expect(headings(one(vivaryDoc(), 'main')).filter(([level]) => level === 2).map(([, text]) => text)).toEqual([
       ...VIVARY_PAGE.sections.map((s) => s.heading),
       VIVARY_PAGE.statusSection.heading,
     ]);
   });
 
   it.each(VIVARY_PAGE.sections.map((s) => [s.heading, s] as const))('carries over the copy of "%s"', (_heading, expected) => {
-    expectSection(vivary(), expected);
+    expectSection(vivaryDoc(), expected);
   });
 
   describe('Status', () => {
-    const section = () => sectionOf(one(vivary(), 'main'), VIVARY_PAGE.statusSection.heading);
+    const section = () => sectionOf(one(vivaryDoc(), 'main'), VIVARY_PAGE.statusSection.heading);
     const s = VIVARY_PAGE.statusSection;
 
     it('says what came out on Sept 22, 2026', () => {
@@ -177,26 +191,35 @@ describe('vivary: sections', () => {
     });
 
     it('runs the status lede, then the command-line note', () => {
-      expect(inOrder(vivary(), [paragraph(section(), s.lede), paragraph(section(), s.cli)])).toBe(true);
+      expect(inOrder(vivaryDoc(), [paragraph(section(), s.lede), paragraph(section(), s.cli)])).toBe(true);
     });
   });
 
   it('no longer says a Windows candidate was tested privately', () => {
-    expect(textOf(one(vivary(), 'main'))).not.toMatch(/candidate|tested privately|Watch the release queue/);
+    expect(textOf(one(vivaryDoc(), 'main'))).not.toMatch(/candidate|tested privately|Watch the release queue/);
   });
 });
 
 describe('tool pages agree with each other', () => {
-  it('shows the same Callout version on the home page and the Callout page', () => {
-    const fromHome = badges(one(parsePage(page('home')), '#work')).find((b) => b.tone === 'shipped')?.label;
-    const fromPage = badges(heroOf(callout()))[0]?.label;
+  it('shows the same Callout version on the home page and the Callout page, in the badge and in the facts plate', () => {
+    const home = one(parsePage(page('home')), '#work');
+    const fromHome = badges(home).find((b) => b.tone === 'shipped')?.label;
+    const fromPage = badges(heroOf(calloutDoc()))[0]?.label;
     expect(fromPage).toMatch(RELEASED_PATTERN);
     expect(fromPage).toBe(fromHome);
+    const versionRow = (root: El) => lanes(root, 'dl').find((row) => row.term === 'Version')?.detail;
+    expect(versionRow(heroOf(calloutDoc())), 'the Version row on the Callout page').toBe(versionRow(home));
+    expect(fromPage).toBe(`Released · ${versionRow(home)}`);
+  });
+
+  it('shows the same facts plate on the home page and the Callout page', () => {
+    const rows = (root: El) => lanes(root, 'dl').map(({ term, detail }) => ({ term, detail }));
+    expect(rows(heroOf(calloutDoc()))).toEqual(rows(one(parsePage(page('home')), '#work article.feature--reverse')));
   });
 
   it('shows the same Vivary status on the home page and the Vivary page', () => {
     const fromHome = badges(one(parsePage(page('home')), '#work')).find((b) => b.tone === 'wip')?.label;
-    expect(badges(heroOf(vivary()))[0]?.label).toBe(fromHome);
+    expect(badges(heroOf(vivaryDoc()))[0]?.label).toBe(fromHome);
   });
 
   it('links both tool pages from the home page buttons', () => {

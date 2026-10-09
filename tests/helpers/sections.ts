@@ -55,6 +55,23 @@ export function lanes(root: El, selector = 'dl.lanes'): Lane[] {
   return found;
 }
 
+/**
+ * What differs between spec plate rows and what they should say, one message per difference.
+ * A string detail must match exactly. A RegExp detail (a version) must match the pattern.
+ */
+export function rowMismatches(rows: Lane[], expected: readonly { term: string; detail: string | RegExp }[]): string[] {
+  const problems: string[] = [];
+  if (rows.length !== expected.length) problems.push(`expected ${expected.length} rows, found ${rows.length}`);
+  expected.forEach(({ term, detail }, i) => {
+    const row = rows[i];
+    if (!row) return;
+    if (row.term !== term) problems.push(`row ${i + 1} is "${row.term}", expected "${term}"`);
+    const ok = typeof detail === 'string' ? row.detail === detail : detail.test(row.detail);
+    if (!ok) problems.push(`row "${term}" says "${row.detail}", expected ${String(detail)}`);
+  });
+  return problems;
+}
+
 /** Buttons (`a.btn`) under `root`, in order. */
 export function buttons(root: El): Button[] {
   return all(root, 'a.btn').map((el) => ({

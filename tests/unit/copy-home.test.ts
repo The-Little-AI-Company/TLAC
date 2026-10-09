@@ -2,11 +2,11 @@
  * SPEC section 8, "/ home": every exact string, link, image and attribute of the home page.
  */
 import { describe, expect, it } from 'vitest';
-import { tool } from '../../src/data/tools';
+import { callout } from '../../src/data/tools';
 import { all, attr, classesOf, inOrder, one } from '../helpers/dom';
-import { page, parsePage } from '../helpers/dist';
-import { badges, buttons, headings, lanes, links, paragraph, sectionOf } from '../helpers/sections';
-import { HOME, PROJECTS, RELEASED_PATTERN, VERSION_PATTERN } from '../helpers/spec';
+import { page, parsePage, srcsetUrls } from '../helpers/dist';
+import { badges, buttons, headings, lanes, links, paragraph, rowMismatches, sectionOf } from '../helpers/sections';
+import { HOME, PROJECTS, RELEASED_PATTERN } from '../helpers/spec';
 import { textOf } from '../helpers/text';
 
 const home = () => parsePage(page('home'));
@@ -133,6 +133,24 @@ describe('home: #work', () => {
       expect(textOf(one(plate, 'figcaption'))).toBe(v.plate.caption);
     });
 
+    it('serves phones the 640px copy of the screenshot and everyone else the full one', () => {
+      const img = one(one(feature(), 'figure.plate'), 'img');
+      expect(attr(img, 'srcset')).toBe(`${v.plate.small.src} ${v.plate.small.width}w, ${v.plate.src} ${v.plate.width}w`);
+      expect(attr(img, 'sizes'), 'srcset with w descriptors needs sizes').toBeDefined();
+      expect(attr(img, 'src'), 'the src is the fallback, the full file').toBe(v.plate.src);
+    });
+
+    it('keeps "sign-in" on one line in the caption', () => {
+      expect(textOf(one(one(feature(), 'figcaption'), '.nowrap'))).toBe('sign-in');
+    });
+
+    it('is an article named by its title, though the plate comes first in the markup', () => {
+      const h2 = one(feature(), 'h2');
+      expect(attr(feature(), 'aria-labelledby')).toBe(attr(h2, 'id'));
+      expect(attr(h2, 'id')).toBeDefined();
+      expect(inOrder(home(), [one(feature(), 'figure.plate'), h2])).toBe(true);
+    });
+
     it('has the body paragraph', () => {
       expect(textOf(paragraph(feature(), v.body))).toBe(v.body);
     });
@@ -163,31 +181,31 @@ describe('home: #work', () => {
       expect(textOf(h2)).toBe(c.title);
     });
 
-    it('has a spec plate with Runs on, Version, License and Price, in that order', () => {
+    it('has a spec plate with Runs on, Version, License and API keys, in that order', () => {
       const rows = lanes(feature(), 'dl');
-      expect(rows.map((r) => r.term)).toEqual(c.rows.map((r) => r.term));
-      expect(rows[0]?.detail).toBe('Windows 10 and 11');
-      expect(rows[1]?.detail).toMatch(VERSION_PATTERN);
-      expect(rows[2]?.detail).toBe('MIT');
-      expect(rows[3]?.detail).toBe('Free. Bring your own API keys.');
+      expect(rowMismatches(rows, c.plate.rows)).toEqual([]);
     });
 
     it('sits the spec plate in a raised plate frame beside the text', () => {
       const dl = one(feature(), 'dl');
-      expect(dl.closest('.plate, figure'), 'the facts list should sit in a plate').not.toBeNull();
-      expect(dl.closest('.plate, figure')?.querySelector('h2')).toBeNull();
+      expect(dl.closest('.plate'), 'the facts list should sit in a plate').not.toBeNull();
+      expect(dl.closest('.plate')?.querySelector('h2')).toBeNull();
     });
 
-    it('quotes the result header, with its caption', () => {
-      const plate = one(feature(), 'dl').closest('.plate, figure')!;
-      const quote = all(plate, 'p').find((p) => textOf(p) === c.quote);
-      expect(quote, `no <p> reads "${c.quote}"`).toBeDefined();
-      expect(textOf(plate)).toContain(c.quoteCaption);
-      expect(all(plate, '*').some((el) => textOf(el) === c.quoteCaption), `nothing in the plate reads exactly "${c.quoteCaption}"`).toBe(true);
+    it('does not make the facts a figure, so the caption names the quote and not the table', () => {
+      const dl = one(feature(), 'dl');
+      expect(dl.closest('figure'), 'the facts list should not be inside a figure').toBeNull();
+    });
+
+    it('quotes the result header in a figure of its own, with the caption that credits it', () => {
+      const quote = one(feature(), 'figure.quote');
+      expect(textOf(one(quote, 'blockquote p'))).toBe(c.plate.quote);
+      expect(textOf(one(quote, 'figcaption'))).toBe(c.plate.quoteCaption);
+      expect(quote.closest('.plate'), 'the quote sits in the same plate as the facts').toBe(one(feature(), 'dl').closest('.plate'));
     });
 
     it('has the Callout summary from tools.ts as its body', () => {
-      expect(textOf(paragraph(feature(), tool('callout').summary))).toBe(tool('callout').summary);
+      expect(textOf(paragraph(feature(), callout.summary))).toBe(callout.summary);
     });
 
     it('has the shipped badge reading "Released · vX.Y.Z", with the version the spec plate shows', () => {
@@ -204,7 +222,7 @@ describe('home: #work', () => {
     });
 
     it('runs numeral, title, body, badge, button', () => {
-      const els = [one(feature(), 'p.numeral'), one(feature(), 'h2'), paragraph(feature(), tool('callout').summary), one(feature(), '.status'), one(feature(), '.btn')];
+      const els = [one(feature(), 'p.numeral'), one(feature(), 'h2'), paragraph(feature(), callout.summary), one(feature(), '.status'), one(feature(), '.btn')];
       expect(inOrder(home(), els)).toBe(true);
     });
   });
@@ -238,6 +256,9 @@ describe('home: #other', () => {
 
     const img = one(entry, 'img');
     expect(attr(img, 'src')).toBe(p.image.src);
+    expect(attr(img, 'srcset')).toBe(`${p.thumb.src} ${p.thumb.width}w, ${p.image.src} ${p.image.width}w`);
+    expect(srcsetUrls(attr(img, 'srcset') ?? '')).toContain(p.thumb.src);
+    expect(attr(img, 'sizes')).toBe('(max-width: 860px) 88px, 150px');
     expect(attr(img, 'width')).toBe(String(p.image.width));
     expect(attr(img, 'height')).toBe(String(p.image.height));
     expect(attr(img, 'alt')).toBe(`${p.title} home page`);

@@ -2,7 +2,8 @@
  * SPEC section 10 "All images load": every <img> on every page decodes to real pixels once it has
  * been scrolled into view, at a phone and a desktop width.
  */
-import { KEY_WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, open, test } from './support';
+import type { Page } from '@playwright/test';
+import { KEY_WIDTHS, PAGES, VIEWPORT_HEIGHT, expect, loadEverything, open, test } from './support';
 import { IMAGE_COUNT } from '../helpers/spec';
 
 interface Loaded {
@@ -79,3 +80,38 @@ test.describe('the hero image', () => {
     expect(await mascot.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   });
 });
+
+// srcset: each screen downloads the smallest file that is sharp at the size the picture is drawn.
+const SMALL = /-(?:320|600|640)\.webp$/;
+
+const sources = async (page: Page, path: string): Promise<{ thumbs: string[]; plates: string[] }> => {
+  await open(page, path);
+  await loadEverything(page);
+  return page.evaluate(() => ({
+    thumbs: Array.from(document.querySelectorAll<HTMLImageElement>('.thumb img')).map((img) => img.currentSrc),
+    plates: Array.from(document.querySelectorAll<HTMLImageElement>('figure.plate img')).map((img) => img.currentSrc),
+  }));
+};
+
+for (const [name, width, scale, plates] of [
+  ['a phone', 360, 1, 'the smaller copy'],
+  ['a desktop screen', 1280, 1, 'the smaller copy'],
+  ['a high-density desktop screen', 1280, 2, 'the full 1200px file'],
+] as const) {
+  test.describe(`right-sized images on ${name}`, () => {
+    test.use({ viewport: { width, height: VIEWPORT_HEIGHT }, deviceScaleFactor: scale });
+
+    test(`thumbnails load the 320px copy and plates load ${plates}`, async ({ page }) => {
+      const home = await sources(page, '/');
+      expect(home.thumbs).toHaveLength(4);
+      for (const src of home.thumbs) expect(src, 'thumbnail').toMatch(/-320\.webp$/);
+      const vivary = await sources(page, '/vivary/');
+      for (const src of [...home.plates, ...vivary.plates]) {
+        if (scale === 1) expect(src, 'plate').toMatch(/-(?:600|640)\.webp$/);
+        else expect(SMALL.test(src), `${src} should be the full file`).toBe(false);
+      }
+      expect(home.plates).toHaveLength(1);
+      expect(vivary.plates).toHaveLength(1);
+    });
+  });
+}

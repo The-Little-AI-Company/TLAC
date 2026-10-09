@@ -44,8 +44,10 @@ type Rule = (text: string) => string[];
 const times = (count: number, what: string): string[] => Array.from({ length: count }, () => what);
 
 const RULES: readonly (readonly [name: string, rule: Rule])[] = [
-  ['says "I", never we, our, ours or us', firstPersonPlural],
+  // Words in quotation marks are not the site's voice: they are what a screenshot says (“What are we working on?”).
+  ['says "I", never we, our, ours or us', (t) => firstPersonPlural(t.replace(/“[^”]*”/g, ''))],
   ['has no all-caps words beyond AI, MIT, API, APIs, LLM, HTML, CSS, CLI, V1, OS', allCapsWords],
+  ['has no straight apostrophe or quote (they are typeset: ’ “ ”)', (t) => t.match(/['"]/g) ?? []],
   ['has no em dash', (t) => times(emDashes(t), '—')],
   ['has no semicolon', (t) => times(semicolons(t), ';')],
   ['has no exclamation point', (t) => times(exclamations(t), '!')],

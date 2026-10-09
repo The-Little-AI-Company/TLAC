@@ -8,6 +8,8 @@ export interface Project {
   href: string;
   linkLabel: string;
   image: string;
+  // The same picture at 320px wide, for the thumbnail that is drawn 150px wide (88px on a phone).
+  thumb: string;
   width: number;
   height: number;
   imageAlt: string;
@@ -24,6 +26,7 @@ export const projects: Project[] = [
     href: 'https://worldfactbook.xyz',
     linkLabel: 'worldfactbook.xyz',
     image: '/images/open-world-factbook-2026-10-08.webp',
+    thumb: '/images/open-world-factbook-2026-10-08-320.webp',
     width: 960,
     height: 600,
     imageAlt: 'Open World Factbook home page',
@@ -36,6 +39,7 @@ export const projects: Project[] = [
     href: 'https://llmarcade.fun',
     linkLabel: 'llmarcade.fun',
     image: '/images/llm-arcade-jeffkazzee-dev.webp',
+    thumb: '/images/llm-arcade-jeffkazzee-dev-320.webp',
     width: 960,
     height: 600,
     imageAlt: 'LLM Arcade home page',
@@ -48,6 +52,7 @@ export const projects: Project[] = [
     href: 'https://puckwork.vercel.app',
     linkLabel: 'puckwork.vercel.app',
     image: '/images/puckwork-jeffkazzee-dev.webp',
+    thumb: '/images/puckwork-jeffkazzee-dev-320.webp',
     width: 960,
     height: 548,
     imageAlt: 'Puckwork home page',
@@ -60,6 +65,7 @@ export const projects: Project[] = [
     href: 'https://neon-noir-detective-agency.vercel.app',
     linkLabel: 'neon-noir-detective-agency.vercel.app',
     image: '/images/neon-noir-2026-10-08.webp',
+    thumb: '/images/neon-noir-2026-10-08-320.webp',
     width: 960,
     height: 600,
     imageAlt: 'Neon Noir Detective Agency home page',

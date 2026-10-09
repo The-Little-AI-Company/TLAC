@@ -1,50 +1,43 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
+import Lane from '../components/Lane.astro';
 import Lanes from '../components/Lanes.astro';
 import NowLine from '../components/NowLine.astro';
 import Plate from '../components/Plate.astro';
 import ProjectEntry from '../components/ProjectEntry.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
 import SpecPlate from '../components/SpecPlate.astro';
-import type { Fact } from '../components/types';
+import SplitSection from '../components/SplitSection.astro';
+import type { Term } from '../components/types';
 import { projects } from '../data/projects';
-import { latestVersion, tool } from '../data/tools';
+import { callout, calloutPlate, latestVersion, stampedStatus, vivary } from '../data/tools';
 
-const callout = tool('callout');
-// Stamped at build time from the latest GitHub release, so a new release needs no edit here.
 const version = await latestVersion(callout.version);
-if (!version) throw new Error('The Callout record in src/data/tools.ts needs a version to show on the home page.');
+const calloutStatus = await stampedStatus(callout);
 
-const calloutFacts: Fact[] = [
-  { term: 'Runs on', detail: callout.platform },
-  { term: 'Version', detail: version },
-  { term: 'License', detail: 'MIT' },
-  { term: 'Price', detail: 'Free. Bring your own API keys.' },
-];
-
-const tenets: Fact[] = [
+const tenets: Term[] = [
   { term: 'You decide', detail: 'The tool proposes and you approve. A human gate is a feature, not a speed bump.' },
   { term: 'You can read everything', detail: 'State is plain files on your machine, not a hosted store you cannot open.' },
-  { term: 'You keep learning', detail: 'A tool that thinks for you leaves you weaker. Mine show their work so you get sharper.' },
+  { term: 'You keep learning', detail: 'A tool that thinks for you leaves you weaker. My tools show their work so you get sharper.' },
   { term: 'Sources or silence', detail: 'Every claim carries where it came from. Unsure is a real answer.' },
 ];
 ---
 
 <Base
   title="The Little AI Company"
-  description="I'm Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop workspace for AI agents. Small tools that keep you in charge."
+  description="I’m Jeff Kazzee. I build Callout, which checks what you read, and Vivary, a desktop workspace for AI agents. Both keep you in charge."
 >
   <section class="hero">
     <div class="wrap">
-      <NowLine tone="wip">Now building Vivary. A Windows preview came out Sept 22.</NowLine>
+      <NowLine tone="wip">Now building Vivary. A Windows preview came out Sept 22, 2026.</NowLine>
       <h1 class="display-xl">Tools for the work you keep doing by hand.</h1>
       <p class="lede">
-        I'm Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop
+        I’m Jeff Kazzee. I build Callout, a hotkey that checks what you read, and Vivary, a desktop
         workspace for AI agents. Small tools that keep you in charge of the AI you use.
       </p>
       <div class="actions">
-        <Button href="/callout/" variant="primary">Get Callout</Button>
+        <Button href="/callout/#get-it" variant="primary">Get Callout</Button>
         <Button href="/vivary/">See Vivary</Button>
       </div>
       <picture class="mascot">
@@ -66,19 +59,21 @@ const tenets: Fact[] = [
       <ProjectFeature
         numeral="I. The main project"
         title="Vivary"
-        tone="wip"
-        status="Unsigned Windows preview · Sept 22, 2026"
+        tone={vivary.tone}
+        status={vivary.status}
         href="/vivary/"
         linkLabel="More about Vivary"
       >
         <Plate
           slot="media"
           src="/images/vivary-workspace-2026-10-03.webp"
+          srcset="/images/vivary-workspace-2026-10-03-600.webp 600w, /images/vivary-workspace-2026-10-03.webp 1200w"
           width={1200}
           height={844}
-          alt="Vivary development build, captured Oct 3, 2026, before Claude Code sign-in."
-          caption="Development build, Oct 3, 2026, before Claude Code sign-in."
-        />
+          alt="The Vivary window: a project list and conversations in a sidebar, an empty chat headed “What are we working on?”, and a notice asking you to sign in to Claude Code."
+        >
+          <Fragment slot="caption">Development build, Oct 3, 2026, before Claude Code <span class="nowrap">sign-in</span>.</Fragment>
+        </Plate>
         <p class="text">
           A desktop workspace for working with AI agents on your own projects. Conversations sit beside your
           notes, research, drafts and code. You bring your own Claude Code or Codex account, and the files stay
@@ -88,19 +83,14 @@ const tenets: Fact[] = [
 
       <ProjectFeature
         reverse
-        numeral="II. Released"
+        numeral="II. Ready to download"
         title="Callout"
-        tone="shipped"
-        status={`Released · ${version}`}
+        tone={callout.tone}
+        status={calloutStatus}
         href="/callout/"
         linkLabel="More about Callout"
       >
-        <SpecPlate
-          slot="media"
-          rows={calloutFacts}
-          quote="Signals in the text itself. Not a truth check."
-          caption="The header on every Callout result."
-        />
+        <SpecPlate slot="media" {...calloutPlate(version)} />
         <p class="text">{callout.summary}</p>
       </ProjectFeature>
     </div>
@@ -115,44 +105,45 @@ const tenets: Fact[] = [
     </div>
   </section>
 
-  <section id="how" class="section how">
-    <div class="wrap">
-      <div class="intro">
-        <h2 class="heading">How I work</h2>
-        <p class="text">Everything I make keeps you in the loop. You can read what it did, stop it, and undo it.</p>
-      </div>
-      <Lanes items={tenets} />
-    </div>
-  </section>
+  <SplitSection id="how" heading="How I work">
+    <p slot="intro" class="text how-intro">
+      I make small tools that keep you in charge of the AI you use. Memory in files you can open. Claims
+      with the sources behind them. Nothing that runs where you can’t see it, stop it, or undo it.
+    </p>
+    <Lanes>
+      {tenets.map(({ term, detail }) => <Lane term={term}>{detail}</Lane>)}
+    </Lanes>
+  </SplitSection>
 </Base>
 
 <style>
   /* Hero: centered, and the mascot stands on the hairline that opens the next section. */
   .hero {
-    padding-top: 88px;
+    padding-top: clamp(var(--space-6), 10.4vw - 1.44px, 88px);
     text-align: center;
   }
 
   .hero h1 {
     max-width: 12ch;
     margin: 24px auto 0;
-    text-wrap: balance;
   }
 
   .hero .lede {
     margin: 28px auto 0;
-    text-wrap: pretty;
+    text-wrap: balance;
   }
 
   .hero .actions {
     justify-content: center;
+    margin-inline: auto;
   }
 
-  /* The bottom margin pulls the next section up 3px, so the wheels stand on its top rule. */
+  /* 260px at 360px and below, 470px at 860px and above, and growing with the headline between. */
   .mascot {
     display: block;
-    width: 470px;
+    width: clamp(260px, 42vw + 108.8px, 470px);
     max-width: 78%;
+    /* The bottom margin pulls the next section up 3px, so the wheels stand on its top rule. */
     margin: 64px auto -3px;
   }
 
@@ -160,21 +151,15 @@ const tenets: Fact[] = [
     width: 100%;
   }
 
-  /* Work: the two features, one above the other. */
   .work .wrap {
     display: grid;
     gap: var(--space-9);
-  }
-
-  .work .text {
-    text-wrap: pretty;
   }
 
   /* Other things: a centered heading over a list that stops at 940px. */
   .other h2 {
     margin-bottom: 40px;
     text-align: center;
-    text-wrap: balance;
   }
 
   .other .contents {
@@ -182,26 +167,12 @@ const tenets: Fact[] = [
     margin-inline: auto;
   }
 
-  /* How I work: the statement on the left, the four tenets on the right. */
-  .how .wrap {
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-    gap: var(--space-7);
-    align-items: start;
-  }
-
   /* The design system sets this one paragraph a point larger than body text. */
-  .how .intro .text {
-    font-size: 17px;
-    text-wrap: pretty;
+  .how-intro {
+    font-size: 1.0625rem;
   }
 
-  /* The single breakpoint is 860px, as in global.css. */
   @media (max-width: 860px) {
-    .hero {
-      padding-top: var(--space-6);
-    }
-
     .hero h1 {
       margin-top: 18px;
     }
@@ -210,13 +181,7 @@ const tenets: Fact[] = [
       margin-top: var(--space-4);
     }
 
-    /* The buttons stack and fill the row, so they are no longer centered as a group. */
-    .hero .actions {
-      justify-content: stretch;
-    }
-
     .mascot {
-      width: 260px;
       margin-top: var(--space-6);
     }
 
@@ -226,11 +191,6 @@ const tenets: Fact[] = [
 
     .other h2 {
       margin-bottom: var(--space-5);
-    }
-
-    .how .wrap {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 40px;
     }
   }
 </style>

@@ -173,6 +173,10 @@ export function isReducedMotion(block: CssBlock): boolean {
   return block.kind === 'at' && block.name === 'media' && squash(block.prelude).includes('prefers-reduced-motion:reduce');
 }
 
+export function isForcedColors(block: CssBlock): boolean {
+  return block.kind === 'at' && block.name === 'media' && squash(block.prelude).includes('forced-colors:active');
+}
+
 const isRoot = (block: CssBlock): boolean => block.kind === 'rule' && squash(block.prelude) === ':root';
 
 /** Custom properties set by `:root` rules at the top level, later rules winning. */

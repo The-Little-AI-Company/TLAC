@@ -2,7 +2,7 @@
  * SPEC section 5 and 6 as the browser renders them: buttons, status badges, the now line, plates,
  * links, lanes and the nav, with the token colors of each scheme. Run at a desktop and a phone width.
  */
-import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, expect, isPhone, open, rgb, style, test } from './support';
+import { KEY_WIDTHS, SCHEMES, VIEWPORT_HEIGHT, box, expect, firstFamily, isPhone, open, rgb, style, test } from './support';
 
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
 
@@ -103,6 +103,18 @@ for (const scheme of SCHEMES) {
           expect(dot['border-top-left-radius']).toBe('50%');
         });
 
+        test('the middle dot in a badge is a separator with an even margin of .28em on each side', async ({ page }) => {
+          await open(page, '/');
+          const badge = page.locator('section#work .status--wip');
+          const sep = await style(badge.locator('.sep'), ['margin-left', 'margin-right', 'font-size']);
+          const em = parseFloat(sep['font-size'] ?? '0');
+          expect(parseFloat(sep['margin-left'] ?? '0')).toBeCloseTo(0.28 * em, 1);
+          expect(parseFloat(sep['margin-right'] ?? '0')).toBeCloseTo(0.28 * em, 1);
+          const dot = await box(badge.locator('.sep'));
+          const before = await box(badge.locator('span').first());
+          expect(dot.x, 'the dot sits inside the label').toBeGreaterThan(before.x);
+        });
+
         test('shipped and wip dots are filled with status-live and status-wip', async ({ page }) => {
           await open(page, '/');
           const wip = await style(page.locator('section#work .status--wip i'), ['background-color']);
@@ -169,7 +181,7 @@ for (const scheme of SCHEMES) {
           expect(s['padding-top']).toBe(phone ? '8px' : '14px');
         });
 
-        test('the spec plate rules its rows with hairlines and quotes in the caption style', async ({ page }) => {
+        test('the spec plate rules its rows with hairlines, sets the label column at 6.5rem or less, and sets the quote upright in the display face with the italic caption under it', async ({ page }) => {
           await open(page, '/');
           const feature = page.locator('section#work article.feature').nth(1);
           const hairlines = await feature.locator('dl').first().evaluate((dl, rule) => {
@@ -180,9 +192,18 @@ for (const scheme of SCHEMES) {
             }).length;
           }, rgb(scheme, 'rule'));
           expect(hairlines, 'hairlines between the four rows').toBeGreaterThanOrEqual(3);
-          const quote = await style(feature.getByText('Signals in the text itself. Not a truth check.', { exact: true }), ['font-family', 'font-style']);
-          expect(quote['font-family']).toMatch(/^"?Instrument Serif Italic"?,/);
+          const label = await box(feature.locator('dl dt').first());
+          const value = await box(feature.locator('dl dd').first());
+          expect(label.width, 'label column').toBeLessThanOrEqual(104.5);
+          expect(value.x, 'value starts after the label column').toBeGreaterThan(label.right);
+          const quote = await style(feature.getByText('Signals in the text itself. Not a truth check.', { exact: true }), ['font-family', 'font-style', 'font-size', 'color']);
+          expect(firstFamily(quote['font-family'] ?? '')).toBe('Instrument Serif');
           expect(quote['font-style']).toBe('normal');
+          expect(quote['font-size']).toBe('24px');
+          expect(quote['color']).toBe(rgb(scheme, 'ink'));
+          const credit = await style(feature.getByText('The header on every Callout result.', { exact: true }), ['font-family', 'color']);
+          expect(firstFamily(credit['font-family'] ?? '')).toBe('Instrument Serif Italic');
+          expect(credit['color']).toBe(rgb(scheme, 'ink-faint'));
         });
       });
 
@@ -282,14 +303,10 @@ for (const scheme of SCHEMES) {
       });
 
       test.describe('lanes', () => {
-        test('names are display titles (28px; 22px or more on a phone), details are body text', async ({ page }) => {
+        test('names are display titles (28px, 24px on a phone), details are body text', async ({ page }) => {
           await open(page, '/');
           const dt = await style(page.locator('section#how dt').first(), ['font-size', 'font-family', 'font-weight']);
-          const size = parseFloat(dt['font-size'] ?? '0');
-          if (phone) {
-            expect(size).toBeGreaterThanOrEqual(22);
-            expect(size).toBeLessThanOrEqual(28);
-          } else expect(size).toBe(28);
+          expect(dt['font-size']).toBe(phone ? '24px' : '28px');
           expect(dt['font-family']).toMatch(/^"?Instrument Serif"?,/);
           expect(dt['font-weight']).toBe('400');
           const dd = await style(page.locator('section#how dd').first(), ['font-size', 'font-family']);
@@ -299,4 +316,29 @@ for (const scheme of SCHEMES) {
       });
     });
   }
+}
+
+// Forced colors repaint every background as the page color, so what is only a background has to get a border.
+for (const scheme of SCHEMES) {
+  test.describe(`forced colors, ${scheme}`, () => {
+    test.use({ viewport: { width: 1280, height: VIEWPORT_HEIGHT }, colorScheme: scheme, contextOptions: { forcedColors: 'active' } });
+
+    test('a filled status dot has a border and so does the dot of the now line, and a hollow dot stays a thinner ring', async ({ page }) => {
+      await open(page, '/');
+      const filled = await style(page.locator('section#work .status--wip i'), ['border-top-width']);
+      const hollow = await style(page.locator('section#other .status--alpha i').first(), ['border-top-width']);
+      const now = await style(page.locator('section.hero .now'), ['border-top-width'], '::before');
+      expect(filled['border-top-width']).toBe('4px');
+      expect(parseFloat(hollow['border-top-width'] ?? '0'), 'a ring, thinner than the filled dot').toBeLessThan(2);
+      expect(now['border-top-width']).toBe('4px');
+    });
+
+    test('the primary button has a 2px border and the secondary one a 1px border, so they differ', async ({ page }) => {
+      await open(page, '/');
+      const primary = await style(page.getByRole('link', { name: 'Get Callout' }), ['border-top-width']);
+      const secondary = await style(page.getByRole('link', { name: 'See Vivary' }), ['border-top-width']);
+      expect(primary['border-top-width']).toBe('2px');
+      expect(secondary['border-top-width']).toBe('1px');
+    });
+  });
 }

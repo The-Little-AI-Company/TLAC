@@ -15,7 +15,7 @@ test.describe('unknown addresses', () => {
       const status = await open(page, path, 404);
       expect(status).toBe(404);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
-      await expect(page.getByText("That address doesn't lead anywhere on this site.")).toBeVisible();
+      await expect(page.getByText("That address doesn’t lead anywhere on this site.")).toBeVisible();
       await expect(page).toHaveTitle('Page not found. The Little AI Company');
     });
 

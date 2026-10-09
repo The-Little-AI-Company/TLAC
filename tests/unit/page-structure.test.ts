@@ -4,8 +4,8 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { all, attr, documentOrder, focusables, headingLevel, one } from '../helpers/dom';
-import { NAV_LINKS, PAGES, PAGE_CASES, SITE, SITE_NAME, distPath, parsePage, readDist } from '../helpers/dist';
-import { BRAND, FOOTER, HEAD, HOME, SKIP_LINK } from '../helpers/spec';
+import { NAV_LINKS, PAGES, PAGE_CASES, SITE_NAME, distPath, parsePage, readDist } from '../helpers/dist';
+import { BRAND, DESCRIPTIONS, FOOTER, HEAD, SKIP_LINK } from '../helpers/spec';
 import { textOf } from '../helpers/text';
 
 describe('the site builds every page', () => {
@@ -46,18 +46,21 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       expect(description).toBe(description.trim());
     });
 
-    if (info.id === 'home') {
-      it('uses the home description from SPEC 8', () => {
-        expect(content('meta[name="description"]')).toBe(HOME.description);
-      });
-    }
+    it('uses its own description, which is 120 to 160 characters so a search result shows all of it', () => {
+      const description = content('meta[name="description"]');
+      expect(description).toBe(DESCRIPTIONS[info.id]);
+      expect(description.length).toBeGreaterThanOrEqual(120);
+      expect(description.length).toBeLessThanOrEqual(160);
+    });
 
-    it('has one canonical URL on the site' + (info.canonical ? ` (${info.canonical})` : ''), () => {
+    it(info.canonical ? `has one canonical URL (${info.canonical})` : 'has no canonical URL, because it is not an address anyone should be sent to', () => {
       const links = meta('link[rel="canonical"]');
+      if (!info.canonical) {
+        expect(links).toHaveLength(0);
+        return;
+      }
       expect(links).toHaveLength(1);
-      const href = attr(links[0]!, 'href') ?? '';
-      if (info.canonical) expect(href).toBe(info.canonical);
-      else expect(href.startsWith(`${SITE}/`), `canonical ${href} should be on ${SITE}`).toBe(true);
+      expect(attr(links[0]!, 'href')).toBe(info.canonical);
     });
 
     describe('Open Graph and Twitter', () => {
@@ -66,10 +69,14 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
         expect(content('meta[property="og:site_name"]')).toBe(SITE_NAME);
       });
 
-      it('repeats the title, description and canonical URL', () => {
+      it('repeats the title and description', () => {
         expect(content('meta[property="og:title"]')).toBe(info.title);
         expect(content('meta[property="og:description"]')).toBe(content('meta[name="description"]'));
-        expect(content('meta[property="og:url"]')).toBe(attr(meta('link[rel="canonical"]')[0]!, 'href'));
+      });
+
+      it(info.canonical ? 'repeats the canonical URL as og:url' : 'has no og:url', () => {
+        if (info.canonical) expect(content('meta[property="og:url"]')).toBe(info.canonical);
+        else expect(meta('meta[property="og:url"]')).toHaveLength(0);
       });
 
       it('has the 1200x630 social card with alt text', () => {
@@ -79,8 +86,9 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
         expect(content('meta[property="og:image:alt"]').length).toBeGreaterThanOrEqual(10);
       });
 
-      it('asks for a large Twitter card', () => {
+      it('asks for a large Twitter card with the same image', () => {
         expect(content('meta[name="twitter:card"]')).toBe(HEAD.twitterCard);
+        expect(content('meta[name="twitter:image"]')).toBe(HEAD.ogImage);
       });
     });
 
@@ -143,10 +151,12 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       expect(textOf(first!)).toBe(SKIP_LINK.label);
     });
 
-    it('has a single main#main that the skip link can focus (tabindex="-1")', () => {
+    it('has a single main#main for the skip link to point at, and it is not itself a tab stop or a click target', () => {
       const main = one(doc(), 'main');
       expect(attr(main, 'id')).toBe('main');
-      expect(attr(main, 'tabindex')).toBe('-1');
+      // The skip link moves the browser's place in the page to main without main taking focus,
+      // so the next Tab goes to the first thing inside it and a click in main does not reset the tab order.
+      expect(attr(main, 'tabindex')).toBeUndefined();
       expect(all(doc(), '[id="main"]')).toHaveLength(1);
     });
 
@@ -207,9 +217,8 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       expect(attr(current[0]!, 'href')).toBe(info.navHref);
     });
 
-    it('never marks the brand link as current', () => {
-      expect(attr(all(nav(), 'a')[0]!, 'aria-current')).toBeUndefined();
-      expect(all(doc(), 'a[href="/"][aria-current]')).toHaveLength(0);
+    it(info.id === 'home' ? 'marks the brand link as the current page, since it links home' : 'does not mark the brand link as current', () => {
+      expect(attr(all(nav(), 'a')[0]!, 'aria-current')).toBe(info.id === 'home' ? 'page' : undefined);
     });
   });
 
@@ -234,6 +243,13 @@ describe.each(PAGE_CASES)('%s', (_label, info) => {
       expect(text.indexOf(FOOTER.line)).toBeLessThan(text.indexOf(FOOTER.links[0].label));
       expect(text.indexOf(FOOTER.note)).toBeGreaterThan(text.indexOf(FOOTER.links[2].label));
     });
+  });
+});
+
+describe('the pages that are not the 404 page', () => {
+  it('are the only ones with a canonical URL, and each one is its own', () => {
+    const canonicals = PAGES.flatMap((p) => all(parsePage(p), 'link[rel="canonical"]').map((l) => attr(l, 'href')));
+    expect(canonicals).toEqual(PAGES.filter((p) => p.canonical).map((p) => p.canonical));
   });
 });
 
