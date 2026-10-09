@@ -1,5 +1,7 @@
 ---
 // A real screenshot in a frame, like a plate in a book, with a dated caption. Lazy unless it is the first thing on the page.
+// Pass `srcset` with a smaller file for phones. The default `sizes` is the width a plate draws in a feature or a tool header.
+// The caption is the `caption` prop, or the `caption` slot when it needs markup.
 import PlateFrame from './PlateFrame.astro';
 
 interface Props {
@@ -12,7 +14,16 @@ interface Props {
   sizes?: string;
   srcset?: string;
 }
-const { src, alt, width, height, caption, eager = false, sizes, srcset } = Astro.props;
+const {
+  src,
+  alt,
+  width,
+  height,
+  caption,
+  eager = false,
+  sizes = '(max-width: 860px) calc(100vw - 50px), 524px',
+  srcset,
+} = Astro.props;
 ---
 
 <PlateFrame caption={caption}>
@@ -21,12 +32,13 @@ const { src, alt, width, height, caption, eager = false, sizes, srcset } = Astro
     alt={alt}
     width={width}
     height={height}
-    sizes={sizes}
     srcset={srcset}
+    sizes={srcset ? sizes : undefined}
     decoding="async"
     loading={eager ? undefined : 'lazy'}
     fetchpriority={eager ? 'high' : undefined}
   />
+  {Astro.slots.has('caption') && <Fragment slot="caption"><slot name="caption" /></Fragment>}
 </PlateFrame>
 
 <style>

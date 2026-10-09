@@ -4,12 +4,11 @@ interface Props {
   href: string;
   variant?: 'primary' | 'secondary' | 'text';
   size?: 'md' | 'sm';
-  block?: boolean;
 }
-const { href, variant = 'secondary', size = 'md', block = false } = Astro.props;
+const { href, variant = 'secondary', size = 'md' } = Astro.props;
 ---
 
-<a class:list={['btn', `btn--${variant}`, { 'btn--sm': size === 'sm', 'btn--block': block }]} href={href}>
+<a class:list={['btn', `btn--${variant}`, { 'btn--sm': size === 'sm' }]} href={href}>
   <slot />
 </a>
 
@@ -25,7 +24,7 @@ const { href, variant = 'secondary', size = 'md', block = false } = Astro.props;
     border-radius: var(--radius-xs);
     background: transparent;
     color: var(--ink);
-    font: 600 15px/1 var(--font-text);
+    font: 600 .9375rem/1 var(--font-text);
     text-decoration: none;
     transition:
       background-color var(--dur) var(--ease),
@@ -40,13 +39,7 @@ const { href, variant = 'secondary', size = 'md', block = false } = Astro.props;
   .btn--sm {
     min-height: 40px;
     padding: 0 var(--space-4);
-    font-size: 14px;
-  }
-
-  .btn--block {
-    display: flex;
-    width: 100%;
-    min-height: 48px;
+    font-size: .875rem;
   }
 
   .btn--primary {
@@ -73,10 +66,16 @@ const { href, variant = 'secondary', size = 'md', block = false } = Astro.props;
     color: var(--accent-hover);
   }
 
-  /* The single breakpoint is 860px, as in global.css. */
+  /* Forced colors give every border the same color, so the main action keeps its weight in the border. */
+  @media (forced-colors: active) {
+    .btn--primary {
+      border-width: 2px;
+    }
+  }
+
+  /* A phone gets taller targets. The row of buttons is a grid there, so they also fill its width. */
   @media (max-width: 860px) {
-    :global(.actions) > .btn {
-      width: 100%;
+    .btn:not(.btn--sm) {
       min-height: 48px;
     }
   }

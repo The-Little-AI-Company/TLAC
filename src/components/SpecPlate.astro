@@ -1,17 +1,18 @@
 ---
 // A plate of facts for a tool that has no screenshot worth showing, with an optional line the tool says.
+// The facts are a plain frame. Only the quote is a figure, so its caption describes the quote and nothing else.
 import PlateFrame from './PlateFrame.astro';
-import type { Fact } from './types';
+import type { Term } from './types';
 
 interface Props {
-  rows: Fact[];
+  rows: Term[];
   quote?: string;
   caption?: string;
 }
 const { rows, quote, caption } = Astro.props;
 ---
 
-<PlateFrame caption={caption}>
+<PlateFrame tag="div">
   <dl>
     {rows.map(({ term, detail }) => (
       <div class="row">
@@ -20,13 +21,18 @@ const { rows, quote, caption } = Astro.props;
       </div>
     ))}
   </dl>
-  {quote && <p class="quote caption">{quote}</p>}
+  {quote && (
+    <figure class="quote">
+      <blockquote><p>{quote}</p></blockquote>
+      {caption && <figcaption class="caption">{caption}</figcaption>}
+    </figure>
+  )}
 </PlateFrame>
 
 <style>
   .row {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 6.5rem) 1fr;
     gap: var(--space-4);
     align-items: baseline;
     padding: var(--space-3) 2px;
@@ -44,6 +50,21 @@ const { rows, quote, caption } = Astro.props;
     margin-top: var(--space-3);
     padding: var(--space-4) 2px 0;
     border-top: 1px solid var(--rule);
+  }
+
+  blockquote {
+    margin: 0;
+  }
+
+  /* The words the tool says are set upright in the display face. The italic belongs to the caption that credits them. */
+  blockquote p {
+    font: 400 1.5rem/1.2 var(--font-display);
+    letter-spacing: -.005em;
     color: var(--ink);
+    text-wrap: balance;
+  }
+
+  figcaption {
+    margin-top: var(--space-2);
   }
 </style>

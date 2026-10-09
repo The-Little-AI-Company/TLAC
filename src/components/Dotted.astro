@@ -1,0 +1,18 @@
+---
+// Text with its middle dots set as separators. Write the string with " · " and the dot gets an even margin
+// on both sides: the font's own space is too narrow beside such a small mark, so the dot reads as glued to the left word.
+// The dot stays in the text, so a screen reader still meets it.
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const parts = text.split(' · ');
+---
+
+{parts.map((part, i) => <>{i > 0 && <span class="sep">·</span>}{part}</>)}
+
+<style>
+  .sep {
+    margin-inline: .28em;
+  }
+</style>

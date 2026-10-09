@@ -1,5 +1,7 @@
 ---
 // The site footer: who runs this, where to reach them, and what the site does not do.
+import Dotted from './Dotted.astro';
+
 const links = [
   { href: 'mailto:jeff@littleaicompany.com', label: 'jeff@littleaicompany.com' },
   { href: 'https://github.com/The-Little-AI-Company', label: 'GitHub' },
@@ -10,12 +12,12 @@ const links = [
 <footer>
   <div class="wrap">
     <div class="row">
-      <p>The Little AI Company · Jeff Kazzee · rural Idaho</p>
+      <p><Dotted text="The Little AI Company · Jeff Kazzee · rural Idaho" /></p>
       <ul>
         {links.map(({ href, label }) => <li><a href={href}>{label}</a></li>)}
       </ul>
     </div>
-    <p class="note">No cookies, no trackers, nothing loaded from anyone else.</p>
+    <p class="note">This site sets no cookies, loads nothing from third parties, and keeps no analytics.</p>
   </div>
 </footer>
 
@@ -24,7 +26,7 @@ const links = [
     padding-block: 28px;
     border-top: 1px solid var(--rule);
     background: var(--ground-alt);
-    font-size: 13px;
+    font-size: .8125rem;
     color: var(--ink-faint);
   }
 
@@ -58,9 +60,9 @@ const links = [
 
   .note {
     margin-top: var(--space-2);
+    text-wrap: balance;
   }
 
-  /* The single breakpoint is 860px, as in global.css. */
   @media (max-width: 860px) {
     footer {
       padding-block: var(--space-5);
@@ -69,6 +71,11 @@ const links = [
     .row {
       flex-direction: column;
       align-items: flex-start;
+      gap: 0;
+    }
+
+    ul {
+      gap: 0 var(--space-4);
     }
 
     a {
