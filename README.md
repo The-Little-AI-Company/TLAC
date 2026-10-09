@@ -1,55 +1,46 @@
 # littleaicompany.com
 
 The public website for [The Little AI Company](https://littleaicompany.com).
-Five pages: home, Callout, Vivary, about, contact. Static, no JavaScript, no
-third-party requests.
+Plain static HTML in `site/`: one stylesheet, one small script, no framework,
+no third-party requests, no cookies.
 
-## Stack
+Design: Direction D ("Private Press") from the Little AI Company design
+system. Instrument Serif headlines, Instrument Sans text, ivory and oxblood in
+light mode, warm charcoal in dark mode. The page follows the visitor's system
+setting, and the footer button switches it.
 
-- Astro 7, static output
-- Vitest against the built `dist/`
-- GitHub Pages, custom domain in `public/CNAME`
-
-## Work on it
-
-```sh
-pnpm install
-pnpm dev
-```
-
-The dev server runs at `http://127.0.0.1:4399`.
-
-```sh
-pnpm verify
-```
-
-Runs `astro check`, the production build, and the tests. The tests read
-`dist/`, so run the build first if you run them alone.
-
-## Where things live
+## Pages
 
 | Path | What |
 | --- | --- |
-| `src/data/tools.ts` | The tools: copy, status, links, and where the version comes from. Edit here first. |
-| `src/pages/` | One file per page. |
-| `src/components/` | `Mark` (the skull bunny), `Plate` (a tool on the home page), `ToolHero` (a tool page header). |
-| `src/styles/global.css` | Tokens, fonts, and the shared layout classes. |
-| `public/fonts/` | Big Shoulders Stencil and Archivo, self-hosted under the OFL. |
-| `astro.config.mjs` | Redirects for URLs from the old education-era site. |
+| `site/index.html` | Home: hero with the Vivary mascot, the two ways to work with me, Vivary and Callout, other projects |
+| `site/work.html` | Vivary, Callout and the smaller projects, each with its status |
+| `site/services.html` | Live coaching prices and booking, build jobs, questions |
+| `site/callout.html` | Callout |
+| `site/vivary.html` | Vivary |
+| `site/about.html` | About |
+| `site/start.html` | Project form. There is no server: it writes the email and opens the visitor's email app |
+| `site/404.html` | Not found |
 
-A tool with a `version` entry in `tools.ts` gets its stamp at build time
-from that source (Callout reads the latest GitHub release). If the lookup
-fails, the build uses the entry's fallback, so update the fallback when you
-cut a release. A tool without a `version` entry shows its `status` instead
-(Vivary, until it has a public release).
+`site/css/site.css` holds the tokens, the three fonts (inlined), the
+components and the page layout. `site/js/site.js` runs the phone menu, the
+light and dark switch, and the project form.
+
+## Edit
+
+Edit the HTML in `site/` directly and open it in a browser. No build step.
+
+When Callout ships a new release, update `v0.2.0` in `index.html`,
+`work.html` and `callout.html`.
 
 ## Deploy
 
-Every push to `dev` runs `.github/workflows/deploy.yml` and publishes to
-GitHub Pages. Merging a pull request into `dev` is the deploy step.
+Every push to `dev` runs `.github/workflows/deploy.yml`, which adds
+redirect pages for the old addresses and publishes `site/` to GitHub Pages.
+Merging a pull request into `dev` is the deploy step.
 
-## Brand
+## Leftovers
 
-The mark, palette, and type rules are in the organization repository at
-[`The-Little-AI-Company/.github`](https://github.com/The-Little-AI-Company/.github)
-under `brand/BRAND.md`. The copies here under `public/` are exports.
+The Astro source from the previous site (`src/`, `public/`, `tests/`,
+`astro.config.mjs`, `package.json`, the pnpm files, `tsconfig.json`,
+`vitest.config.ts`) is no longer built or deployed. It can be deleted.
