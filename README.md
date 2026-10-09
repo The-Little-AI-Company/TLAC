@@ -92,7 +92,7 @@ The components in `src/components/`:
 - `Mark`: the skull bunny, drawn in `currentColor`.
 - `NowLine`: the sentence at the top of a page about what is happening now, with a status dot.
 - `PageHead`: the top of an inner page, an h1 and a lede, with room for buttons, a badge, and a picture beside the text when both have room, and under it when they do not.
-- `Plate` and `PlateFrame`: a screenshot in a frame, like a plate in a book, with a dated caption.
+- `Plate` and `PlateFrame`: a screenshot in a frame, like a plate in a book, with a dated caption in the `caption` slot. A frame that is a `div` (the `SpecPlate` one) takes no caption.
 - `ProjectEntry`: one row of the list of other projects on the home page.
 - `ProjectFeature`: a project as a short case study, with its plate beside it.
 - `SiteFooter` and `SiteNav`: the footer, and the header with the four page links.

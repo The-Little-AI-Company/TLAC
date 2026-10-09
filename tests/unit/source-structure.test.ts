@@ -17,9 +17,9 @@ const COMPONENTS: Record<string, readonly string[]> = {
   Button: ['href', 'variant', 'size'],
   StatusBadge: ['tone', 'label'],
   NowLine: ['tone'],
-  Plate: ['src', 'alt', 'width', 'height', 'caption', 'eager', 'sizes', 'srcset'],
+  Plate: ['src', 'alt', 'width', 'height', 'eager', 'sizes', 'srcset'],
   ProjectFeature: ['numeral', 'title', 'tone', 'status', 'href', 'linkLabel', 'reverse'],
-  PlateFrame: ['tag', 'caption'],
+  PlateFrame: ['tag'],
   SpecPlate: ['rows', 'quote', 'caption'],
   ProjectEntry: ['image', 'imageAlt', 'title', 'line', 'tone', 'status', 'href', 'linkLabel'],
   Lane: ['term'],
@@ -152,6 +152,19 @@ describe('slots', () => {
     const source = read('components/SplitSection.astro');
     expect(source).toMatch(/<slot\s+name=["']intro["']/);
     expect(source).toMatch(/<slot\s*\/>|<slot>\s*<\/slot>/);
+  });
+
+  it('a plate takes its caption in the `caption` slot and nowhere else: Plate and PlateFrame have no caption prop, and Plate hands the slot on', () => {
+    for (const name of ['Plate', 'PlateFrame']) {
+      const source = read(`components/${name}.astro`);
+      expect(propsDeclaration(source, join(SRC, 'components')), `Props of ${name}`).not.toMatch(/\bcaption\b/);
+      expect(source, name).toMatch(/<slot\s+name=["']caption["']/);
+    }
+    expect(read('components/Plate.astro')).toMatch(/<slot\s+name=["']caption["']\s+slot=["']caption["']/);
+  });
+
+  it('PlateFrame stops the build when a div frame is given a caption, since a figcaption belongs in a figure', () => {
+    expect(read('components/PlateFrame.astro')).toMatch(/Tag === 'div' && hasCaption[\s\S]*throw new Error/);
   });
 
   it('PageHead takes what follows the lede in the default slot, a badge in `before` and a picture in `media`', () => {

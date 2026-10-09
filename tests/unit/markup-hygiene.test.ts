@@ -99,6 +99,11 @@ describe.each(PAGE_CASES)('components on %s', (_label, info) => {
     for (const plate of all(doc(), 'figure.plate')) expect(plate.querySelectorAll('img'), show(plate)).toHaveLength(1);
   });
 
+  it('puts every figcaption straight inside a figure, and never leaves one empty', () => {
+    const bad = all(doc(), 'figcaption').filter((caption) => caption.parentNode?.rawTagName?.toLowerCase() !== 'figure' || visibleText(caption) === '');
+    expect(bad.map(show)).toEqual([]);
+  });
+
   it('renders every SpecPlate as a <div class="plate"> of facts, with the quote in a figure of its own', () => {
     for (const dl of all(doc(), '.plate dl')) {
       const plate = dl.closest('.plate')!;
